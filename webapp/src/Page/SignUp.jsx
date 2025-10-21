@@ -2,10 +2,11 @@ import { useState } from 'react';
 import Footer from '../Components/Footer';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as z from 'zod';
 import FreelancerIconSVG from '../Public/freelancer.svg';
 import ClientIconSVG from '../Public/customer.svg';
+import useAuth from '../ContextAPI/UseAuth';
 
 const signupSchema = z.object({
     fullName: z.string().min(1, "Please fill in this field."),
@@ -33,14 +34,13 @@ export default function SignUp() {
     const [serverMessage, setServerMessage] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
         resolver: zodResolver(signupSchema),
         mode: "onChange"
     });
 
     const selectedRole = watch('role');
-
+    const { signIn } = useAuth();
     const onSubmit = async (data) => {
         try {
             const res = await fetch('http://localhost:3000/api/signup', {
@@ -55,11 +55,9 @@ export default function SignUp() {
             });
             const result = await res.json();
 
-            if (res.ok) {
+            if (res.ok && result.token) {
                 setServerMessage({ type: "success", text: result.message || "Registration successful!" });
-                setTimeout(() => {
-                    navigate('/HomePage');
-                }, 2000);
+                signIn(result.token);
             } else {
                 setServerMessage({ type: "error", text: result.error || "Unsuccessfully registered." });
             }
@@ -177,7 +175,7 @@ export default function SignUp() {
                     </p>
                 </form>
             </div>
-            <Footer />
+            <Footer/>
         </div>
     );
 }

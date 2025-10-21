@@ -3,8 +3,9 @@ import Footer from '../Components/Footer';
 import SignInBg from '../Public/signin_bg.jpg';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import * as z from 'zod';
+import useAuth from '../ContextAPI/UseAuth';
 
 const signinSchema = z.object({
     email: z.email("Invalid email address. Please try again")
@@ -21,12 +22,11 @@ const signinSchema = z.object({
 export default function SignIn() {
     const [serverMsg, setServerMessage] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(signinSchema),
         mode: "onChange"
     });
-
+    const { signIn } = useAuth();
     const onSubmit = async (data) => {
         try {
             const res = await fetch('http://localhost:3000/api/signin', {
@@ -38,15 +38,17 @@ export default function SignIn() {
                 })
             });
             const result = await res.json();
-            if (res.ok) {
-                setServerMessage({ type: "success", text: result.message || "Signed in successful!" });
-                setTimeout(() => {
-                    navigate('/HomePage');
-                }, 2000);
+
+            if (res.ok && result.token) {
+                signIn(result.token);
             } else {
-                setServerMessage({ type: "error", text: result.error || "Unsuccessfully registered." });
+                setServerMessage({
+                    type: "error",
+                    text: result.message || result.error || "Sign-in failed. Please check your email and password."
+                });
             }
-        } catch {
+        } catch (error) {
+            console.error("Fetch error:", error); // Thêm console.error để debug dễ hơn
             setServerMessage({ type: "error", text: "Could not connect to the server. Please try again later." })
         }
     };
@@ -62,18 +64,15 @@ export default function SignIn() {
                         </h1>
                     </div>
                 </div>
-                {/* Sửa lại padding py-38 thành py-16 */}
                 <div className="w-full md:w-1/3 flex items-start justify-center p-4 py-16">
-                    <div className="w-full max-w-md mx-auto p-8 border rounded-lg shadow-lg">
+                    <div className="w-full max-w-md mx-auto p-8 ">
                         <h2 className="text-2xl font-bold text-center">Sign In to VIETLANCER</h2>
                         <form onSubmit={handleSubmit(onSubmit)} className='mt-8 space-y-6'>
-
-                            {/* Cập nhật JSX để hiển thị thông báo động */}
                             {serverMsg && (
                                 <div
                                     className={`p-3 text-sm rounded-lg ${serverMsg.type === 'success'
-                                            ? 'text-green-700 bg-green-100'
-                                            : 'text-red-700 bg-red-100'
+                                        ? 'text-green-700 bg-green-100'
+                                        : 'text-red-700 bg-red-100'
                                         }`}
                                     role="alert"
                                 >
