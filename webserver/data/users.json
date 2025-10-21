@@ -1,44 +1,8 @@
 [
   {
-    "name": "Nguyễn Hữu Thắng",
-    "email": "thangbestblitz@gmail.com",
-    "password": "Kho@0104",
-    "role": "freelancer"
-  },
-  {
-    "name": "Nguyễn Hữu Thắng",
-    "email": "nhthang205@gmail.com",
-    "password": "Kho@0104",
-    "role": "freelancer"
-  },
-  {
-    "name": "Nguyễn Hữu Thắng",
-    "email": "abc@domain.com",
-    "password": "Kho@0104",
-    "role": "freelancer"
-  },
-  {
-    "name": "Nguyễn Hữu Thắng",
-    "email": "abcd@domain.com",
-    "password": "Kho@0104",
-    "role": "freelancer"
-  },
-  {
-    "name": "Nguyễn Hữu Thắng",
-    "email": "abc@domai.com",
-    "password": "Kho@0104",
-    "role": "client"
-  },
-  {
-    "name": "Nguyễn Hữu Thắng",
-    "email": "abcde@domai.com",
-    "password": "Kho@0104",
-    "role": "client"
-  },
-  {
-    "name": "Nguyễn Hữu Thắng",
-    "email": "nguyenhthang1234@gmail.com",
-    "password": "Kho@0104",
+    "name": "Your Name",
+    "email": "youremail@email.com",
+    "password": "p@ssW0rd",
     "role": "moderator"
   }
 ]
