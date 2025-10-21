@@ -1,5 +1,6 @@
 import express from 'express';
 import fs from 'fs';
+import jwt from 'jsonwebtoken'; 
 
 const router = express.Router();
 
@@ -15,17 +16,24 @@ router.post('/signin', (req, res) => {
             }
         }
         const user = users.find(u => u.email === email && u.password === password);
+        
         if (user) {
+            const payload = {
+                email: user.email,
+                role: user.role,
+                name: user.name
+            };
+            const secretKey = process.env.JWT_SECRET;
+            const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
             return res.status(200).json({
                 message: 'Successfully signed in.',
-                role: user.role,
-                email: user.email,
-                name: user.name
+                token: token
             });
+
         } else {
             return res.status(401).json({ error: 'Invalid email or password.' });
         }
-    } catch (error) {
+    } catch {
         return res.status(500).json({ error: 'Failed to connect to the server.' });
     }
 });

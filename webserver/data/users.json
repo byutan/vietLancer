@@ -16,5 +16,29 @@
     "email": "abc@domain.com",
     "password": "Kho@0104",
     "role": "freelancer"
+  },
+  {
+    "name": "Nguyễn Hữu Thắng",
+    "email": "abcd@domain.com",
+    "password": "Kho@0104",
+    "role": "freelancer"
+  },
+  {
+    "name": "Nguyễn Hữu Thắng",
+    "email": "abc@domai.com",
+    "password": "Kho@0104",
+    "role": "client"
+  },
+  {
+    "name": "Nguyễn Hữu Thắng",
+    "email": "abcde@domai.com",
+    "password": "Kho@0104",
+    "role": "client"
+  },
+  {
+    "name": "Nguyễn Hữu Thắng",
+    "email": "nguyenhthang1234@gmail.com",
+    "password": "Kho@0104",
+    "role": "moderator"
   }
 ]

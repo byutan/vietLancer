@@ -1,5 +1,6 @@
 import express from 'express';
 import fs from 'fs';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -20,10 +21,16 @@ router.post('/signup', (req, res) => {
         }
         users.push({ name, email, password, role });
         fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
-        res.status(200).json({
-            message: 'Successfully registered.',
+        const payload = {
+            email: email,
             role: role,
             name: name
+        };
+        const secretKey = process.env.JWT_SECRET;
+        const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+        return res.status(201).json({ 
+            message: 'Successfully registered.',
+            token: token 
         });
     } catch {
         return res.status(500).json({ error: 'Failed to connect to the server.' });
