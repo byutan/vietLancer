@@ -47,8 +47,7 @@ export default function SignIn() {
                     text: result.message || result.error || "Sign-in failed. Please check your email and password."
                 });
             }
-        } catch (error) {
-            console.error("Fetch error:", error); // Thêm console.error để debug dễ hơn
+        } catch {
             setServerMessage({ type: "error", text: "Could not connect to the server. Please try again later." })
         }
     };

@@ -7,6 +7,7 @@ import PMIcon from '../Public/project_management.svg'
 import DevOpsIcon from '../Public/dev_ops.svg'
 import SecurityIcon from '../Public/security.svg'
 import Footer from '../Components/Footer'
+import AuthContext from '../ContextAPI/AuthContext'
 
 export default function HomePage() {
     const jobCategories = [
@@ -59,7 +60,7 @@ export default function HomePage() {
                                 {category.icon && (
                                     <img
                                         src={category.icon}
-                                        _ alt={`${category.name} icon`}
+                                        alt={`${category.name} icon`}
                                         className="w-8 h-8"
                                     />
                                 )}

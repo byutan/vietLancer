@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // 1. Import hook điều hướng
+import { useNavigate } from 'react-router-dom'; 
 import AuthContext from './AuthContext';
+
+function decodeJwtPayload(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const binaryString = atob(base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '='));
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    const jsonPayload = new TextDecoder('utf-8').decode(bytes);
+    return JSON.parse(jsonPayload);
+}
 
 export default function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
@@ -10,8 +22,8 @@ export default function AuthProvider({ children }) {
         const token = localStorage.getItem("token");
         if (token) {
             try {
-                const payload = JSON.parse(atob(token.split(".")[1]));
-                setUser({ role: payload.role });
+                const payload = decodeJwtPayload(token); 
+                setUser( payload );
             } catch {
                 localStorage.removeItem("token");
             }
@@ -21,8 +33,8 @@ export default function AuthProvider({ children }) {
     const signIn = (token) => {
         try {
             localStorage.setItem("token", token);
-            const payload = JSON.parse(atob(token.split(".")[1]));
-            setUser({ role: payload.role });
+            const payload = decodeJwtPayload(token); 
+            setUser( payload );
             navigate('/HomePage');
         } catch {
             localStorage.removeItem("token");

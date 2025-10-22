@@ -20,7 +20,7 @@ router.post('/signup', (req, res) => {
             return res.status(400).json({ error: 'Email has already been registered.' });
         }
         users.push({ name, email, password, role });
-        fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
+        fs.writeFileSync(usersFile, JSON.stringify(users, null, 2), { encoding: 'utf8' });
         const payload = {
             email: email,
             role: role,

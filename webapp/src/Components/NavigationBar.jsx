@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import { useContext, useState, useRef, useEffect } from 'react';
-import AuthContext from '../ContextAPI/AuthContext';
+import AuthContext from '../ContextAPI/AuthContext'
 import ProfileIcon from '../Public/profile_icon.svg'
+// eslint-disable-next-line no-unused-vars
+import { m } from "framer-motion";
 
 const DropdownArrow = () => (
   <svg
@@ -52,6 +54,19 @@ export default function NavBar() {
       </Link>
 
       <div className="flex items-center space-x-6 mr-10">
+        {user && (
+          <m.div
+            initial={{ opacity: 0, x: -40 }}   
+            animate={{ opacity: 1, x: 0 }}     
+            transition={{
+              duration: 0.7,                   
+              ease: "easeOut"
+            }}
+            className="font-lora text-gray-700"
+          >
+            Welcome back, {user.name}
+          </m.div>
+        )}
         <button className={buttonStyle}>About us</button>
         {!user && (
           <Link to="/SignInPage">
