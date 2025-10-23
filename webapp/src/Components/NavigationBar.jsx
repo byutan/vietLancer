@@ -1,9 +1,17 @@
 import { Link } from 'react-router-dom';
 import { useContext, useState, useRef, useEffect } from 'react';
-import AuthContext from '../ContextAPI/AuthContext'
-import ProfileIcon from '../Public/profile_icon.svg'
+import AuthContext from '../ContextAPI/AuthContext';
+import ProfileIcon from '../Public/profile_icon.svg';
+import WebDevIcon from '../Public/web_dev.svg';
+import MobileDevIcon from '../Public/mobile_dev.svg';
+import EmbeddedDevIcon from '../Public/embedded_dev.svg';
+import QADevIcon from '../Public/qa.svg';
+import UIUXIcon from '../Public/ui_ux.png';
+import PMIcon from '../Public/project_management.svg';
+import DevOpsIcon from '../Public/dev_ops.svg';
+import SecurityIcon from '../Public/security.svg';
 // eslint-disable-next-line no-unused-vars
-import { m } from "framer-motion";
+import { m } from 'framer-motion';
 
 const DropdownArrow = () => (
   <svg
@@ -23,6 +31,17 @@ const DropdownArrow = () => (
 );
 
 export default function NavBar() {
+  const jobCategories = [
+    { name: 'Web development', icon: WebDevIcon },
+    { name: 'Mobile development', icon: MobileDevIcon },
+    { name: 'Embedded Engineering', icon: EmbeddedDevIcon },
+    { name: 'UI/UX Design', icon: UIUXIcon },
+    { name: 'Quality Assurance', icon: QADevIcon },
+    { name: 'Project Management', icon: PMIcon },
+    { name: 'DevOps Engineering', icon: DevOpsIcon },
+    { name: 'Digital Security', icon: SecurityIcon },
+  ];
+
   const { user, signOut } = useContext(AuthContext);
   const [openMenu, setOpenMenu] = useState(false);
   const menuRef = useRef();
@@ -37,9 +56,17 @@ export default function NavBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (user) console.log("ĐÂY LÀ USER:", user);
+  }, [user]);
+
   const handleSignOut = () => {
     signOut();
     setOpenMenu(false);
+  };
+
+  const createSlug = (name) => {
+    return name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-');
   };
 
   const buttonStyle =
@@ -52,20 +79,19 @@ export default function NavBar() {
           VIETLANCER
         </div>
       </Link>
-
       <div className="flex items-center space-x-6 mr-10">
         {user && (
-          <m.div
-            initial={{ opacity: 0, x: -40 }}   
-            animate={{ opacity: 1, x: 0 }}     
+          <div
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{
-              duration: 0.7,                   
-              ease: "easeOut"
+              duration: 0.7,
+              ease: 'easeOut',
             }}
             className="font-lora text-gray-700"
           >
             Welcome back, {user.name}
-          </m.div>
+          </div>
         )}
         <button className={buttonStyle}>About us</button>
         {!user && (
@@ -75,9 +101,32 @@ export default function NavBar() {
         )}
         {user && (
           <>
-            <button className={`${buttonStyle} flex items-center group`}>
-              Browse Job <DropdownArrow />
-            </button>
+            <div className="relative group">
+              <Link to='/JobPage'>
+                <button className={`${buttonStyle} flex items-center`}>
+                  Browse Job <DropdownArrow />
+                </button>
+              </Link>
+
+              <div
+                className={`absolute left-0 w-64 bg-white rounded-md shadow-lg border py-1 z-20 transform transition-all duration-300 ease-in-out origin-top opacity-0 -translate-y-2 scale-95 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 group-hover:pointer-events-auto`}
+              >
+                {jobCategories.map((category) => (
+                  <Link
+                    key={category.name}
+                    to={`/jobs/${createSlug(category.name)}`}
+                    className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
+                  >
+                    <img
+                      src={category.icon}
+                      alt={`${category.name} icon`}
+                      className="w-5 h-5 mr-3"
+                    />
+                    <span>{category.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
             <button className={`${buttonStyle} flex items-center group`}>
               Hire Freelancer <DropdownArrow />
             </button>
@@ -94,9 +143,12 @@ export default function NavBar() {
                   className="w-8 h-8 rounded-full cursor-pointer transition-transform duration-200 hover:scale-105"
                 />
               </button>
-
               <div
-                className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border py-1 z-20 transform transition-all duration-300 ease-in-out origin-top ${openMenu ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95 pointer-events-none'}`}>
+                className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border py-1 z-20 transform transition-all duration-300 ease-in-out origin-top ${openMenu
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 -translate-y-2 scale-95 pointer-events-none'
+                  }`}
+              >
                 <Link
                   to="/ProfilePage"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -104,6 +156,9 @@ export default function NavBar() {
                 >
                   Profile
                 </Link>
+                <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  My Project
+                </button>
                 <button
                   onClick={handleSignOut}
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
