@@ -56,9 +56,7 @@ export default function NavBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    if (user) console.log("ĐÂY LÀ USER:", user);
-  }, [user]);
+  useEffect(() => { }, [user]);
 
   const handleSignOut = () => {
     signOut();
@@ -133,6 +131,11 @@ export default function NavBar() {
             {user.role === 'moderator' && (
               <Link to="/ApproveRequest">
                 <button className={buttonStyle}>Approval Request</button>
+              </Link>
+            )}
+            {user && ((user.role === 'client' && user.email_verify === 'verified') || user.role === 'moderator') && (
+              <Link to="/ProjectPosting">
+                <button className={buttonStyle}>Post Project</button>
               </Link>
             )}
             <div className="relative" ref={menuRef}>

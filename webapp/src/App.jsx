@@ -7,6 +7,7 @@ import JobPage from './Page/JobPage';
 import ApproveRequest from "./Page/ApproveRequest";
 import AuthProvider from "./ContextAPI/AuthProvider";
 import NavigationBar from './Components/NavigationBar';
+import ProjectPosting from './Page/ProjectPosting';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/ProfilePage" element={<ProfilePage />} />
           <Route path="/JobPage" element={<JobPage />} />
           <Route path="/ApproveRequest" element={<ApproveRequest />} />
+          <Route path="/ProjectPosting" element={<ProjectPosting />} />
         </Routes>
       </AuthProvider>
     </Router>

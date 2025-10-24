@@ -1,6 +1,7 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../ContextAPI/AuthContext';
+import Footer from "../Components/Footer";
 
 const ProjectPosting = () => {
     const navigate = useNavigate();
@@ -12,9 +13,8 @@ const ProjectPosting = () => {
         title: '',
         description: '',
         budget: '',
-        duration: '',
         paymentMethod: '',
-        workFormat: '',
+        workForm: '',
         category: '',
         skills: []
     });
@@ -29,17 +29,14 @@ const ProjectPosting = () => {
 
         const checkAccess = async () => {
             if (!user) {
-                alert('Vui lòng đăng nhập để truy cập trang này');
                 navigate('/SignInPage');
                 return;
             }
-            
+
             if (user.role !== 'client') {
-                alert('Chỉ Khách hàng mới có quyền đăng tin dự án');
                 navigate('/HomePage');
                 return;
             }
-            
             setIsCheckingAccess(false);
         };
 
@@ -48,45 +45,23 @@ const ProjectPosting = () => {
 
     if (isCheckingAccess) {
         return (
-            <div style={{ 
-                padding: '50px', 
-                textAlign: 'center',
-                minHeight: '100vh',
-                backgroundColor: '#f8f9fa',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column'
-            }}>
-                <div style={{ fontSize: '2rem', marginBottom: '20px' }}>⏳</div>
-                <p style={{ color: '#7f8c8d', fontSize: '1.2rem' }}>Đang kiểm tra quyền truy cập...</p>
+            <div className="flex justify-center items-center min-h-screen bg-gray-100 text-center">
+                <div className="text-3xl mb-5">⏳</div>
+                <p className="text-gray-600 text-lg">Checking access...</p>
             </div>
         );
     }
 
     if (!user || user.role !== 'client') {
         return (
-            <div style={{ 
-                padding: '50px', 
-                textAlign: 'center',
-                minHeight: '100vh',
-                backgroundColor: '#f8f9fa'
-            }}>
-                <h1 style={{ color: '#e74c3c', fontSize: '2rem', marginBottom: '20px' }}> Truy cập bị từ chối</h1>
-                <p style={{ color: '#7f8c8d', fontSize: '1.2rem' }}>Chỉ Khách hàng mới có quyền đăng tin dự án</p>
-                <button 
+            <div className="flex justify-center items-center min-h-screen bg-gray-100 text-center">
+                <h1 className="text-red-500 text-3xl mb-5">Access Denied</h1>
+                <p className="text-gray-600 text-lg">Only clients can post projects</p>
+                <button
                     onClick={() => navigate('/HomePage')}
-                    style={{
-                        marginTop: '20px',
-                        padding: '10px 20px',
-                        backgroundColor: '#3498db',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer'
-                    }}
+                    className="mt-5 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-400"
                 >
-                    Quay về trang chủ
+                    Go back to homepage
                 </button>
             </div>
         );
@@ -109,8 +84,7 @@ const ProjectPosting = () => {
             ...prev,
             [name]: value
         }));
-        
-        // Clear error khi user bắt đầu nhập
+
         if (errors[name]) {
             setErrors(prev => ({
                 ...prev,
@@ -119,7 +93,6 @@ const ProjectPosting = () => {
         }
     };
 
-    // ✅ Xử lý thêm skill dạng tag
     const handleAddSkill = (skill) => {
         const trimmedSkill = skill.trim();
         if (trimmedSkill && !projectData.skills.includes(trimmedSkill)) {
@@ -131,7 +104,6 @@ const ProjectPosting = () => {
         setSkillInput('');
     };
 
-    // ✅ Xử lý nhập từ bàn phím
     const handleSkillInputKeyDown = (e) => {
         if (e.key === 'Enter' || e.key === ',') {
             e.preventDefault();
@@ -139,7 +111,6 @@ const ProjectPosting = () => {
         }
     };
 
-    // ✅ Xóa skill
     const handleRemoveSkill = (skillToRemove) => {
         setProjectData(prev => ({
             ...prev,
@@ -149,43 +120,37 @@ const ProjectPosting = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        
-        if (!projectData.title.trim()) newErrors.title = 'Tên dự án là bắt buộc';
-        else if (projectData.title.trim().length < 5) newErrors.title = 'Tên dự án phải có ít nhất 5 ký tự';
-        
-        if (!projectData.description.trim()) newErrors.description = 'Mô tả dự án là bắt buộc';
-        else if (projectData.description.trim().length < 20) newErrors.description = 'Mô tả phải có ít nhất 20 ký tự';
-        
-        if (!projectData.budget || projectData.budget <= 0) newErrors.budget = 'Ngân sách phải lớn hơn 0';
-        else if (projectData.budget > 100000000000) newErrors.budget = 'Ngân sách không được vượt quá 100 tỷ VND';
-        
-        if (!projectData.duration) newErrors.duration = 'Thời gian thực hiện là bắt buộc';
-        else if (projectData.duration < 1) newErrors.duration = 'Thời gian phải ít nhất 1 ngày';
-        else if (projectData.duration > 365) newErrors.duration = 'Thời gian không được vượt quá 365 ngày';
-        
-        if (!projectData.category) newErrors.category = 'Danh mục là bắt buộc';
-        
-        // ✅ Validation cho phương thức thanh toán
-        if (!projectData.paymentMethod) newErrors.paymentMethod = 'Phương thức thanh toán là bắt buộc';
-        
-        // ✅ Validation cho hình thức làm việc
-        if (!projectData.workFormat) newErrors.workFormat = 'Hình thức làm việc là bắt buộc';
-        
+
+        if (!projectData.title.trim()) newErrors.title = 'Title is required';
+        else if (projectData.title.trim().length < 5) newErrors.title = 'Title must be at least 5 characters long';
+
+        if (!projectData.description.trim()) newErrors.description = 'Description is required';
+        else if (projectData.description.trim().length < 20) newErrors.description = 'Description must be at least 20 characters long';
+
+        if (!projectData.budget || projectData.budget <= 0) newErrors.budget = 'Budget must be greater than 0';
+        else if (projectData.budget > 100000000000) newErrors.budget = 'Budget cannot exceed 100 billion VND';
+
+        if (!projectData.category) newErrors.category = 'Category is required';
+
+        if (!projectData.paymentMethod) newErrors.paymentMethod = 'Payment method is required';
+
+        if (!projectData.workForm) newErrors.workForm = 'Work form is required';
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
-            alert('Vui lòng kiểm tra lại thông tin đã nhập!');
+            alert('Please check the entered information!');
             return;
         }
 
         const isBackendRunning = await checkBackendConnection();
         if (!isBackendRunning) {
-            alert(' Backend server chưa chạy!\n\nHãy chạy lệnh trong terminal:\ncd server\nnpm install\nnpm run dev');
+            alert('Backend server is not running!\n\nRun the following commands in the terminal:\ncd server\nnpm install\nnpm run dev');
             return;
         }
 
@@ -200,7 +165,7 @@ const ProjectPosting = () => {
                 body: JSON.stringify({
                     ...projectData,
                     clientId: user.id || 'user123',
-                    clientName: user.name || 'Khách hàng',
+                    clientName: user.name || 'Client',
                     clientEmail: user.email || 'client@example.com',
                     status: 'pending',
                     createdAt: new Date().toISOString()
@@ -210,434 +175,214 @@ const ProjectPosting = () => {
             const result = await response.json();
 
             if (result.success) {
-                alert(' Đăng tin dự án thành công!\n\nTin đang chờ quản trị viên duyệt.');
-                // Reset form
+                alert('Project posted successfully!\n\nIt is pending admin approval.');
                 setProjectData({
                     title: '',
                     description: '',
                     budget: '',
-                    duration: '',
                     paymentMethod: '',
-                    workFormat: '',
+                    workForm: '',
                     category: '',
                     skills: []
                 });
                 setSkillInput('');
                 navigate('/HomePage');
             } else {
-                alert(` Lỗi từ server: ${result.message || 'Không thể đăng tin dự án'}`);
+                alert(`Server error: ${result.message || 'Unable to post project'}`);
             }
         } catch (error) {
             console.error('Submit error:', error);
-            alert(' Có lỗi xảy ra khi đăng tin dự án: ' + error.message);
+            alert('An error occurred while posting the project: ' + error.message);
         } finally {
             setIsSubmitting(false);
         }
     };
-
-    // ✅ Danh sách phương thức thanh toán
     const paymentMethods = [
-        { value: 'bank_transfer', label: 'Chuyển khoản ngân hàng' },
-        { value: 'cash', label: 'Tiền mặt' },
+        { value: 'per_hour', label: 'Per hour' },
+        { value: 'per_day', label: 'Per day' },
+        { value: 'per_month', label: 'Per month' },
+        { value: 'per_project', label: 'Per project' },
     ];
-
-    // ✅ Danh sách hình thức làm việc
-    const workFormats = [
+    const workForms = [
         { value: 'Online', label: 'Online' },
         { value: 'Offline', label: 'Offline' },
-        { value: 'Both', label: 'Cả hai' },
-        { value: 'Other', label: 'Khác' }
+        { value: 'Both', label: 'Both' },
+        { value: 'Other', label: 'Other' }
     ];
-
+    const labelStyle = "block text-base font-semibold text-gray-800";
+    const inputStyle = "p-3 border border-gray-300 rounded-lg w-full text-base focus:ring-2 focus:ring-black focus:border-black transition";
+    const errorStyle = "text-red-500 text-sm mt-1";
+    const helperStyle = "text-gray-500 italic text-sm mt-1 block";
     return (
-        <div style={styles.container}>
-            <div style={styles.header}>
-                <h1 style={styles.title}>ĐĂNG TIN DỰ ÁN MỚI</h1>
-                <p style={styles.subtitle}>Điền đầy đủ thông tin để tìm freelancer phù hợp</p>
-                <div style={styles.userInfo}>
-                    <small>Đăng tin với tư cách: <strong>{user.name}</strong> (Khách hàng)</small>
-                </div>
-            </div>
-            
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <div style={styles.formGroup}>
-                    <label style={styles.label}>Tên dự án </label>
-                    <input
-                        type="text"
-                        name="title"
-                        value={projectData.title}
-                        onChange={handleChange}
-                        placeholder="Nhập tên dự án"
-                        style={{...styles.input, ...(errors.title ? styles.error : {})}}
-                    />
-                    {errors.title && <span style={styles.errorMessage}>{errors.title}</span>}
+        <div className="font-poppins min-h-screen bg-gray-50 text-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto bg-white p-10 sm:p-12 rounded-lg shadow-lg">
+                <div className="text-left mb-10 pb-6 border-b border-gray-200">
+                    <h1 className="text-4xl font-bold text-black mb-2">Post Project</h1>
+                    <p className="text-gray-600 text-lg">Please fill out the form below.</p>
                 </div>
 
-                <div style={styles.formGroup}>
-                    <label style={styles.label}>Mô tả dự án </label>
-                    <textarea
-                        name="description"
-                        value={projectData.description}
-                        onChange={handleChange}
-                        placeholder="Mô tả chi tiết về dự án, mục tiêu, và yêu cầu cụ thể..."
-                        rows="5"
-                        style={{...styles.textarea, ...(errors.description ? styles.error : {})}}
-                    />
-                    {errors.description && <span style={styles.errorMessage}>{errors.description}</span>}
-                    <small style={styles.helpText}>Ít nhất 20 ký tự</small>
-                </div>
-
-                <div style={styles.formRow}>
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Ngân sách (VND) </label>
+                <form onSubmit={handleSubmit} className="space-y-8">
+                    <div>
+                        <label htmlFor="title" className={labelStyle}>Project Title</label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value={projectData.title}
+                            onChange={handleChange}
+                            placeholder="Enter project title"
+                            className={`mt-2 ${inputStyle} ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
+                        />
+                        {errors.title && <span className={errorStyle}>{errors.title}</span>}
+                    </div>
+                    <div>
+                        <label htmlFor="description" className={labelStyle}>Project Description</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            value={projectData.description}
+                            onChange={handleChange}
+                            placeholder="Enter project details, goals, and specific requirements..."
+                            rows="5"
+                            className={`mt-2 ${inputStyle} ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
+                        />
+                        {errors.description && <span className={errorStyle}>{errors.description}</span>}
+                        <small className={helperStyle}>At least 20 characters</small>
+                    </div>
+                    <div>
+                        <label htmlFor="budget" className={labelStyle}>Budget (VND)</label>
                         <input
                             type="number"
+                            id="budget"
                             name="budget"
                             value={projectData.budget}
                             onChange={handleChange}
-                            placeholder="Nhập ngân sách"
+                            placeholder="Enter budget"
                             min="1000000"
-                            max="1000000000"
-                            style={{...styles.input, ...(errors.budget ? styles.error : {})}}
+                            max="1000000000" 
+                            className={`mt-2 ${inputStyle} ${errors.budget ? 'border-red-500' : 'border-gray-300'}`}
                         />
-                        {errors.budget && <span style={styles.errorMessage}>{errors.budget}</span>}
-                        <small style={styles.helpText}>Tối thiểu 1 triệu VND</small>
+                        {errors.budget && <span className={errorStyle}>{errors.budget}</span>}
+                        <small className={helperStyle}>Minimum 1 million VND</small>
                     </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label htmlFor="paymentMethod" className={labelStyle}>Payment Method</label>
+                            <select
+                                id="paymentMethod"
+                                name="paymentMethod"
+                                value={projectData.paymentMethod}
+                                onChange={handleChange}
+                                className={`mt-2 ${inputStyle} ${errors.paymentMethod ? 'border-red-500' : 'border-gray-300'}`}
+                            >
+                                <option value="">Select payment method</option>
+                                {paymentMethods.map(method => (
+                                    <option key={method.value} value={method.value}>
+                                        {method.label}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.paymentMethod && <span className={errorStyle}>{errors.paymentMethod}</span>}
+                        </div>
 
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Thời gian (ngày) </label>
-                        <input
-                            type="number"
-                            name="duration"
-                            value={projectData.duration}
-                            onChange={handleChange}
-                            placeholder="Số ngày thực hiện"
-                            min="1"
-                            max="365"
-                            style={{...styles.input, ...(errors.duration ? styles.error : {})}}
-                        />
-                        {errors.duration && <span style={styles.errorMessage}>{errors.duration}</span>}
-                        <small style={styles.helpText}>Tối đa 1 năm</small>
+                        <div>
+                            <label htmlFor="workForm" className={labelStyle}>Work Form</label>
+                            <select
+                                id="workForm"
+                                name="workForm"
+                                value={projectData.workForm}
+                                onChange={handleChange}
+                                className={`mt-2 ${inputStyle} ${errors.workForm ? 'border-red-500' : 'border-gray-300'}`}
+                            >
+                                <option value="">Select work form</option>
+                                {workForms.map(format => (
+                                    <option key={format.value} value={format.value}>
+                                        {format.label}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.workForm && <span className={errorStyle}>{errors.workForm}</span>}
+                        </div>
                     </div>
-                </div>
-
-                {/* ✅ Hàng cho phương thức thanh toán và hình thức làm việc */}
-                <div style={styles.formRow}>
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Phương thức thanh toán </label>
-                        <select 
-                            name="paymentMethod" 
-                            value={projectData.paymentMethod} 
+                    <div>
+                        <label htmlFor="category" className={labelStyle}>Category</label>
+                        <select
+                            id="category"
+                            name="category"
+                            value={projectData.category}
                             onChange={handleChange}
-                            style={{...styles.select, ...(errors.paymentMethod ? styles.error : {})}}
+                            className={`mt-2 ${inputStyle} ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
                         >
-                            <option value="">Chọn phương thức thanh toán</option>
-                            {paymentMethods.map(method => (
-                                <option key={method.value} value={method.value}>
-                                    {method.label}
-                                </option>
-                            ))}
+                            <option value="">Select category</option>
+                            <option value="web development">Web development</option>
+                            <option value="mobile development">Mobile development</option>
+                            <option value="embedded engineer">Embedded Engineering</option>
+                            <option value="ui/ux design">UI/UX design</option>
+                            <option value="quality asssurance">Quality Assurance</option>
+                            <option value="project management">Project Management</option>
+                            <option value="devops">DevOps Engineering</option>
+                            <option value="digital security">Digital Security</option>
                         </select>
-                        {errors.paymentMethod && <span style={styles.errorMessage}>{errors.paymentMethod}</span>}
+                        {errors.category && <span className={errorStyle}>{errors.category}</span>}
                     </div>
-
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Hình thức làm việc </label>
-                        <select 
-                            name="workFormat" 
-                            value={projectData.workFormat} 
-                            onChange={handleChange}
-                            style={{...styles.select, ...(errors.workFormat ? styles.error : {})}}
-                        >
-                            <option value="">Chọn hình thức làm việc</option>
-                            {workFormats.map(format => (
-                                <option key={format.value} value={format.value}>
-                                    {format.label}
-                                </option>
+                    <div>
+                        <label htmlFor="skills" className={labelStyle}>Required Skills</label>
+                        <div className="flex gap-3 mt-2">
+                            <input
+                                type="text"
+                                id="skills"
+                                value={skillInput}
+                                onChange={(e) => setSkillInput(e.target.value)}
+                                onKeyDown={handleSkillInputKeyDown}
+                                placeholder="Enter skill and press Add"
+                                className={inputStyle}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => handleAddSkill(skillInput)}
+                                className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                            >
+                                Add
+                            </button>
+                        </div>
+                        <div className="flex flex-wrap gap-3 mt-4">
+                            {projectData.skills.map((skill, index) => (
+                                <div key={index} className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-gray-700 font-medium">
+                                    <span>{skill}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveSkill(skill)}
+                                        className="text-gray-500 hover:text-red-500 font-bold text-lg"
+                                        title={`Remove ${skill}`}
+                                    >
+                                    </button>
+                                </div>
                             ))}
-                        </select>
-                        {errors.workFormat && <span style={styles.errorMessage}>{errors.workFormat}</span>}
+                        </div>
                     </div>
-                </div>
-
-                <div style={styles.formGroup}>
-                    <label style={styles.label}>Danh mục </label>
-                    <select 
-                        name="category" 
-                        value={projectData.category} 
-                        onChange={handleChange}
-                        style={{...styles.select, ...(errors.category ? styles.error : {})}}
-                    >
-                        <option value="">Chọn danh mục</option>
-                        <option value="web development">Phát triển Web</option>
-                        <option value="Mobile development">Ứng dụng di động</option>
-                        <option value="Embedded Engineering">Lập trình nhúng</option>
-                        <option value="UI/UX Design">Thiết kế UI/UX</option>
-                        <option value="Quality Assurance">Kỹ sư đảm bảo chất lượng</option>
-                        <option value="Project Management">Quản lý dự án</option>
-                        <option value="DevOps Engineering">Kỹ sư phát triển</option>
-                        <option value="Digital Security">Bảo vệ dữ liệu</option>
-                    </select>
-                    {errors.category && <span style={styles.errorMessage}>{errors.category}</span>}
-                </div>
-
-                {/* ✅ Phần kỹ năng dạng tags (đã bỏ phần kỹ năng phổ biến) */}
-                <div style={styles.formGroup}>
-                    <label style={styles.label}>Kỹ năng cần thiết </label>
-                    
-                    {/* Input để thêm skill mới */}
-                    <div style={styles.skillInputContainer}>
-                        <input
-                            type="text"
-                            value={skillInput}
-                            onChange={(e) => setSkillInput(e.target.value)}
-                            onKeyDown={handleSkillInputKeyDown}
-                            placeholder="Nhập kỹ năng"
-                            style={styles.input}
-                        />
-                        <button 
+                    <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 mt-10">
+                        <button
                             type="button"
-                            onClick={() => handleAddSkill(skillInput)}
-                            style={styles.addSkillButton}
+                            onClick={() => navigate('/HomePage')}
+                            className="px-6 py-3 bg-white text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                            disabled={isSubmitting}
                         >
-                            Thêm
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className={`px-6 py-3 rounded-lg font-semibold text-white transition-colors ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:bg-gray-800'
+                                }`}
+                        >
+                            {isSubmitting ? 'Processing...' : 'Post Project'}
                         </button>
                     </div>
-                    
-                    {/* Hiển thị tags đã thêm */}
-                    <div style={styles.tagsContainer}>
-                        {projectData.skills.map((skill, index) => (
-                            <div key={index} style={styles.tag}>
-                                <span>{skill}</span>
-                                <button 
-                                    type="button"
-                                    onClick={() => handleRemoveSkill(skill)}
-                                    style={styles.removeTagButton}
-                                >
-                                    ×
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-
-                    <small style={styles.helpText}>Nhập kỹ năng </small>
-                </div>
-
-                <div style={styles.formActions}>
-                    <button 
-                        type="button" 
-                        onClick={() => navigate('/HomePage')}
-                        style={styles.cancelButton}
-                        disabled={isSubmitting}
-                    >
-                        Hủy
-                    </button>
-                    <button 
-                        type="submit" 
-                        disabled={isSubmitting} 
-                        style={{
-                            ...styles.submitButton,
-                            ...(isSubmitting ? styles.disabledButton : {})
-                        }}
-                    >
-                        {isSubmitting ? (
-                            <>
-                                <span style={{marginRight: '8px'}}></span>
-                                Đang xử lý...
-                            </>
-                        ) : (
-                            <>
-                                <span style={{marginRight: '8px'}}></span>
-                                Đăng Tin Dự Án
-                            </>
-                        )}
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
+            <Footer/>
         </div>
     );
-};
-
-// Inline styles với style cho tags
-const styles = {
-    container: {
-        maxWidth: '800px',
-        margin: '0 auto',
-        padding: '30px 20px',
-        backgroundColor: '#ffffff',
-        borderRadius: '12px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-        minHeight: '100vh'
-    },
-    header: {
-        textAlign: 'center',
-        marginBottom: '40px',
-        borderBottom: '2px solid #f0f0f0',
-        paddingBottom: '20px',
-    },
-    title: {
-        color: '#2c3e50',
-        fontSize: '2.5rem',
-        marginBottom: '10px',
-        fontWeight: '700',
-    },
-    subtitle: {
-        color: '#7f8c8d',
-        fontSize: '1.2rem',
-        marginBottom: '10px',
-    },
-    userInfo: {
-        color: '#3498db',
-        fontSize: '0.9rem',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '25px',
-    },
-    formGroup: {
-        display: 'flex',
-        flexDirection: 'column',
-        flex: 1,
-    },
-    label: {
-        fontWeight: '600',
-        marginBottom: '8px',
-        color: '#34495e',
-        fontSize: '1rem',
-    },
-    input: {
-        padding: '12px 15px',
-        border: '2px solid #e1e8ed',
-        borderRadius: '8px',
-        fontSize: '16px',
-        transition: 'all 0.3s ease',
-        backgroundColor: '#fafbfc',
-    },
-    textarea: {
-        padding: '12px 15px',
-        border: '2px solid #e1e8ed',
-        borderRadius: '8px',
-        fontSize: '16px',
-        transition: 'all 0.3s ease',
-        backgroundColor: '#fafbfc',
-        fontFamily: 'inherit',
-        resize: 'vertical',
-    },
-    select: {
-        padding: '12px 15px',
-        border: '2px solid #e1e8ed',
-        borderRadius: '8px',
-        fontSize: '16px',
-        transition: 'all 0.3s ease',
-        backgroundColor: '#fafbfc',
-    },
-    // ✅ Styles cho phần tags
-    skillInputContainer: {
-        display: 'flex',
-        gap: '10px',
-        marginBottom: '10px',
-    },
-    addSkillButton: {
-        padding: '12px 20px',
-        backgroundColor: '#3498db',
-        color: 'white',
-        border: 'none',
-        borderRadius: '8px',
-        cursor: 'pointer',
-        fontWeight: '600',
-        minWidth: '80px',
-    },
-    tagsContainer: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '8px',
-        marginBottom: '10px',
-    },
-    tag: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '6px 12px',
-        backgroundColor: '#e3f2fd',
-        border: '1px solid #bbdefb',
-        borderRadius: '20px',
-        fontSize: '14px',
-        color: '#1976d2',
-    },
-    removeTagButton: {
-        background: 'none',
-        border: 'none',
-        color: '#f44336',
-        cursor: 'pointer',
-        fontSize: '16px',
-        fontWeight: 'bold',
-        padding: '0',
-        width: '20px',
-        height: '20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    error: {
-        borderColor: '#e74c3c',
-        backgroundColor: '#fdf2f2',
-    },
-    errorMessage: {
-        color: '#e74c3c',
-        fontSize: '0.875rem',
-        marginTop: '5px',
-        fontWeight: '500',
-    },
-    helpText: {
-        color: '#7f8c8d',
-        fontSize: '0.875rem',
-        marginTop: '5px',
-        fontStyle: 'italic',
-    },
-    formRow: {
-        display: 'flex',
-        gap: '20px',
-    },
-    formActions: {
-        display: 'flex',
-        gap: '15px',
-        justifyContent: 'flex-end',
-        marginTop: '30px',
-        paddingTop: '20px',
-        borderTop: '1px solid #724d4dd1',
-    },
-    submitButton: {
-        background: 'linear-gradient(135deg, #010c06ff, #0b0c0bff)',
-        color: 'white',
-        padding: '14px 35px',
-        border: 'none',
-        borderRadius: '8px',
-        fontSize: '1.1rem',
-        fontWeight: '600',
-        cursor: 'pointer',
-        transition: 'all 0.3s ease',
-        minWidth: '160px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    cancelButton: {
-        background: '#010e0fff',
-        color: 'white',
-        padding: '14px 30px',
-        border: 'none',
-        borderRadius: '8px',
-        fontSize: '1.1rem',
-        fontWeight: '600',
-        cursor: 'pointer',
-        transition: 'all 0.3s ease',
-    },
-    disabledButton: {
-        background: '#bdc3c7',
-        cursor: 'not-allowed',
-        opacity: 0.7,
-    },
 };
 
 export default ProjectPosting;

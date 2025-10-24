@@ -15,5 +15,23 @@
     "email_verify": "verified",
     "verificationCode": "137277",
     "verificationCodeExpires": 1761308325423
+  },
+  {
+    "name": "Nguyễn Hữu Thắng",
+    "email": "nguyenhthang1234@gmail.com",
+    "password": "Kho@0104",
+    "role": "client",
+    "phone": "",
+    "address": "",
+    "dob": "",
+    "avatar": "",
+    "email_verify": "verified",
+    "skills": {
+      "languages": [],
+      "education": [],
+      "experience": []
+    },
+    "verificationCode": "817317",
+    "verificationCodeExpires": 1761314034271
   }
 ]

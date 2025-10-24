@@ -1,0 +1,40 @@
+[
+  {
+    "id": "project_1761317613756",
+    "title": "Build a toy selling website",
+    "description": "The website mainly aims at kids and men with kids soul.",
+    "budget": 2499999,
+    "category": "web development",
+    "skills": [
+      "ReactJS",
+      "ExpressJS",
+      "MySQL"
+    ],
+    "paymentMethod": "per_project",
+    "workForm": "Online",
+    "status": "pending",
+    "clientName": "Nguyễn Hữu Thắng",
+    "clientEmail": "nguyenhthang1234@gmail.com",
+    "createdAt": "2025-10-24T14:53:33.756Z",
+    "updatedAt": "2025-10-24T14:53:33.756Z"
+  },
+  {
+    "id": "project_1761317338513",
+    "title": "Build a toy selling website",
+    "description": "The website mainly aims at kids and men with kids soul.",
+    "budget": 2500000,
+    "category": "web development",
+    "skills": [
+      "ReactJS",
+      "ExpressJS",
+      "MySQL"
+    ],
+    "paymentMethod": "per_hour",
+    "workForm": "Online",
+    "status": "pending",
+    "clientName": "Nguyễn Hữu Thắng",
+    "clientEmail": "nguyenhthang1234@gmail.com",
+    "createdAt": "2025-10-24T14:48:58.513Z",
+    "updatedAt": "2025-10-24T14:48:58.513Z"
+  }
+]

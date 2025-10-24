@@ -8,6 +8,7 @@ import signUpRouter from './api/signup.js'
 import signInRouter from './api/signin.js';
 import updateProfileRouter from './api/profile.js'
 import emailVerify from './api/emailverify.js'
+import projectPosting from './api/projectposting.js'
 
 const __fileName = fileURLToPath(import.meta.url);
 const __dirName = path.dirname(__fileName);
@@ -22,5 +23,6 @@ app.use('/api', signUpRouter);
 app.use('/api', signInRouter);
 app.use('/api', updateProfileRouter);
 app.use('/api', emailVerify);
+app.use('/api', projectPosting);
 
 export default app;
