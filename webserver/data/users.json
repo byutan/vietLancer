@@ -1,8 +1,16 @@
 [
   {
-    "name": "Your Name",
+    "name": "Adam Smith",
     "email": "youremail@email.com",
     "password": "p@ssW0rd",
-    "role": "moderator"
+    "role": "moderator",
+    "skills": {
+      "languages": [],
+      "education": [],
+      "experience": []
+    },
+    "dob": "",
+    "address": "",
+    "phone": ""
   }
 ]

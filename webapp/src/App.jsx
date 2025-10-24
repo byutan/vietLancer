@@ -13,7 +13,7 @@ function App() {
   return (
     <Router>
       <AuthProvider> 
-        <NavigationBar />
+        <NavigationBar/>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/HomePage" element={<HomePage />} />

@@ -1,6 +1,6 @@
 import express from 'express';
 import fs from 'fs';
-import jwt from 'jsonwebtoken'; 
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -16,20 +16,25 @@ router.post('/signin', (req, res) => {
             }
         }
         const user = users.find(u => u.email === email && u.password === password);
-        
+
         if (user) {
             const payload = {
                 email: user.email,
                 role: user.role,
-                name: user.name
+                name: user.name,
+                phone: user.phone,
+                address: user.address,
+                dob: user.dob,
+                avatar: user.avatar,
+                skills: user.skills || { languages: [], education: [], experience: [] },
             };
             const secretKey = process.env.JWT_SECRET;
             const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
             return res.status(200).json({
                 message: 'Successfully signed in.',
-                token: token
+                token: token,
+                user: user,
             });
-
         } else {
             return res.status(401).json({ error: 'Invalid email or password.' });
         }

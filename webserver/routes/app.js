@@ -6,6 +6,7 @@ import cors from 'cors'
 
 import signUpRouter from './api/signup.js'
 import signInRouter from './api/signin.js';
+import updateProfileRouter from './api/profile.js'
 
 const __fileName = fileURLToPath(import.meta.url);
 const __dirName = path.dirname(__fileName);
@@ -17,5 +18,6 @@ app.use(cors());
 
 app.use('/api', signUpRouter);
 app.use('/api', signInRouter);
+app.use('/api', updateProfileRouter);
 
 export default app;

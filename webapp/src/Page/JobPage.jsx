@@ -2,7 +2,6 @@ import Footer from "../Components/Footer";
 import SearchIcon from "../Public/search_icon.svg";
 
 export default function JobPage() {
-    // Dữ liệu cho các bộ lọc
     const jobCategories = [
         { name: "Web development" },
         { name: "Mobile development" },

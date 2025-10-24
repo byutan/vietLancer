@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react'; // Bỏ useEffect vì không cần nữa
 import { useNavigate } from 'react-router-dom'; 
 import AuthContext from './AuthContext';
 
@@ -13,28 +13,42 @@ function decodeJwtPayload(token) {
     const jsonPayload = new TextDecoder('utf-8').decode(bytes);
     return JSON.parse(jsonPayload);
 }
+const getInitialUser = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        return null;
+    }
+
+    try {
+        const payload = decodeJwtPayload(token);
+        if (payload.exp * 1000 < Date.now()) {
+            localStorage.removeItem("token"); 
+            return null;
+        }
+        
+        return payload; 
+    } catch {
+        localStorage.removeItem("token");
+        return null;
+    }
+};
 
 export default function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(getInitialUser); 
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            try {
-                const payload = decodeJwtPayload(token); 
-                setUser( payload );
-            } catch {
-                localStorage.removeItem("token");
-            }
-        }
-    }, []);
 
     const signIn = (token) => {
         try {
+            const payload = decodeJwtPayload(token);
+            if (payload.exp * 1000 < Date.now()) {
+                 localStorage.removeItem("token");
+                 setUser(null);
+                 alert("Token is expired."); 
+                 return; 
+            }
+
             localStorage.setItem("token", token);
-            const payload = decodeJwtPayload(token); 
-            setUser( payload );
+            setUser(payload);
             navigate('/HomePage');
         } catch {
             localStorage.removeItem("token");
@@ -45,11 +59,11 @@ export default function AuthProvider({ children }) {
     const signOut = () => {
         setUser(null);
         localStorage.removeItem("token");
-        navigate('/SignInPage');
+        navigate('/SignInPage', { replace: true });
     };
 
     return (
-        <AuthContext.Provider value={{ user, signIn, signOut, setUser }}>
+        <AuthContext.Provider value={{ user, setUser, signIn, signOut }}>
             {children}
         </AuthContext.Provider>
     );
