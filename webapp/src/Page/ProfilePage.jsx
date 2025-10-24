@@ -13,6 +13,7 @@ export default function ProfilePage() {
     const [showPassword, setShowPassword] = useState(false);
     const [avatarPreview, setAvatarPreview] = useState(null);
     const [fileName, setFileName] = useState("No file chosen");
+    const [isVerified, setIsVerified] = useState(false); 
     const [personalInfo, setPersonalInfo] = useState({
         fullname: '',
         email: '',
@@ -34,8 +35,13 @@ export default function ProfilePage() {
     const [educationErrors, setEducationErrors] = useState({});
     const [experienceErrors, setExperienceErrors] = useState({});
     useEffect(() => {
-        if (!user) navigate('/SignInPage');
+        if (!user) {
+            navigate('/SignInPage');
+        } else {
+            setIsVerified(true);
+        }
     }, [user, navigate]);
+
     useEffect(() => {
         if (user) {
             setPersonalInfo(prevInfo => ({
@@ -56,6 +62,9 @@ export default function ProfilePage() {
             setExperience(user.skills?.experience || []);
         }
     }, [user, avatarPreview]);
+     if (!isVerified) {
+        return null; 
+    }
     const handlePersonalInfoChange = (event) => {
         const { name, value } = event.target;
         setPersonalInfo(prevInfo => ({
