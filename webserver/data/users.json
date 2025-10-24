@@ -1,7 +1,7 @@
 [
   {
     "name": "Kiểm duyệt viên",
-    "email": "thang.nguyen2353120@hcmut.edu.vn",
+    "email": "youremail@email.com",
     "password": "p@ssW0rd",
     "role": "moderator",
     "skills": {
@@ -18,8 +18,8 @@
   },
   {
     "name": "Nguyễn Hữu Thắng",
-    "email": "nguyenhthang1234@gmail.com",
-    "password": "Kho@0104",
+    "email": "youremail@email.com",
+    "password": "p@ssW0rd",
     "role": "client",
     "phone": "",
     "address": "",
