@@ -52,6 +52,7 @@ router.put('/profile', (req, res) => {
             phone: personalInfo?.phone || users[index].phone,
             address: personalInfo?.address || users[index].address,
             dob: personalInfo?.dob || users[index].dob,
+            email_verify: personalInfo?.email_verify || users[index].email_verify,
             avatar: personalInfo?.avatar || users[index].avatar,
             skills: mergedSkills,
         };
@@ -65,6 +66,7 @@ router.put('/profile', (req, res) => {
                 name: updatedUser.name,
                 phone: updatedUser.phone,
                 address: updatedUser.address,
+                email_verify: updatedUser.email_verify,
                 dob: updatedUser.dob,
                 avatar: updatedUser.avatar,
                 skills: updatedUser.skills,

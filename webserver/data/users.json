@@ -1,7 +1,7 @@
 [
   {
-    "name": "Adam Smith",
-    "email": "youremail@email.com",
+    "name": "Kiểm duyệt viên",
+    "email": "thang.nguyen2353120@hcmut.edu.vn",
     "password": "p@ssW0rd",
     "role": "moderator",
     "skills": {
@@ -11,6 +11,9 @@
     },
     "dob": "",
     "address": "",
-    "phone": ""
+    "phone": "",
+    "email_verify": "verified",
+    "verificationCode": "137277",
+    "verificationCodeExpires": 1761308325423
   }
 ]

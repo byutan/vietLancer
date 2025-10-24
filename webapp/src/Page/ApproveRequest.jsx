@@ -20,13 +20,9 @@ export default function ApproveRequest() {
     if (!isVerified) {
         return null; 
     }
-
-    // Nếu đã xác minh, render nội dung trang
     return (
         <div className="font-poppins">
             <h2>Approve Requests (Moderator Only)</h2>
-            <p>Welcome, {user.name}</p> {/* Bỏ dấu ? vì 'user' chắc chắn tồn tại ở đây */}
-            {/* ... Nội dung chính của trang ... */}
             <Footer/>
         </div>
     )

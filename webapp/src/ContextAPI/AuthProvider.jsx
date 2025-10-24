@@ -1,4 +1,4 @@
-import { useState } from 'react'; // Bỏ useEffect vì không cần nữa
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import AuthContext from './AuthContext';
 
@@ -61,7 +61,7 @@ export default function AuthProvider({ children }) {
         localStorage.removeItem("token");
         navigate('/SignInPage', { replace: true });
     };
-
+    
     return (
         <AuthContext.Provider value={{ user, setUser, signIn, signOut }}>
             {children}

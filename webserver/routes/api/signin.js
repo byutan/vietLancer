@@ -22,6 +22,7 @@ router.post('/signin', (req, res) => {
                 email: user.email,
                 role: user.role,
                 name: user.name,
+                email_verify: user.email_verify,
                 phone: user.phone,
                 address: user.address,
                 dob: user.dob,

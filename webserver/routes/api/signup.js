@@ -31,6 +31,7 @@ router.post('/signup', (req, res) => {
             address: '',
             dob: '',
             avatar: '',
+            email_verify: 'unverified',
             skills: {
                 languages: [],
                 education: [],
@@ -43,6 +44,7 @@ router.post('/signup', (req, res) => {
             email: newUser.email,
             role: newUser.role,
             name: newUser.name,
+            email_verify: newUser.email_verify,
             phone: newUser.phone,
             address: newUser.address,
             dob: newUser.dob,

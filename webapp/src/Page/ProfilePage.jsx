@@ -4,8 +4,12 @@ import Footer from "../Components/Footer";
 import ProfileIcon from '../Public/profile_icon.svg';
 import AddIcon from '../Public/addIcon.svg';
 import RemoveIcon from '../Public/remove_icon.svg';
+import UnverifiedIcon from '../Public/unverified.svg'
+import VerifiedIcon from '../Public/verified.svg'
 import ChevronDownIcon from '../Public/chevron_down.svg';
 import AuthContext from '../ContextAPI/AuthContext';
+import EmailVerification from '../Components/EmailVerification';
+import axios from 'axios';
 
 export default function ProfilePage() {
     const { user, setUser } = useContext(AuthContext);
@@ -13,7 +17,8 @@ export default function ProfilePage() {
     const [showPassword, setShowPassword] = useState(false);
     const [avatarPreview, setAvatarPreview] = useState(null);
     const [fileName, setFileName] = useState("No file chosen");
-    const [isVerified, setIsVerified] = useState(false); 
+    const [isVerified, setIsVerified] = useState(false);
+    const [showEmailVerification, setShowEmailVerification] = useState(false);
     const [personalInfo, setPersonalInfo] = useState({
         fullname: '',
         email: '',
@@ -62,8 +67,8 @@ export default function ProfilePage() {
             setExperience(user.skills?.experience || []);
         }
     }, [user, avatarPreview]);
-     if (!isVerified) {
-        return null; 
+    if (!isVerified) {
+        return null;
     }
     const handlePersonalInfoChange = (event) => {
         const { name, value } = event.target;
@@ -73,6 +78,38 @@ export default function ProfilePage() {
         }));
     };
 
+    const handleRequestVerification = async () => {
+        if (showEmailVerification || user?.email_verify === 'verified') return;
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post('http://localhost:3000/api/send-verification-code',
+                { target: user.email },
+                {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }
+            );
+
+            if (response.status === 200) {
+                setShowEmailVerification(true);
+            } 
+        } catch (err) {
+            console.error("ProfilePage: Error requesting code:", err.response?.data || err.message);
+        } 
+    };
+
+    const handleVerificationSuccess = (apiResponseData) => {
+    if (apiResponseData.user) {
+        setUser(prevUser => ({
+            ...prevUser,
+            ...apiResponseData.user 
+        }));
+    }
+
+    if (apiResponseData.token) {
+        localStorage.setItem('token', apiResponseData.token);
+    }
+    setShowEmailVerification(false);
+    };
     const handleAvatarChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -217,7 +254,7 @@ export default function ProfilePage() {
     };
     const labelStyle = "block text-sm font-medium text-gray-700 mb-1";
     const inputStyle = "block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm";
-    const sectionTitleStyle = "text-xl font-semibold text-gray-800 border-b border-gray-200 pb-3 mb-6"; // Kích thước title nhỏ hơn chút
+    const sectionTitleStyle = "text-xl font-semibold text-gray-800 border-b border-gray-200 pb-3 mb-6";
     const buttonBaseStyle = "inline-flex items-center justify-center px-4 py-2 border text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2";
     const primaryButtonStyle = `${buttonBaseStyle} border-transparent bg-black text-white hover:bg-gray-800 focus:ring-black`;
     const secondaryButtonStyle = `${buttonBaseStyle} border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-black`;
@@ -227,8 +264,6 @@ export default function ProfilePage() {
         <div className="font-poppins flex flex-col min-h-screen bg-gray-50 text-gray-900">
             <main className="flex-grow py-10 px-4 sm:px-6 lg:px-8">
                 <form className="w-full max-w-7xl mx-auto space-y-10" onSubmit={handleFormSubmit}>
-
-                    {/* --- PERSONAL INFORMATION (No changes) --- */}
                     <section className="bg-white p-6 sm:p-8 rounded-lg shadow">
                         <h2 className={sectionTitleStyle}>Personal Information</h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">
@@ -247,11 +282,48 @@ export default function ProfilePage() {
                             <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
                                 <div className="sm:col-span-2">
                                     <label htmlFor="fullname" className={labelStyle}>Full Name</label>
-                                    <input id="fullname" name="fullname" type="text" autoComplete="name" required className={inputStyle} value={personalInfo.fullname} onChange={handlePersonalInfoChange} />
+                                    <input id="fullname" name="fullname" type="text" autoComplete="name" required className={inputStyle} value={personalInfo.fullname} onChange={handlePersonalInfoChange}
+                                    />
                                 </div>
                                 <div className="sm:col-span-2">
                                     <label htmlFor="email" className={labelStyle}>Email Address</label>
-                                    <input id="email" name="email" type="email" autoComplete="email" required className={inputStyle} value={personalInfo.email} onChange={handlePersonalInfoChange} />
+                                    <div className="flex items-center space-x-2">
+                                        <input
+                                            id="email"
+                                            name="email"
+                                            type="email"
+                                            required
+                                            className={`${inputStyle} flex-grow bg-gray-100 cursor-not-allowed`}
+                                            value={personalInfo.email}
+                                            readOnly={true}
+                                        />
+                                        {user?.email_verify === 'verified' ? (
+                                            <img src={VerifiedIcon} alt="Verified" className="w-5 h-5 text-green-500 flex-shrink-0" title="Email verified" />
+                                        ) : user?.email_verify === 'unverified' ? (
+                                            <>
+                                                <img src={UnverifiedIcon} alt="Unverified" className="w-5 h-5 text-yellow-500 flex-shrink-0" title="Email not verified" />
+                                                {!showEmailVerification && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleRequestVerification}
+                                                        className={`${secondaryButtonStyle} text-xs px-2 py-1 whitespace-nowrap flex-shrink-0`}
+                                                        title="Verify your email address"
+                                                    >
+                                                        Verify
+                                                    </button>
+                                                )}
+                                            </>
+                                        ) : null}
+                                    </div>
+                                    {showEmailVerification && user?.email_verify === 'unverified' && (
+                                        <div className="mt-4 p-4 border border-yellow-300 bg-yellow-50 rounded-md">
+                                            <EmailVerification
+                                                email={user.email}
+                                                onSuccess={handleVerificationSuccess}
+                                                onCancel={() => setShowEmailVerification(false)}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
                                     <label htmlFor="dob" className={labelStyle}>Date of Birth</label>
@@ -281,8 +353,6 @@ export default function ProfilePage() {
 
                     <section className="bg-white p-6 sm:p-8 rounded-lg shadow space-y-8">
                         <h2 className={sectionTitleStyle}>Skills & Experience</h2>
-
-                        {/* --- FOREIGN LANGUAGES (No changes) --- */}
                         <div className="space-y-4">
                             <h3 className="text-lg font-medium text-gray-900">Foreign Languages</h3>
                             <div className="space-y-3">
@@ -321,8 +391,6 @@ export default function ProfilePage() {
                                 </button>
                             )}
                         </div>
-
-                        {/* --- EDUCATION (Error messages added) --- */}
                         <div className="space-y-4 pt-4 border-t border-gray-100">
                             <h3 className="text-lg font-medium text-gray-900">Education</h3>
                             <div className="space-y-3">
@@ -361,19 +429,18 @@ export default function ProfilePage() {
                                             type="text"
                                             name="major"
                                             id="edu-major"
-                                            className={inputStyle} // Thêm validation lỗi nếu cần
+                                            className={inputStyle}
                                             placeholder="E.g., Computer Science"
                                             value={newEducation.major}
                                             onChange={handleNewEducationChange}
                                         />
-                                        {/* {educationErrors.major && <p className="mt-1 text-xs text-red-600">{educationErrors.major}</p>} */}
                                     </div>
                                     <div>
                                         <label htmlFor="edu-degree" className={labelStyle}>Degree</label>
                                         <select
                                             name="degree"
                                             id="edu-degree"
-                                            className={inputStyle} // Thêm validation lỗi nếu cần
+                                            className={inputStyle}
                                             value={newEducation.degree}
                                             onChange={handleNewEducationChange}
                                         >
@@ -383,7 +450,6 @@ export default function ProfilePage() {
                                             <option>Ph.D</option>
                                             <option>Other</option>
                                         </select>
-                                        {/* {educationErrors.degree && <p className="mt-1 text-xs text-red-600">{educationErrors.degree}</p>} */}
                                     </div>
                                     <div className="flex space-x-4">
                                         <div className="w-1/2">
@@ -422,7 +488,7 @@ export default function ProfilePage() {
                                             type="button"
                                             onClick={() => {
                                                 setShowAddEducation(false);
-                                                setEducationErrors({}); // Xóa lỗi khi cancel
+                                                setEducationErrors({});
                                             }}
                                             className={secondaryButtonStyle}
                                         >
@@ -447,8 +513,6 @@ export default function ProfilePage() {
                                 </button>
                             )}
                         </div>
-
-                        {/* --- WORK EXPERIENCE (Error messages added) --- */}
                         <div className="space-y-4 pt-4 border-t border-gray-100">
                             <h3 className="text-lg font-medium text-gray-900">Work Experience</h3>
                             <div className="space-y-3">
@@ -594,7 +658,7 @@ export default function ProfilePage() {
                                             type="button"
                                             onClick={() => {
                                                 setShowAddExperience(false);
-                                                setExperienceErrors({}); // Xóa lỗi khi cancel
+                                                setExperienceErrors({});
                                             }}
                                             className={secondaryButtonStyle}
                                         >
