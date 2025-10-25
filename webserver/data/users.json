@@ -33,5 +33,37 @@
     },
     "verificationCode": "817317",
     "verificationCodeExpires": 1761314034271
+  },
+  {
+    "name": "manhattien",
+    "email": "tienmanhat11a321@gmail.com",
+    "password": "Tienmanhat11a321@gmail.com",
+    "role": "client",
+    "phone": "",
+    "address": "",
+    "dob": "",
+    "avatar": "",
+    "email_verify": "unverified",
+    "skills": {
+      "languages": [],
+      "education": [],
+      "experience": []
+    }
+  },
+  {
+    "name": "mitbucu",
+    "email": "mitbucu@gmail.com",
+    "password": "Mitbucu1@gmail.com",
+    "role": "freelancer",
+    "phone": "",
+    "address": "",
+    "dob": "",
+    "avatar": "",
+    "email_verify": "unverified",
+    "skills": {
+      "languages": [],
+      "education": [],
+      "experience": []
+    }
   }
 ]
