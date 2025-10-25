@@ -3,12 +3,12 @@ import Badge from "./ui/badge";
 import { DollarSign, Clock, User } from "lucide-react";
 
 function ProjectCard({ project, onClick }) {
-  const statusConfig = {
-    pending: { label: "Pending", variant: "default", className: "bg-black text-white" },
-    approved: { label: "Approved", variant: "default", className: "bg-green-600 text-white" },
-    rejected: { label: "Rejected", variant: "default", className: "bg-red-600 text-white" },
-  };
-  const status = statusConfig[project.status] || statusConfig.pending;
+  // const statusConfig = {
+  //   pending: { label: "Pending", variant: "default", className: "bg-black text-white" },
+  //   approved: { label: "Approved", variant: "default", className: "bg-green-600 text-white" },
+  //   rejected: { label: "Rejected", variant: "default", className: "bg-red-600 text-white" },
+  // };
+  // const status = statusConfig[project.status] || statusConfig.pending;
 
   return (
     <div

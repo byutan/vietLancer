@@ -24,24 +24,26 @@ const ProjectPosting = () => {
     const [skillInput, setSkillInput] = useState('');
 
     useEffect(() => {
-        if (hasChecked.current) return;
-        hasChecked.current = true;
+    if (hasChecked.current) return;
+    hasChecked.current = true;
 
-        const checkAccess = async () => {
-            if (!user) {
-                navigate('/SignInPage');
-                return;
-            }
-
-            if (user.role !== 'client') {
-                navigate('/HomePage');
-                return;
-            }
+    const checkAccess = async () => {
+        if (!user) {
+            navigate('/SignInPage');
+            return;
+        }
+        if (
+            (user.role === 'client' && user.email_verify === 'verified') ||
+            user.role === 'moderator'
+        ) {
             setIsCheckingAccess(false);
-        };
+        } else {
+            navigate('/AccessDeniedPage');
+        }
+    };
 
-        checkAccess();
-    }, [user, navigate]);
+    checkAccess();
+}, [user, navigate]);
 
     if (isCheckingAccess) {
         return (
