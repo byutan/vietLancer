@@ -63,9 +63,9 @@ export default function NavBar() {
     setOpenMenu(false);
   };
 
-  const createSlug = (name) => {
-    return name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-');
-  };
+  // const createSlug = (name) => {
+  //   return name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-');
+  // };
 
   const buttonStyle =
     "text-[16px] relative after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-current after:transition-all after:duration-300 after:ease-in-out hover:after:left-0 hover:after:w-full";
@@ -109,12 +109,13 @@ export default function NavBar() {
               <div
                 className={`absolute left-0 w-64 bg-white rounded-md shadow-lg border py-1 z-20 transform transition-all duration-300 ease-in-out origin-top opacity-0 -translate-y-2 scale-95 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 group-hover:pointer-events-auto`}
               >
+                {/*to={`/JobPage/${createSlug(category.name)}`}*/}
                 {jobCategories.map((category) => (
                   <Link
                     key={category.name}
-                    to={`/jobs/${createSlug(category.name)}`}
+                    to={`/JobPage`}
                     className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-                  >
+                    >
                     <img
                       src={category.icon}
                       alt={`${category.name} icon`}
