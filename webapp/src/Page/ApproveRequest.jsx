@@ -115,7 +115,7 @@ export default function ApproveRequest() {
 
     const handleApprove = async (projectId) => {
         try {
-            // Approve status
+            // Approve status and update updatedAt
             const res = await fetch("http://localhost:3000/api/approve", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -123,12 +123,6 @@ export default function ApproveRequest() {
             });
             const data = await res.json();
             if (data.success) {
-                // Update updatedAt to now
-                await fetch("http://localhost:3000/api/accept", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: projectId }),
-                });
                 // Fetch latest projects from API
                 await fetchProjects();
             }

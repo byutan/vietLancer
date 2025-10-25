@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DATA_PATH = path.join(__dirname, '../../data/projects.json');
 
-// Approve project and update its updatedAt field to current time (UTC+7)
+// Approve project and update its updatedAt field to current time (UTC)
 router.post('/', async (req, res) => {
   const { id } = req.body;
   if (!id) return res.status(400).json({ error: 'Missing project id' });
@@ -45,6 +45,16 @@ router.post('/', async (req, res) => {
   }
 
   res.json({ success: true, project: projects[idx] });
+});
+
+// GET /api/projects - return all projects (moved from accept.js)
+router.get('/projects', (req, res) => {
+  try {
+    const projects = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+    res.json({ success: true, projects });
+  } catch (e) {
+    res.status(500).json({ success: false, message: 'Cannot read projects.json' });
+  }
 });
 
 export default router;

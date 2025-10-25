@@ -50,11 +50,11 @@
     ],
     "paymentMethod": "per_hour",
     "workForm": "Online",
-    "status": "pending",
+    "status": "approved",
     "clientName": "Phạm Văn Bình",
     "clientEmail": "phamvanbinh@example.com",
     "createdAt": "2025-10-25T00:00:00.000Z",
-    "updatedAt": "2025-10-25T07:44:21.186Z"
+    "updatedAt": "2025-10-25T07:58:00.412Z"
   },
   {
     "id": "project_1761318000004",
@@ -69,11 +69,11 @@
     ],
     "paymentMethod": "per_project",
     "workForm": "Online",
-    "status": "pending",
+    "status": "approved",
     "clientName": "Ngô Thị Lan",
     "clientEmail": "ngothilan@example.com",
     "createdAt": "2025-10-25T00:00:00.000Z",
-    "updatedAt": "2025-10-25T07:21:55.000Z"
+    "updatedAt": "2025-10-25T07:58:01.764Z"
   },
   {
     "id": "project_1761318000005",
@@ -88,11 +88,11 @@
     ],
     "paymentMethod": "per_project",
     "workForm": "Hybrid",
-    "status": "pending",
+    "status": "approved",
     "clientName": "Đặng Quốc Toàn",
     "clientEmail": "dangquoctoan@example.com",
     "createdAt": "2025-10-25T00:00:00.000Z",
-    "updatedAt": "2025-10-25T03:57:12.000Z"
+    "updatedAt": "2025-10-25T07:58:26.075Z"
   },
   {
     "id": "project_1761318000006",
@@ -107,11 +107,11 @@
     ],
     "paymentMethod": "per_project",
     "workForm": "Offline",
-    "status": "pending",
+    "status": "approved",
     "clientName": "Vũ Minh Tuấn",
     "clientEmail": "vuminhtuan@example.com",
     "createdAt": "2025-10-25T00:00:00.000Z",
-    "updatedAt": "2025-10-25T10:11:44.000Z"
+    "updatedAt": "2025-10-25T07:58:28.700Z"
   },
   {
     "id": "project_1761318000007",
@@ -126,11 +126,11 @@
     ],
     "paymentMethod": "per_hour",
     "workForm": "Online",
-    "status": "pending",
+    "status": "approved",
     "clientName": "Nguyễn Thị Mai",
     "clientEmail": "nguyenthimai@example.com",
     "createdAt": "2025-10-25T00:00:00.000Z",
-    "updatedAt": "2025-10-25T06:39:28.000Z"
+    "updatedAt": "2025-10-25T07:58:43.213Z"
   },
   {
     "id": "project_1761318000008",
@@ -145,7 +145,7 @@
     ],
     "paymentMethod": "other",
     "workForm": "Other",
-    "status": "pending",
+    "status": "rejected",
     "clientName": "Lý Văn Hùng",
     "clientEmail": "lyvanhung@example.com",
     "createdAt": "2025-10-25T00:00:00.000Z",
@@ -164,11 +164,11 @@
     ],
     "paymentMethod": "per_project",
     "workForm": "Online",
-    "status": "pending",
+    "status": "approved",
     "clientName": "Trịnh Văn Hòa",
     "clientEmail": "trinhvanhoa@example.com",
     "createdAt": "2025-10-25T00:00:00.000Z",
-    "updatedAt": "2025-10-25T08:05:50.000Z"
+    "updatedAt": "2025-10-25T07:58:47.608Z"
   },
   {
     "id": "project_1761318000010",

@@ -11,7 +11,7 @@ import emailVerify from './api/emailverify.js'
 import projectPosting from './api/projectposting.js'
 import approveRouter from './api/approve_request.js';
 import rejectRouter from './api/reject_request.js';
-import acceptRouter from './api/accept.js';
+// import acceptRouter from './api/accept.js';
 
 
 const __fileName = fileURLToPath(import.meta.url);
@@ -30,6 +30,6 @@ app.use('/api', emailVerify);
 app.use('/api', projectPosting);
 app.use('/api/approve', approveRouter);
 app.use('/api/reject', rejectRouter);
-app.use('/api/accept', acceptRouter);
+// app.use('/api/accept', acceptRouter);
 
 export default app;
