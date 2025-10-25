@@ -24,4 +24,11 @@ dist-ssr
 *.sw?
 
 node_modules/
-.env
+
+webserver/data/users.json
+
+webserver/data/projects.json
+
+webserver/.env
+
+
