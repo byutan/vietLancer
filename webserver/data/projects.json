@@ -1,40 +1,325 @@
 [
   {
-    "id": "project_1761317613756",
-    "title": "Build a toy selling website",
-    "description": "The website mainly aims at kids and men with kids soul.",
-    "budget": 2499999,
-    "category": "web development",
+    "id": "project_1761318000001",
+    "title": "Develop a mobile banking app",
+    "description": "A secure and user-friendly mobile app for banking transactions and account management.",
+    "budget": 350000000,
+    "category": "Mobile development",
     "skills": [
-      "ReactJS",
-      "ExpressJS",
-      "MySQL"
+      "Flutter",
+      "Firebase",
+      "REST API"
+    ],
+    "paymentMethod": "per_project",
+    "workForm": "Hybrid",
+    "status": "approved",
+    "clientName": "Trần Minh Quân",
+    "clientEmail": "tranminhquan@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T07:44:40.525Z"
+  },
+  {
+    "id": "project_1761318000002",
+    "title": "Embedded system for smart home",
+    "description": "Design and implement an embedded system to control smart home devices.",
+    "budget": 4200000,
+    "category": "Embedded Engineering",
+    "skills": [
+      "C",
+      "Microcontroller",
+      "IoT"
+    ],
+    "paymentMethod": "per_month",
+    "workForm": "Offline",
+    "status": "approved",
+    "clientName": "Lê Thị Hồng",
+    "clientEmail": "lethihong@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T07:44:42.356Z"
+  },
+  {
+    "id": "project_1761318000003",
+    "title": "UI/UX redesign for e-commerce platform",
+    "description": "Redesign the UI/UX of an existing e-commerce platform to improve user engagement.",
+    "budget": 1800000,
+    "category": "UI/UX Design",
+    "skills": [
+      "Figma",
+      "Adobe XD",
+      "User Research"
+    ],
+    "paymentMethod": "per_hour",
+    "workForm": "Online",
+    "status": "approved",
+    "clientName": "Phạm Văn Bình",
+    "clientEmail": "phamvanbinh@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T07:58:00.412Z"
+  },
+  {
+    "id": "project_1761318000004",
+    "title": "Automated testing for web application",
+    "description": "Implement automated test scripts for a large-scale web application.",
+    "budget": 2200000,
+    "category": "Quality Assurance",
+    "skills": [
+      "Selenium",
+      "Jest",
+      "CI/CD"
     ],
     "paymentMethod": "per_project",
     "workForm": "Online",
-    "status": "pending",
-    "clientName": "Nguyễn Hữu Thắng",
-    "clientEmail": "nguyenhthang1234@gmail.com",
-    "createdAt": "2025-10-24T14:53:33.756Z",
-    "updatedAt": "2025-10-24T14:53:33.756Z"
+    "status": "approved",
+    "clientName": "Ngô Thị Lan",
+    "clientEmail": "ngothilan@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T07:58:01.764Z"
   },
   {
-    "id": "project_1761317338513",
-    "title": "Build a toy selling website",
-    "description": "The website mainly aims at kids and men with kids soul.",
-    "budget": 2500000,
-    "category": "web development",
+    "id": "project_1761318000005",
+    "title": "DevOps pipeline setup",
+    "description": "Set up a CI/CD pipeline for a microservices architecture.",
+    "budget": 3000000,
+    "category": "DevOps Engineering",
     "skills": [
-      "ReactJS",
-      "ExpressJS",
-      "MySQL"
+      "Docker",
+      "Kubernetes",
+      "Jenkins"
+    ],
+    "paymentMethod": "per_project",
+    "workForm": "Hybrid",
+    "status": "approved",
+    "clientName": "Đặng Quốc Toàn",
+    "clientEmail": "dangquoctoan@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T07:58:26.075Z"
+  },
+  {
+    "id": "project_1761318000006",
+    "title": "Digital security audit",
+    "description": "Conduct a comprehensive security audit for a fintech startup.",
+    "budget": 5000000,
+    "category": "Digital Security",
+    "skills": [
+      "Penetration Testing",
+      "OWASP",
+      "Network Security"
+    ],
+    "paymentMethod": "per_project",
+    "workForm": "Offline",
+    "status": "approved",
+    "clientName": "Vũ Minh Tuấn",
+    "clientEmail": "vuminhtuan@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T07:58:28.700Z"
+  },
+  {
+    "id": "project_1761318000007",
+    "title": "Agile project management consulting",
+    "description": "Consulting services for implementing Agile methodologies in software teams.",
+    "budget": 2700000,
+    "category": "Project Management",
+    "skills": [
+      "Scrum",
+      "Kanban",
+      "JIRA"
+    ],
+    "paymentMethod": "per_hour",
+    "workForm": "Online",
+    "status": "approved",
+    "clientName": "Nguyễn Thị Mai",
+    "clientEmail": "nguyenthimai@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T07:58:43.213Z"
+  },
+  {
+    "id": "project_1761318000008",
+    "title": "Custom software solution",
+    "description": "Develop a custom software solution for business process automation.",
+    "budget": 6500000,
+    "category": "Other",
+    "skills": [
+      "Python",
+      "Django",
+      "REST API"
+    ],
+    "paymentMethod": "other",
+    "workForm": "Other",
+    "status": "rejected",
+    "clientName": "Lý Văn Hùng",
+    "clientEmail": "lyvanhung@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T01:27:36.000Z"
+  },
+  {
+    "id": "project_1761318000009",
+    "title": "E-commerce website optimization",
+    "description": "Optimize the performance and SEO of an existing e-commerce website.",
+    "budget": 2100000,
+    "category": "Web development",
+    "skills": [
+      "Next.js",
+      "SEO",
+      "Performance Tuning"
+    ],
+    "paymentMethod": "per_project",
+    "workForm": "Online",
+    "status": "approved",
+    "clientName": "Trịnh Văn Hòa",
+    "clientEmail": "trinhvanhoa@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T07:58:47.608Z"
+  },
+  {
+    "id": "project_1761318000010",
+    "title": "Cross-platform fitness app",
+    "description": "Develop a fitness tracking app for both iOS and Android platforms.",
+    "budget": 4000000,
+    "category": "Mobile development",
+    "skills": [
+      "React Native",
+      "Firebase",
+      "Bluetooth"
+    ],
+    "paymentMethod": "per_project",
+    "workForm": "Hybrid",
+    "status": "pending",
+    "clientName": "Phan Thị Thu",
+    "clientEmail": "phanthithu@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T04:44:02.000Z"
+  },
+  {
+    "id": "project_1761318000011",
+    "title": "IoT-based smart agriculture system",
+    "description": "Design an embedded system for monitoring and automating agricultural processes.",
+    "budget": 5500000,
+    "category": "Embedded Engineering",
+    "skills": [
+      "Arduino",
+      "Sensors",
+      "IoT"
+    ],
+    "paymentMethod": "per_month",
+    "workForm": "Offline",
+    "status": "pending",
+    "clientName": "Đỗ Văn Lâm",
+    "clientEmail": "dovanlam@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T11:53:17.000Z"
+  },
+  {
+    "id": "project_1761318000012",
+    "title": "Mobile app UI/UX audit",
+    "description": "Conduct a UI/UX audit for a mobile application and provide improvement suggestions.",
+    "budget": 1600000,
+    "category": "UI/UX Design",
+    "skills": [
+      "Sketch",
+      "User Testing",
+      "Wireframing"
     ],
     "paymentMethod": "per_hour",
     "workForm": "Online",
     "status": "pending",
-    "clientName": "Nguyễn Hữu Thắng",
-    "clientEmail": "nguyenhthang1234@gmail.com",
-    "createdAt": "2025-10-24T14:48:58.513Z",
-    "updatedAt": "2025-10-24T14:48:58.513Z"
+    "clientName": "Nguyễn Thị Hạnh",
+    "clientEmail": "nguyenthihanh@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T00:32:11.000Z"
+  },
+  {
+    "id": "project_1761318000013",
+    "title": "Automated regression testing suite",
+    "description": "Develop a regression testing suite for a SaaS platform.",
+    "budget": 2500000,
+    "category": "Quality Assurance",
+    "skills": [
+      "Cypress",
+      "Mocha",
+      "CI/CD"
+    ],
+    "paymentMethod": "per_project",
+    "workForm": "Online",
+    "status": "pending",
+    "clientName": "Lê Văn Sơn",
+    "clientEmail": "levanson@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T10:27:58.000Z"
+  },
+  {
+    "id": "project_1761318000014",
+    "title": "Scrum implementation coaching",
+    "description": "Coach a software team on Scrum best practices and implementation.",
+    "budget": 3200000,
+    "category": "Project Management",
+    "skills": [
+      "Scrum",
+      "Agile Coaching",
+      "JIRA"
+    ],
+    "paymentMethod": "per_hour",
+    "workForm": "Hybrid",
+    "status": "pending",
+    "clientName": "Trần Thị Kim",
+    "clientEmail": "tranthikim@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T09:12:06.000Z"
+  },
+  {
+    "id": "project_1761318000015",
+    "title": "Cloud infrastructure automation",
+    "description": "Automate cloud infrastructure provisioning and deployment.",
+    "budget": 3700000,
+    "category": "DevOps Engineering",
+    "skills": [
+      "Terraform",
+      "AWS",
+      "CI/CD"
+    ],
+    "paymentMethod": "per_project",
+    "workForm": "Hybrid",
+    "status": "pending",
+    "clientName": "Phạm Quốc Dũng",
+    "clientEmail": "phamquocdung@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T07:59:39.000Z"
+  },
+  {
+    "id": "project_1761318000016",
+    "title": "Penetration testing for e-commerce site",
+    "description": "Perform penetration testing and vulnerability assessment for an e-commerce platform.",
+    "budget": 4800000,
+    "category": "Digital Security",
+    "skills": [
+      "Penetration Testing",
+      "Burp Suite",
+      "OWASP"
+    ],
+    "paymentMethod": "per_project",
+    "workForm": "Offline",
+    "status": "pending",
+    "clientName": "Ngô Văn Phúc",
+    "clientEmail": "ngovanphuc@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T05:03:25.000Z"
+  },
+  {
+    "id": "project_1761318000017",
+    "title": "Business process automation consulting",
+    "description": "Consult on automating business processes using custom software solutions.",
+    "budget": 6000000,
+    "category": "Other",
+    "skills": [
+      "Python",
+      "RPA",
+      "Business Analysis"
+    ],
+    "paymentMethod": "other",
+    "workForm": "Other",
+    "status": "pending",
+    "clientName": "Vũ Thị Hường",
+    "clientEmail": "vuthihuong@example.com",
+    "createdAt": "2025-10-25T00:00:00.000Z",
+    "updatedAt": "2025-10-25T08:41:18.000Z"
   }
 ]
