@@ -45,7 +45,7 @@ function ProjectCard({ project, onClick }) {
           </div>
           <div className="flex items-center gap-1 text-sm text-gray-500 font-semibold">
             <Clock className="w-4 h-4 text-blue-500" />
-            <span>Thời gian chào giá:</span>
+            <span>Bidding time left:</span>
             <span className="text-base font-bold text-gray-900 ml-1">
               {(() => {
                 // Use updatedAt if available, else fallback to createdAt
@@ -55,16 +55,16 @@ function ProjectCard({ project, onClick }) {
                 endTime.setDate(endTime.getDate() + 7);
                 const now = new Date();
                 const diff = endTime - now;
-                if (diff <= 0) return "Đã hết hạn";
+                if (diff <= 0) return "Expired";
                 // Calculate days, hours, minutes left
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
                 const minutes = Math.floor((diff / (1000 * 60)) % 60);
                 let result = "";
-                if (days > 0) result += `${days} ngày `;
-                if (hours > 0) result += `${hours} giờ `;
-                if (minutes > 0) result += `${minutes} phút`;
-                return result.trim() || "< 1 phút";
+                if (days > 0) result += `${days} days `;
+                if (hours > 0) result += `${hours} hours `;
+                if (minutes > 0) result += `${minutes} minutes`;
+                return result.trim() || "< 1 minute";
               })()}
             </span>
           </div>
