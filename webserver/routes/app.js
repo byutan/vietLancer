@@ -11,6 +11,11 @@ import emailVerify from './api/emailverify.js'
 import projectPosting from './api/projectposting.js'
 import contractRoutes from './api/contract.js'; 
 import uploadRoute from "./api/uploadRoute.js";
+import approveRouter from './api/approve_request.js';
+import rejectRouter from './api/reject_request.js';
+// import acceptRouter from './api/accept.js';
+
+
 const __fileName = fileURLToPath(import.meta.url);
 const __dirName = path.dirname(__fileName);
 const app = express();
@@ -27,4 +32,8 @@ app.use('/api', updateProfileRouter);
 app.use('/api', emailVerify);
 app.use('/api', projectPosting);
 app.use('/api/contract', contractRoutes);
+app.use('/api/approve', approveRouter);
+app.use('/api/reject', rejectRouter);
+// app.use('/api/accept', acceptRouter);
+
 export default app;

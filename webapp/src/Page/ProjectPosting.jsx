@@ -32,12 +32,14 @@ const ProjectPosting = () => {
                 navigate('/SignInPage');
                 return;
             }
-
-            if (user.role !== 'client') {
-                navigate('/HomePage');
-                return;
+            if (
+                (user.role === 'client' && user.email_verify === 'verified') ||
+                user.role === 'moderator'
+            ) {
+                setIsCheckingAccess(false);
+            } else {
+                navigate('/AccessDeniedPage');
             }
-            setIsCheckingAccess(false);
         };
 
         checkAccess();
@@ -52,11 +54,19 @@ const ProjectPosting = () => {
         );
     }
 
-    if (!user || user.role !== 'client') {
+    if (
+        !user ||
+        !(
+            (user.role === 'client' && user.email_verify === 'verified') ||
+            user.role === 'moderator'
+        )
+    ) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100 text-center">
                 <h1 className="text-red-500 text-3xl mb-5">Access Denied</h1>
-                <p className="text-gray-600 text-lg">Only clients can post projects</p>
+                <p className="text-gray-600 text-lg">
+                    Only verified clients or moderators can post projects
+                </p>
                 <button
                     onClick={() => navigate('/HomePage')}
                     className="mt-5 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-400"
@@ -214,9 +224,9 @@ const ProjectPosting = () => {
     const errorStyle = "text-red-500 text-sm mt-1";
     const helperStyle = "text-gray-500 italic text-sm mt-1 block";
     return (
-        <div className="font-poppins min-h-screen bg-gray-50 text-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto bg-white p-10 sm:p-12 rounded-lg shadow-lg">
-                <div className="text-left mb-10 pb-6 border-b border-gray-200">
+        <div className="font-poppins min-h-screen text-gray-900">
+            <div className="mx-auto bg-white p-10 sm:p-12 rounded-lg shadow-lg">
+                <div className="text-left mb-10 pb-6 border-gray-200">
                     <h1 className="text-4xl font-bold text-black mb-2">Post Project</h1>
                     <p className="text-gray-600 text-lg">Please fill out the form below.</p>
                 </div>
@@ -231,7 +241,7 @@ const ProjectPosting = () => {
                             value={projectData.title}
                             onChange={handleChange}
                             placeholder="Enter project title"
-                            className={`mt-2 ${inputStyle} ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
+                            className={`mt-2 ${inputStyle} ${errors.paymentMethod ? 'border-red-500' : 'border-gray-300'} ${projectData.paymentMethod === '' ? 'text-gray-500' : 'text-gray-900'}`}
                         />
                         {errors.title && <span className={errorStyle}>{errors.title}</span>}
                     </div>
@@ -244,7 +254,7 @@ const ProjectPosting = () => {
                             onChange={handleChange}
                             placeholder="Enter project details, goals, and specific requirements..."
                             rows="5"
-                            className={`mt-2 ${inputStyle} ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
+                            className={`mt-2 ${inputStyle} ${errors.workForm ? 'border-red-500' : 'border-gray-300'} ${projectData.workForm === '' ? 'text-gray-500' : 'text-gray-900'}`}
                         />
                         {errors.description && <span className={errorStyle}>{errors.description}</span>}
                         <small className={helperStyle}>At least 20 characters</small>
@@ -259,8 +269,8 @@ const ProjectPosting = () => {
                             onChange={handleChange}
                             placeholder="Enter budget"
                             min="1000000"
-                            max="1000000000" 
-                            className={`mt-2 ${inputStyle} ${errors.budget ? 'border-red-500' : 'border-gray-300'}`}
+                            max="1000000000"
+                            className={`mt-2 ${inputStyle} ${errors.category ? 'border-red-500' : 'border-gray-300'} ${projectData.category === '' ? 'text-gray-500' : 'text-gray-900'}`}
                         />
                         {errors.budget && <span className={errorStyle}>{errors.budget}</span>}
                         <small className={helperStyle}>Minimum 1 million VND</small>
@@ -273,9 +283,9 @@ const ProjectPosting = () => {
                                 name="paymentMethod"
                                 value={projectData.paymentMethod}
                                 onChange={handleChange}
-                                className={`mt-2 ${inputStyle} ${errors.paymentMethod ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`mt-2 ${inputStyle} ${errors.paymentMethod ? 'border-red-500' : 'border-gray-300'} ${projectData.paymentMethod === '' ? 'text-gray-500' : 'text-gray-900'}`}
                             >
-                                <option value="">Select payment method</option>
+                                <option value="" disabled>Select payment method</option>
                                 {paymentMethods.map(method => (
                                     <option key={method.value} value={method.value}>
                                         {method.label}
@@ -292,9 +302,9 @@ const ProjectPosting = () => {
                                 name="workForm"
                                 value={projectData.workForm}
                                 onChange={handleChange}
-                                className={`mt-2 ${inputStyle} ${errors.workForm ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`mt-2 ${inputStyle} ${errors.workForm ? 'border-red-500' : 'border-gray-300'} ${projectData.paymentMethod === '' ? 'text-gray-500' : 'text-gray-900'}`}
                             >
-                                <option value="">Select work form</option>
+                                <option value="" disabled>Select work form</option>
                                 {workForms.map(format => (
                                     <option key={format.value} value={format.value}>
                                         {format.label}
@@ -311,9 +321,9 @@ const ProjectPosting = () => {
                             name="category"
                             value={projectData.category}
                             onChange={handleChange}
-                            className={`mt-2 ${inputStyle} ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
+                            className={`mt-2 ${inputStyle} ${errors.category ? 'border-red-500' : 'border-gray-300'} ${projectData.paymentMethod === '' ? 'text-gray-500' : 'text-gray-900'}`}
                         >
-                            <option value="">Select category</option>
+                            <option value="" disabled>Select category</option>
                             <option value="web development">Web development</option>
                             <option value="mobile development">Mobile development</option>
                             <option value="embedded engineer">Embedded Engineering</option>
@@ -335,7 +345,7 @@ const ProjectPosting = () => {
                                 onChange={(e) => setSkillInput(e.target.value)}
                                 onKeyDown={handleSkillInputKeyDown}
                                 placeholder="Enter skill and press Add"
-                                className={inputStyle}
+                                className={`${inputStyle} placeholder:text-gray-400`}
                             />
                             <button
                                 type="button"
@@ -380,7 +390,7 @@ const ProjectPosting = () => {
                     </div>
                 </form>
             </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 };
