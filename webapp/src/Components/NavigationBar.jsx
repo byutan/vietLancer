@@ -10,6 +10,7 @@ import UIUXIcon from '../Public/ui_ux.png';
 import PMIcon from '../Public/project_management.svg';
 import DevOpsIcon from '../Public/dev_ops.svg';
 import SecurityIcon from '../Public/security.svg';
+import { useNavigate } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { m } from 'framer-motion';
 
@@ -45,7 +46,7 @@ export default function NavBar() {
   const { user, signOut } = useContext(AuthContext);
   const [openMenu, setOpenMenu] = useState(false);
   const menuRef = useRef();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -162,6 +163,15 @@ export default function NavBar() {
                 <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   My Project
                 </button>
+                {(user?.role === "client"|| user.role === 'moderator') && (
+                  <button
+                    onClick={() => navigate("/ContractTemplatePage")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Xuất hợp đồng (PDF)
+                  </button>
+                )}
+
                 <button
                   onClick={handleSignOut}
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

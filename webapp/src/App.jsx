@@ -8,6 +8,7 @@ import ApproveRequest from "./Page/ApproveRequest";
 import AuthProvider from "./ContextAPI/AuthProvider";
 import NavigationBar from './Components/NavigationBar';
 import ProjectPosting from './Page/ProjectPosting';
+import ContractTemplatePage from "./Page/ContractTemplatePage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/JobPage" element={<JobPage />} />
           <Route path="/ApproveRequest" element={<ApproveRequest />} />
           <Route path="/ProjectPosting" element={<ProjectPosting />} />
+          <Route path="/ContractTemplatePage" element={<ContractTemplatePage />} />
         </Routes>
       </AuthProvider>
     </Router>
