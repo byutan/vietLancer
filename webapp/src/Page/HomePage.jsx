@@ -11,8 +11,10 @@ import WindowSlide1 from '../Public/hp_slide_window1.jpg'
 import WindowSlide2 from '../Public/hp_slide_window2.jpg'
 import WindowSlide3 from '../Public/hp_slide_window3.jpg'
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
+    const navigate = useNavigate();
     const jobCategories = [
         { name: "Web development", icon: WebDevIcon },
         { name: "Mobile development", icon: MobileDevIcon },
@@ -26,15 +28,15 @@ export default function HomePage() {
     const slides = [
         {
             image: WindowSlide1,
-            caption: "Where Talent Meets Opportunity" 
+            caption: "Where Talent Meets Opportunity"
         },
         {
             image: WindowSlide2,
-            caption: "Powering Meaningful Collaboration" 
+            caption: "Powering Meaningful Collaboration"
         },
         {
             image: WindowSlide3,
-            caption: "From Vision to Reality" 
+            caption: "From Vision to Reality"
         }
     ];
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -48,6 +50,11 @@ export default function HomePage() {
         };
     }, [slides.length]);
 
+    const handleCategoryClick = (categoryName) => {
+        const encoded = encodeURIComponent(categoryName);
+        navigate(`/JobPage/${encoded}`); 
+        window.scrollTo(0, 0);
+    };
     return (
         <div className="font-poppins">
             <div className="relative overflow-hidden h-[60vh]">
@@ -62,7 +69,7 @@ export default function HomePage() {
                                 alt={`Slide ${index + 1}`}
                                 className="w-full h-full flex-shrink-0 object-cover"
                             />
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white w-full px-4"> 
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white w-full px-4">
                                 <h2 className="font-lora text-3xl sm:text-4xl md:text-5xl font-bold drop-shadow-md">
                                     {slide.caption}
                                 </h2>
@@ -75,9 +82,8 @@ export default function HomePage() {
                         <button
                             key={index}
                             onClick={() => setCurrentSlide(index)}
-                            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                                currentSlide === index ? 'bg-white scale-110' : 'bg-gray-400/70 hover:bg-white'
-                            }`}
+                            className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === index ? 'bg-white scale-110' : 'bg-gray-400/70 hover:bg-white'
+                                }`}
                             aria-label={`Go to slide ${index + 1}`}
                         />
                     ))}
@@ -116,6 +122,7 @@ export default function HomePage() {
                     {jobCategories.map((category) => (
                         <button
                             key={category.name}
+                            onClick={() => handleCategoryClick(category.name)} // 👈 thêm event click
                             className="block w-full p-6 text-left font-bold text-lg border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 hover:shadow-md transition-all duration-200">
                             <div className="flex flex-col items-center space-x-3">
                                 {category.icon && (

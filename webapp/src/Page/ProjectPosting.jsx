@@ -227,7 +227,7 @@ const ProjectPosting = () => {
         <div className="font-poppins min-h-screen text-gray-900">
             <div className="mx-auto bg-white p-10 sm:p-12 rounded-lg shadow-lg">
                 <div className="text-left mb-10 pb-6 border-gray-200">
-                    <h1 className="text-4xl font-bold text-black mb-2">Post Project</h1>
+                    <h1 className="text-4xl font-bold text-black mb-2 font-lora">Post Project</h1>
                     <p className="text-gray-600 text-lg">Please fill out the form below.</p>
                 </div>
 

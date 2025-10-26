@@ -254,7 +254,7 @@ export default function ProfilePage() {
     };
     const labelStyle = "block text-sm font-medium text-gray-700 mb-1";
     const inputStyle = "block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm";
-    const sectionTitleStyle = "text-xl font-semibold text-gray-800 border-b border-gray-200 pb-3 mb-6";
+    const sectionTitleStyle = "font-lora text-xl font-semibold text-gray-800 border-b border-gray-200 pb-3 mb-6";
     const buttonBaseStyle = "inline-flex items-center justify-center px-4 py-2 border text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2";
     const primaryButtonStyle = `${buttonBaseStyle} border-transparent bg-black text-white hover:bg-gray-800 focus:ring-black`;
     const secondaryButtonStyle = `${buttonBaseStyle} border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-black`;

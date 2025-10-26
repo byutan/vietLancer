@@ -63,17 +63,20 @@ export default function NavBar() {
     signOut();
     setOpenMenu(false);
   };
-
+  const handleCategoryClick = (categoryName) => {
+    const encoded = encodeURIComponent(categoryName);
+    navigate(`/JobPage/${encoded}`);
+    window.scrollTo(0, 0);
+  };
   // const createSlug = (name) => {
   //   return name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-');
   // };
-
   const buttonStyle =
     "text-[16px] relative after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-current after:transition-all after:duration-300 after:ease-in-out hover:after:left-0 hover:after:w-full";
 
   return (
     <div className="font-poppins flex justify-between items-center sticky top-0 py-4 bg-white shadow-sm z-10">
-      <Link to="/HomePage">
+      <Link to="/HomePage" onClick={() => window.scrollTo(0, 0)}>
         <div className="text-[30px] font-bold tracking-wide ml-10">
           VIETLANCER
         </div>
@@ -94,14 +97,14 @@ export default function NavBar() {
         )}
         <button className={buttonStyle}>About us</button>
         {!user && (
-          <Link to="/SignInPage">
+          <Link to="/SignInPage" onClick={() => window.scrollTo(0, 0)}>
             <button className={buttonStyle}>Sign In</button>
           </Link>
         )}
         {user && (
           <>
             <div className="relative group">
-              <Link to='/JobPage'>
+              <Link to='/JobPage' onClick={() => window.scrollTo(0, 0)}>
                 <button className={`${buttonStyle} flex items-center`}>
                   Browse Job <DropdownArrow />
                 </button>
@@ -110,33 +113,29 @@ export default function NavBar() {
               <div
                 className={`absolute left-0 w-64 bg-white rounded-md shadow-lg border py-1 z-20 transform transition-all duration-300 ease-in-out origin-top opacity-0 -translate-y-2 scale-95 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 group-hover:pointer-events-auto`}
               >
-                {/*to={`/JobPage/${createSlug(category.name)}`}*/}
                 {jobCategories.map((category) => (
-                  <Link
+                  <button
                     key={category.name}
-                    to={`/JobPage`}
-                    className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-                    >
-                    <img
-                      src={category.icon}
-                      alt={`${category.name} icon`}
-                      className="w-5 h-5 mr-3"
-                    />
+                    onClick={() => handleCategoryClick(category.name)} 
+                    className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150 text-left w-full"
+                  >
+                    <img src={category.icon} alt={`${category.name} icon`} className="w-5 h-5 mr-3" />
                     <span>{category.name}</span>
-                  </Link>
+                  </button>
                 ))}
+
               </div>
             </div>
             <button className={`${buttonStyle} flex items-center group`}>
               Hire Freelancer <DropdownArrow />
             </button>
             {user.role === 'moderator' && (
-              <Link to="/ApproveRequest">
+              <Link to="/ApproveRequest" onClick={() => window.scrollTo(0, 0)}>
                 <button className={buttonStyle}>Approval Request</button>
               </Link>
             )}
             {user && ((user.role === 'client' && user.email_verify === 'verified') || user.role === 'moderator') && (
-              <Link to="/ProjectPosting">
+              <Link to="/ProjectPosting" onClick={() => window.scrollTo(0, 0)}>
                 <button className={buttonStyle}>Post Project</button>
               </Link>
             )}
@@ -164,7 +163,7 @@ export default function NavBar() {
                 <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   My Project
                 </button>
-                {(user?.role === "client"|| user.role === 'moderator') && (
+                {(user?.role === "client" || user.role === 'moderator') && (
                   <button
                     onClick={() => navigate("/ContractTemplatePage")}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

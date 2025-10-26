@@ -5,8 +5,6 @@ import { Badge } from "../Components/ui/badge";
 import { FileText, CheckCircle2, XCircle, Search } from "lucide-react";
 import Footer from "../Components/Footer";
 
-
-// IT-related categories
 const IT_CATEGORIES = [
     "Web development",
     "Mobile development",
@@ -75,7 +73,6 @@ export default function ApproveRequest() {
     const filteredProjects = useMemo(() => {
         return projects.filter((project) => {
             const lowerSearch = searchTerm.toLowerCase();
-            // Budget is now a number, so convert to string for search
             const matchesSearch =
                 (project.title && project.title.toLowerCase().includes(lowerSearch)) ||
                 (project.description && project.description.toLowerCase().includes(lowerSearch)) ||
@@ -83,16 +80,13 @@ export default function ApproveRequest() {
                 (project.deadline && project.deadline.toLowerCase().includes(lowerSearch)) ||
                 (project.category && project.category.toLowerCase().includes(lowerSearch)) ||
                 (project.status && project.status.toLowerCase().includes(lowerSearch));
-            // Category is now lowercase in data, so compare lowercased
             const matchesStatus = !selectedStatus || project.status === selectedStatus;
             const matchesCategory = !selectedCategory || (project.category && project.category.toLowerCase() === selectedCategory.toLowerCase());
             const matchesWorkForm = !selectedWorkForm || (project.workForm && project.workForm === selectedWorkForm);
             const matchesPaymentMethod = !selectedPaymentMethod || (project.paymentMethod && (
                 project.paymentMethod === selectedPaymentMethod ||
-                // handle case-insensitive and snake_case vs. normal
                 (project.paymentMethod.replace(/_/g, ' ').toLowerCase() === selectedPaymentMethod.toLowerCase())
             ));
-            // Salary range filter: only filter if selected
             let matchesSalaryRange = true;
             if (selectedSalaryRange) {
                 if (typeof project.budget === 'number') {
@@ -115,7 +109,6 @@ export default function ApproveRequest() {
 
     const handleApprove = async (projectId) => {
         try {
-            // Approve status and update updatedAt
             const res = await fetch("http://localhost:3000/api/approve", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -123,7 +116,6 @@ export default function ApproveRequest() {
             });
             const data = await res.json();
             if (data.success) {
-                // Fetch latest projects from API
                 await fetchProjects();
             }
         } catch {
@@ -141,7 +133,6 @@ export default function ApproveRequest() {
             });
             const data = await res.json();
             if (data.success) {
-                // Fetch latest projects from API
                 await fetchProjects();
             }
         } catch {
@@ -162,7 +153,6 @@ export default function ApproveRequest() {
     //     );
     // };
 
-    // FilterCheckbox component for sidebar
     const FilterCheckbox = ({ name, checked, onChange }) => (
         <label className="flex items-center text-sm text-gray-700 mb-2 hover:bg-gray-200 rounded px-2 py-1 transition-colors duration-150">
             <input type="checkbox" className="mr-2 rounded" checked={checked} onChange={onChange} />
@@ -170,12 +160,11 @@ export default function ApproveRequest() {
         </label>
     );
 
-    // For multi-select filters (status/category), but keep single select for now for compatibility
     return (
         <div className="font-poppins flex flex-col min-h-screen">
             <div className="flex-grow flex">
                 <aside className="w-1/4 p-6 bg-gray-50 border-r border-gray-200">
-                    <h2 className="text-lg font-semibold mb-4">Search & Filter</h2>
+                    <h2 className="text-lg font-semibold mb-4 font-lora">Search & Filter</h2>
                     <div className="relative mb-6">
                         <input
                             type="text"
@@ -190,7 +179,6 @@ export default function ApproveRequest() {
                     </div>
                     <nav>
                         <h3 className="text-sm uppercase text-gray-500 font-semibold mb-3">Status</h3>
-                        {/* Single select for status */}
                         <FilterCheckbox
                             name="All"
                             checked={selectedStatus === null}
@@ -272,7 +260,7 @@ export default function ApproveRequest() {
                 </aside>
                 <main className="w-3/4 px-2 sm:px-4 md:px-6 lg:px-8 py-6">
                     <div className="flex items-center justify-between mb-4">
-                        <h1 className="text-2xl font-bold">Project Approval</h1>
+                        <h1 className="text-2xl font-bold font-lora">Project Approval</h1>
                         <span className="text-2xl font-bold">{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}</span>
                     </div>
                     <p className="text-gray-600 mb-4">List of projects awaiting approval.</p>
@@ -287,13 +275,12 @@ export default function ApproveRequest() {
                             ))
                         ) : (
                             <div className="text-center py-12">
-                                <p className="text-muted-foreground">Không tìm thấy dự án phù hợp</p>
+                                <p className="text-muted-foreground font-lora">No suitable projects</p>
                             </div>
                         )}
                     </div>
                 </main>
             </div>
-            {/* Detail Modal */}
             {selectedProject && (
                 <ProjectDetailModal
                     project={selectedProject}

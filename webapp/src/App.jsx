@@ -1,4 +1,3 @@
-// CÁCH SỬA 1 (ĐÚNG) ✅
 import HomePage from "./Page/HomePage";
 import SignInPage from "./Page/SignIn";
 import SignUpPage from "./Page/SignUp";
@@ -23,6 +22,7 @@ function App() {
           <Route path="/SignUpPage" element={<SignUpPage />} />
           <Route path="/ProfilePage" element={<ProfilePage />} />
           <Route path="/JobPage" element={<JobPage />} />
+          <Route path="/JobPage/:category" element={<JobPage />} />
           <Route path="/ApproveRequest" element={<ApproveRequest />} />
           <Route path="/ProjectPosting" element={<ProjectPosting />} />
           <Route path="/ContractTemplatePage" element={<ContractTemplatePage />} />

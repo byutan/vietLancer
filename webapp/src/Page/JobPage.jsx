@@ -1,5 +1,5 @@
-
 import { useState, useMemo, useEffect, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import ProjectCard from "../Components/project-card-jobpage";
 import ProjectCardModalJobPage from "../Components/project-card-modal-jobpage";
 import Footer from "../Components/Footer";
@@ -17,20 +17,8 @@ const IT_CATEGORIES = [
     "Other",
 ];
 
-const WORK_FORM_OPTIONS = [
-    "Offline",
-    "Online",
-    "Hybrid",
-    "Other",
-];
-
-const PAYMENT_METHOD_OPTIONS = [
-    "Per Hour",
-    "Per Month",
-    "Per Project",
-    "Other",
-];
-
+const WORK_FORM_OPTIONS = ["Offline", "Online", "Hybrid", "Other"];
+const PAYMENT_METHOD_OPTIONS = ["Per Hour", "Per Month", "Per Project", "Other"];
 const SALARY_RANGE_OPTIONS = [
     "Under 1.000.000 VND",
     "1.000.000 - 10.000.000 VND",
@@ -39,27 +27,51 @@ const SALARY_RANGE_OPTIONS = [
 ];
 
 export default function JobPage() {
+    const { category } = useParams(); 
+    const navigate = useNavigate();
+
     const [projects, setProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedWorkForm, setSelectedWorkForm] = useState(null);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+    const [selectedSalaryRange, setSelectedSalaryRange] = useState(null);
     const fetchProjects = useCallback(async () => {
         try {
             const res = await fetch("http://localhost:3000/api/projects");
             const data = await res.json();
             if (data.success) setProjects(data.projects);
         } catch {
-            // Optionally handle error
+            // handle error
         }
     }, []);
-
     useEffect(() => {
         fetchProjects();
     }, [fetchProjects]);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedWorkForm, setSelectedWorkForm] = useState(null);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-    const [selectedSalaryRange, setSelectedSalaryRange] = useState(null);
 
+    useEffect(() => {
+        if (category) {
+            const decoded = decodeURIComponent(category);
+            const matched = IT_CATEGORIES.find(
+                (cat) => cat.toLowerCase() === decoded.toLowerCase()
+            );
+            setSelectedCategory(matched || "__NOT_FOUND__"); 
+        } else {
+            setSelectedCategory(null);
+        }
+    }, [category]);
+
+    const handleCategoryChange = (cat) => {
+        if (cat === null) {
+            navigate("/JobPage");
+            window.scrollTo(0, 0);
+        } else {
+            const encoded = encodeURIComponent(cat);
+            navigate(`/JobPage/${encoded}`);
+            window.scrollTo(0, 0);
+        }
+    };
     const filteredProjects = useMemo(() => {
         return projects.filter((project) => {
             if (project.status !== "approved") return false;
@@ -70,31 +82,52 @@ export default function JobPage() {
                 (typeof project.budget === "number" && project.budget.toString().includes(lowerSearch)) ||
                 (project.deadline && project.deadline.toLowerCase().includes(lowerSearch)) ||
                 (project.category && project.category.toLowerCase().includes(lowerSearch));
-            const matchesCategory = !selectedCategory || (project.category && project.category.toLowerCase() === selectedCategory.toLowerCase());
-            const matchesWorkForm = !selectedWorkForm || (project.workForm && project.workForm === selectedWorkForm);
-            const matchesPaymentMethod = !selectedPaymentMethod || (project.paymentMethod && (
-                project.paymentMethod === selectedPaymentMethod ||
-                (project.paymentMethod.replace(/_/g, ' ').toLowerCase() === selectedPaymentMethod.toLowerCase())
-            ));
+
+            const matchesCategory =
+                !selectedCategory ||
+                (project.category &&
+                    project.category.toLowerCase() === selectedCategory.toLowerCase());
+
+            const matchesWorkForm =
+                !selectedWorkForm || (project.workForm && project.workForm === selectedWorkForm);
+
+            const matchesPaymentMethod =
+                !selectedPaymentMethod ||
+                (project.paymentMethod &&
+                    (project.paymentMethod === selectedPaymentMethod ||
+                        project.paymentMethod.replace(/_/g, " ").toLowerCase() ===
+                        selectedPaymentMethod.toLowerCase()));
+
             let matchesSalaryRange = true;
             if (selectedSalaryRange) {
-                if (typeof project.budget === 'number') {
-                    if (selectedSalaryRange === 'Under 1.000.000 VND') {
+                if (typeof project.budget === "number") {
+                    if (selectedSalaryRange === "Under 1.000.000 VND") {
                         matchesSalaryRange = project.budget < 1000000;
-                    } else if (selectedSalaryRange === '1.000.000 - 10.000.000 VND') {
-                        matchesSalaryRange = project.budget >= 1000000 && project.budget <= 10000000;
-                    } else if (selectedSalaryRange === 'Above 10.000.000 VND') {
+                    } else if (selectedSalaryRange === "1.000.000 - 10.000.000 VND") {
+                        matchesSalaryRange =
+                            project.budget >= 1000000 && project.budget <= 10000000;
+                    } else if (selectedSalaryRange === "Above 10.000.000 VND") {
                         matchesSalaryRange = project.budget > 10000000;
-                    } else {
-                        matchesSalaryRange = true;
                     }
-                } else {
-                    matchesSalaryRange = true;
                 }
             }
-            return matchesSearch && matchesCategory && matchesWorkForm && matchesPaymentMethod && matchesSalaryRange;
+
+            return (
+                matchesSearch &&
+                matchesCategory &&
+                matchesWorkForm &&
+                matchesPaymentMethod &&
+                matchesSalaryRange
+            );
         });
-    }, [projects, searchTerm, selectedCategory, selectedWorkForm, selectedPaymentMethod, selectedSalaryRange]);
+    }, [
+        projects,
+        searchTerm,
+        selectedCategory,
+        selectedWorkForm,
+        selectedPaymentMethod,
+        selectedSalaryRange,
+    ]);
 
     const FilterCheckbox = ({ name, checked, onChange }) => (
         <label className="flex items-center text-sm text-gray-700 mb-2 hover:bg-gray-200 rounded px-2 py-1 transition-colors duration-150">
@@ -116,28 +149,28 @@ export default function JobPage() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                        <Search
-                            className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                        />
+                        <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     </div>
                     <nav>
                         <h3 className="text-sm uppercase text-gray-500 font-semibold mb-3">Category</h3>
                         <FilterCheckbox
                             name="All"
                             checked={selectedCategory === null}
-                            onChange={() => setSelectedCategory(null)}
+                            onChange={() => handleCategoryChange(null)}
                         />
-                        {IT_CATEGORIES.map((category) => (
+                        {IT_CATEGORIES.map((cat) => (
                             <FilterCheckbox
-                                key={category}
-                                name={category}
-                                checked={selectedCategory === category}
-                                onChange={() => setSelectedCategory(category)}
+                                key={cat}
+                                name={cat}
+                                checked={selectedCategory === cat}
+                                onChange={() => handleCategoryChange(cat)}
                             />
                         ))}
                     </nav>
                     <nav className="mt-6">
-                        <h3 className="text-sm uppercase text-gray-500 font-semibold mb-3">Work Form</h3>
+                        <h3 className="text-sm uppercase text-gray-500 font-semibold mb-3">
+                            Work Form
+                        </h3>
                         <FilterCheckbox
                             name="All"
                             checked={selectedWorkForm === null}
@@ -152,8 +185,11 @@ export default function JobPage() {
                             />
                         ))}
                     </nav>
+
                     <nav className="mt-6">
-                        <h3 className="text-sm uppercase text-gray-500 font-semibold mb-3">Payment Method</h3>
+                        <h3 className="text-sm uppercase text-gray-500 font-semibold mb-3">
+                            Payment Method
+                        </h3>
                         <FilterCheckbox
                             name="All"
                             checked={selectedPaymentMethod === null}
@@ -168,8 +204,11 @@ export default function JobPage() {
                             />
                         ))}
                     </nav>
+
                     <nav className="mt-6">
-                        <h3 className="text-sm uppercase text-gray-500 font-semibold mb-3">Salary Range</h3>
+                        <h3 className="text-sm uppercase text-gray-500 font-semibold mb-3">
+                            Salary Range
+                        </h3>
                         <FilterCheckbox
                             name="All"
                             checked={selectedSalaryRange === null}
@@ -187,10 +226,16 @@ export default function JobPage() {
                 </aside>
                 <main className="w-3/4 px-2 sm:px-4 md:px-6 lg:px-8 py-6">
                     <div className="flex items-center justify-between mb-4">
-                        <h1 className="text-2xl font-bold">All Jobs</h1>
-                        <span className="text-2xl font-bold">{filteredProjects.length} job{filteredProjects.length !== 1 ? 's' : ''}</span>
+                        <h1 className="text-2xl font-bold">
+                            {selectedCategory ? `Jobs in ${selectedCategory}` : "All Jobs"}
+                        </h1>
+                        <span className="text-2xl font-bold">
+                            {filteredProjects.length} job
+                            {filteredProjects.length !== 1 ? "s" : ""}
+                        </span>
                     </div>
                     <p className="text-gray-600 mb-4">Check out what's best for you.</p>
+
                     <div className="space-y-3 mt-2">
                         {filteredProjects.length > 0 ? (
                             filteredProjects.map((project) => (
@@ -200,6 +245,10 @@ export default function JobPage() {
                                     onClick={() => setSelectedProject(project)}
                                 />
                             ))
+                        ) : selectedCategory === "__NOT_FOUND__" ? (
+                            <div className="text-center py-12">
+                                <p className="text-muted-foreground">Invalid category</p>
+                            </div>
                         ) : (
                             <div className="text-center py-12">
                                 <p className="text-muted-foreground">No jobs found</p>
@@ -208,7 +257,6 @@ export default function JobPage() {
                     </div>
                 </main>
             </div>
-            {/* Detail Modal */}
             {selectedProject && (
                 <ProjectCardModalJobPage
                     project={selectedProject}
