@@ -55,6 +55,10 @@ export default function HomePage() {
         navigate(`/JobPage/${encoded}`); 
         window.scrollTo(0, 0);
     };
+    const handleNavigation = () => {
+        navigate(`/JobPage`); 
+        window.scrollTo(0, 0);
+    }
     return (
         <div className="font-poppins">
             <div className="relative overflow-hidden h-[60vh]">
@@ -106,7 +110,9 @@ export default function HomePage() {
                         <button className="text-[16px] text-white bg-black rounded border-[2px] border-black py-4 px-4 transition-colors hover:bg-gray-500">
                             Hire freelancer
                         </button>
-                        <button className="text-[16px] rounded border-[2px] border-black py-4 px-4 transition-colors hover:bg-gray-200">
+                        <button 
+                            onClick={() => handleNavigation()}
+                            className="text-[16px] rounded border-[2px] border-black py-4 px-4 transition-colors hover:bg-gray-200">
                             Browse jobs
                         </button>
                     </div>
