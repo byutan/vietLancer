@@ -56,7 +56,7 @@ export default function ApproveRequest() {
             const res = await fetch("http://localhost:3000/api/projects");
             const data = await res.json();
             if (data.success) setProjects(data.projects);
-        } catch (err) {
+        } catch {
             // Optionally handle error
         }
     }, []);
@@ -126,7 +126,7 @@ export default function ApproveRequest() {
                 // Fetch latest projects from API
                 await fetchProjects();
             }
-        } catch (err) {
+        } catch {
             alert("Approve failed!");
         }
         setSelectedProject(null);
@@ -144,23 +144,23 @@ export default function ApproveRequest() {
                 // Fetch latest projects from API
                 await fetchProjects();
             }
-        } catch (err) {
+        } catch {
             alert("Reject failed!");
         }
         setSelectedProject(null);
     };
 
-    const getStatusBadge = (status) => {
-        const statusOption = STATUS_OPTIONS.find((s) => s.value === status);
-        if (!statusOption) return null;
-        const Icon = statusOption.icon;
-        return (
-            <Badge className={`${statusOption.color} text-white gap-1`}>
-                <Icon className="w-3 h-3" />
-                {statusOption.label}
-            </Badge>
-        );
-    };
+    // const getStatusBadge = (status) => {
+    //     const statusOption = STATUS_OPTIONS.find((s) => s.value === status);
+    //     if (!statusOption) return null;
+    //     const Icon = statusOption.icon;
+    //     return (
+    //         <Badge className={`${statusOption.color} text-white gap-1`}>
+    //             <Icon className="w-3 h-3" />
+    //             {statusOption.label}
+    //         </Badge>
+    //     );
+    // };
 
     // FilterCheckbox component for sidebar
     const FilterCheckbox = ({ name, checked, onChange }) => (
