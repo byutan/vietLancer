@@ -5,8 +5,6 @@ export default function ContractTemplatePage() {
   const [templates, setTemplates] = useState([]);
   const [selected, setSelected] = useState(null);
   const [previewHtml, setPreviewHtml] = useState("");
-
-  // 🔹 Lấy danh sách mẫu hợp đồng
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
@@ -20,7 +18,6 @@ export default function ContractTemplatePage() {
     fetchTemplates();
   }, []);
 
-  // 🔹 Tải về file Word
   const handleExport = async (fileName) => {
     try {
       const res = await fetch(`http://localhost:3000/api/contract/export/${fileName}`);
@@ -38,7 +35,6 @@ export default function ContractTemplatePage() {
     }
   };
 
-  // 🔹 Xem trước file Word bằng mammoth
   const handlePreview = async (fileName) => {
     try {
       const res = await fetch(`http://localhost:3000/uploads/${fileName}`);
@@ -55,10 +51,8 @@ export default function ContractTemplatePage() {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Chọn mẫu hợp đồng (.doc / .docx)</h2>
-
-      {/* Danh sách file Word */}
+    <div className="p-6 font-poppins">
+      <h2 className="text-xl font-bold mb-4 font-lora">Pick a suitable template for your contract</h2>
       <div className="grid grid-cols-3 gap-6">
         {templates.map((file) => (
           <div
@@ -75,8 +69,6 @@ export default function ContractTemplatePage() {
           </div>
         ))}
       </div>
-
-      {/* Modal xem trước nội dung Word */}
       {selected && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-auto">
           <div className="bg-white p-6 rounded-lg max-w-5xl w-full relative">
@@ -84,7 +76,6 @@ export default function ContractTemplatePage() {
               {selected.replace(/\.(docx|doc)$/i, "")}
             </h3>
 
-            {/* 🔹 Vùng hiển thị nội dung Word */}
             <div
               className="border p-6 rounded-lg bg-white text-gray-900 leading-relaxed overflow-auto max-h-[80vh]"
               style={{
@@ -101,7 +92,7 @@ export default function ContractTemplatePage() {
                 onClick={() => handleExport(selected)}
                 className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
               >
-                Tải về file Word
+                Download (.doc)
               </button>
 
               <button
@@ -111,7 +102,7 @@ export default function ContractTemplatePage() {
                 }}
                 className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-700 transition"
               >
-                Đóng
+                Close
               </button>
             </div>
           </div>
