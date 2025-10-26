@@ -24,26 +24,26 @@ const ProjectPosting = () => {
     const [skillInput, setSkillInput] = useState('');
 
     useEffect(() => {
-    if (hasChecked.current) return;
-    hasChecked.current = true;
+        if (hasChecked.current) return;
+        hasChecked.current = true;
 
-    const checkAccess = async () => {
-        if (!user) {
-            navigate('/SignInPage');
-            return;
-        }
-        if (
-            (user.role === 'client' && user.email_verify === 'verified') ||
-            user.role === 'moderator'
-        ) {
-            setIsCheckingAccess(false);
-        } else {
-            navigate('/AccessDeniedPage');
-        }
-    };
+        const checkAccess = async () => {
+            if (!user) {
+                navigate('/SignInPage');
+                return;
+            }
+            if (
+                (user.role === 'client' && user.email_verify === 'verified') ||
+                user.role === 'moderator'
+            ) {
+                setIsCheckingAccess(false);
+            } else {
+                navigate('/AccessDeniedPage');
+            }
+        };
 
-    checkAccess();
-}, [user, navigate]);
+        checkAccess();
+    }, [user, navigate]);
 
     if (isCheckingAccess) {
         return (
@@ -54,11 +54,19 @@ const ProjectPosting = () => {
         );
     }
 
-    if (!user || user.role !== 'client') {
+    if (
+        !user ||
+        !(
+            (user.role === 'client' && user.email_verify === 'verified') ||
+            user.role === 'moderator'
+        )
+    ) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100 text-center">
                 <h1 className="text-red-500 text-3xl mb-5">Access Denied</h1>
-                <p className="text-gray-600 text-lg">Only clients can post projects</p>
+                <p className="text-gray-600 text-lg">
+                    Only verified clients or moderators can post projects
+                </p>
                 <button
                     onClick={() => navigate('/HomePage')}
                     className="mt-5 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-400"
@@ -261,7 +269,7 @@ const ProjectPosting = () => {
                             onChange={handleChange}
                             placeholder="Enter budget"
                             min="1000000"
-                            max="1000000000" 
+                            max="1000000000"
                             className={`mt-2 ${inputStyle} ${errors.category ? 'border-red-500' : 'border-gray-300'} ${projectData.category === '' ? 'text-gray-500' : 'text-gray-900'}`}
                         />
                         {errors.budget && <span className={errorStyle}>{errors.budget}</span>}
@@ -382,7 +390,7 @@ const ProjectPosting = () => {
                     </div>
                 </form>
             </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 };
