@@ -269,11 +269,6 @@ export default function ApproveRequest() {
                             />
                         ))}
                     </nav>
-                    <div className="mt-8">
-                        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                            Apply Filters
-                        </button>
-                    </div>
                 </aside>
                 <main className="w-3/4 px-2 sm:px-4 md:px-6 lg:px-8 py-6">
                     <div className="flex items-center justify-between mb-4">
