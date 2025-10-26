@@ -22,6 +22,7 @@ const ProjectPosting = () => {
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [skillInput, setSkillInput] = useState('');
+    const [skillError, setSkillError] = useState('');
 
     useEffect(() => {
         if (hasChecked.current) return;
@@ -95,7 +96,43 @@ const ProjectPosting = () => {
             [name]: value
         }));
 
-        if (errors[name]) {
+        // Live validation for title and description
+        if (name === 'title') {
+            if (!value.trim()) {
+                setErrors(prev => ({ ...prev, title: 'Title is required' }));
+            } else if (value.trim().length < 5) {
+                setErrors(prev => ({ ...prev, title: 'Title must be at least 5 characters long' }));
+            } else if (value.trim().length > 250) {
+                setErrors(prev => ({ ...prev, title: 'Title cannot exceed 250 characters' }));
+            } else {
+                setErrors(prev => ({ ...prev, title: '' }));
+            }
+        }
+        if (name === 'description') {
+            if (!value.trim()) {
+                setErrors(prev => ({ ...prev, description: 'Description is required' }));
+            } else if (value.trim().length < 20) {
+                setErrors(prev => ({ ...prev, description: 'Description must be at least 20 characters long' }));
+            } else if (value.trim().length > 2500) {
+                setErrors(prev => ({ ...prev, description: 'Description cannot exceed 2500 characters' }));
+            } else {
+                setErrors(prev => ({ ...prev, description: '' }));
+            }
+        }
+        if (name === 'budget') {
+            const num = Number(value);
+            if (!value || isNaN(num)) {
+                setErrors(prev => ({ ...prev, budget: 'Budget must be greater than 0' }));
+            } else if (num < 1000000) {
+                setErrors(prev => ({ ...prev, budget: 'Budget must be at least 1,000,000 VND' }));
+            } else if (num > 100000000000) {
+                setErrors(prev => ({ ...prev, budget: 'Budget cannot exceed 100 billion VND' }));
+            } else {
+                setErrors(prev => ({ ...prev, budget: '' }));
+            }
+        }
+        // Clear error for other fields on change
+        if (errors[name] && name !== 'title' && name !== 'description' && name !== 'budget') {
             setErrors(prev => ({
                 ...prev,
                 [name]: ''
@@ -105,6 +142,12 @@ const ProjectPosting = () => {
 
     const handleAddSkill = (skill) => {
         const trimmedSkill = skill.trim();
+        if (trimmedSkill.length > 250) {
+            setSkillError('Each skill cannot exceed 250 characters.');
+            setSkillInput('');
+            return;
+        }
+        setSkillError('');
         if (trimmedSkill && !projectData.skills.includes(trimmedSkill)) {
             setProjectData(prev => ({
                 ...prev,
@@ -133,9 +176,11 @@ const ProjectPosting = () => {
 
         if (!projectData.title.trim()) newErrors.title = 'Title is required';
         else if (projectData.title.trim().length < 5) newErrors.title = 'Title must be at least 5 characters long';
+        else if (projectData.title.trim().length > 250) newErrors.title = 'Title cannot exceed 250 characters';
 
         if (!projectData.description.trim()) newErrors.description = 'Description is required';
         else if (projectData.description.trim().length < 20) newErrors.description = 'Description must be at least 20 characters long';
+        else if (projectData.description.trim().length > 2500) newErrors.description = 'Description cannot exceed 2500 characters';
 
         if (!projectData.budget || projectData.budget <= 0) newErrors.budget = 'Budget must be greater than 0';
         else if (projectData.budget > 100000000000) newErrors.budget = 'Budget cannot exceed 100 billion VND';
@@ -342,7 +387,14 @@ const ProjectPosting = () => {
                                 type="text"
                                 id="skills"
                                 value={skillInput}
-                                onChange={(e) => setSkillInput(e.target.value)}
+                                onChange={(e) => {
+                                    setSkillInput(e.target.value);
+                                    if (e.target.value.trim().length > 250) {
+                                        setSkillError('Each skill cannot exceed 250 characters.');
+                                    } else {
+                                        setSkillError('');
+                                    }
+                                }}
                                 onKeyDown={handleSkillInputKeyDown}
                                 placeholder="Enter skill and press Add"
                                 className={`${inputStyle} placeholder:text-gray-400`}
@@ -355,6 +407,7 @@ const ProjectPosting = () => {
                                 Add
                             </button>
                         </div>
+                        {skillError && <span className={errorStyle}>{skillError}</span>}
                         <div className="flex flex-wrap gap-3 mt-4">
                             {projectData.skills.map((skill, index) => (
                                 <div key={index} className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-gray-700 font-medium">
