@@ -130,9 +130,14 @@ export default function NavBar() {
               Hire Freelancer <DropdownArrow />
             </button>
             {user.role === 'moderator' && (
-              <Link to="/ApproveRequest" onClick={() => window.scrollTo(0, 0)}>
-                <button className={buttonStyle}>Approval Request</button>
-              </Link>
+              <>
+                <Link to="/ApproveRequest" onClick={() => window.scrollTo(0, 0)}>
+                  <button className={buttonStyle}>Approval Request</button>
+                </Link>
+                <Link to="/ApproveBid" onClick={() => window.scrollTo(0, 0)}>
+                  <button className={buttonStyle}>Approval Bid</button>
+                </Link>
+              </>
             )}
             {user && ((user.role === 'client' && user.email_verify === 'verified') || user.role === 'moderator') && (
               <Link to="/ProjectPosting" onClick={() => window.scrollTo(0, 0)}>

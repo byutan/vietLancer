@@ -1,6 +1,6 @@
 import React from "react";
 import Badge from "./ui/badge";
-import { DollarSign, Clock, User } from "lucide-react";
+import { DollarSign, Clock, User, HandCoins } from "lucide-react";
 import { Separator } from './ui/separator';
 
 
@@ -40,12 +40,26 @@ function ProjectCard({ project, onClick }) {
           <span className="flex items-center gap-1 text-sm text-gray-500 font-semibold">{project.clientName}</span>
         </div>
         <div className="flex items-center justify-between mt-2">
+          {/* Budget (left) */}
           <div className="flex items-center gap-1 text-sm text-gray-500 font-semibold">
             <DollarSign className="w-4 h-4 text-green-500" />
             <span>Budget:</span>
             <span className="text-base font-bold text-gray-900 ml-1">{typeof project.budget === 'number' ? project.budget.toLocaleString('vi-VN') : project.budget}</span>
             <span className="text-base font-bold text-gray-900 ml-1">VND</span>
           </div>
+          {/* Bidding count (center, only approved) */}
+          <div className="flex-1 flex justify-center">
+            <div className="flex items-center gap-1 text-sm text-gray-500 font-semibold">
+              <HandCoins className="w-4 h-4 text-yellow-600" />
+              <span>Bidding:</span>
+              <span className="text-base font-bold text-gray-900 ml-1">
+                {Array.isArray(project.list_of_bid)
+                  ? project.list_of_bid.filter(bid => bid.bid_status === 'accepted' || bid.bid_status === 'approved').length
+                  : 0}
+              </span>
+            </div>
+          </div>
+          {/* Bidding time left (right) */}
           <div className="flex items-center gap-1 text-sm text-gray-500 font-semibold">
             <Clock className="w-4 h-4 text-blue-500" />
             <span>Bidding time left:</span>
