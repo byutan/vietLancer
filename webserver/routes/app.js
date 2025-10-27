@@ -13,7 +13,7 @@ import contractRoutes from './api/contract.js';
 import uploadRoute from "./api/uploadRoute.js";
 import approveRouter from './api/approve_request.js';
 import rejectRouter from './api/reject_request.js';
-// import acceptRouter from './api/accept.js';
+import bidRouter from './api/bid.js';
 
 
 const __fileName = fileURLToPath(import.meta.url);
@@ -34,6 +34,7 @@ app.use('/api', projectPosting);
 app.use('/api/contract', contractRoutes);
 app.use('/api/approve', approveRouter);
 app.use('/api/reject', rejectRouter);
-// app.use('/api/accept', acceptRouter);
+app.use('/api', bidRouter);
+
 
 export default app;

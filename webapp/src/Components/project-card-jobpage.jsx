@@ -1,6 +1,8 @@
 import React from "react";
 import Badge from "./ui/badge";
 import { DollarSign, Clock, User } from "lucide-react";
+import { Separator } from './ui/separator';
+
 
 function ProjectCard({ project, onClick }) {
   // const statusConfig = {
@@ -30,8 +32,9 @@ function ProjectCard({ project, onClick }) {
             ))}
           </div>
         )}
-        <div className="border-t border-gray-300 my-2" />
-        {/* Client name row */}
+        <div className="my-2">{/* Adjust 'my-3' to your desired spacing (e.g., my-2, my-4, etc.) */}
+          <Separator className="bg-gray-200" />
+        </div>
         <div className="flex items-center gap-2 text-sm text-gray-700 mb-1">
           <User className="w-4 h-4 text-gray-400" />
           <span className="flex items-center gap-1 text-sm text-gray-500 font-semibold">{project.clientName}</span>
