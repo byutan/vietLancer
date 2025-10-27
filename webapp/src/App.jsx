@@ -4,6 +4,7 @@ import SignUpPage from "./Page/SignUp";
 import ProfilePage from "./Page/ProfilePage";
 import JobPage from './Page/JobPage';
 import ApproveRequest from "./Page/ApproveRequest";
+import ApproveBid from "./Page/ApproveBid";
 import AuthProvider from "./ContextAPI/AuthProvider";
 import NavigationBar from './Components/NavigationBar';
 import ProjectPosting from './Page/ProjectPosting';
@@ -24,6 +25,7 @@ function App() {
           <Route path="/JobPage" element={<JobPage />} />
           <Route path="/JobPage/:category" element={<JobPage />} />
           <Route path="/ApproveRequest" element={<ApproveRequest />} />
+          <Route path="/ApproveBid" element={<ApproveBid />} />
           <Route path="/ProjectPosting" element={<ProjectPosting />} />
           <Route path="/ContractTemplatePage" element={<ContractTemplatePage />} />
         </Routes>

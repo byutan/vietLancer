@@ -3,7 +3,7 @@ import useAuth from '../ContextAPI/UseAuth';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Calendar, DollarSign, Clock, User, Mail, FileText, CheckCircle2 } from 'lucide-react';
+import { Calendar, DollarSign, Clock, User, Mail, FileText, CheckCircle2, HandCoins } from 'lucide-react';
 import { Separator } from './ui/separator';
 
 function ProjectCardModalJobPage({ project, onClose }) {
@@ -44,7 +44,7 @@ function ProjectCardModalJobPage({ project, onClose }) {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl min-w-[700px] max-h-[90vh] overflow-y-auto bg-white font-poppins" showCloseButton={false}>
+  <DialogContent className="max-w-6xl min-w-[800px] max-h-[90vh] overflow-y-auto bg-white font-poppins" showCloseButton={false}>
         <DialogHeader>
             <div className="flex items-start justify-between gap-4 mb-2">
               <div>
@@ -85,12 +85,12 @@ function ProjectCardModalJobPage({ project, onClose }) {
               </h3>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">Name:</span>
-                  <span className="font-medium">{project.clientName}</span>
+                    <span className="text-muted-foreground font-semibold">Name:</span>
+                    <span className="font-normal">{project.clientName}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">Email:</span>
-                  <span className="font-medium">{project.clientEmail}</span>
+                    <span className="text-muted-foreground font-semibold">Email:</span>
+                    <span className="font-normal">{project.clientEmail}</span>
                 </div>
               </div>
             </div>
@@ -129,6 +129,22 @@ function ProjectCardModalJobPage({ project, onClose }) {
                   <span className="font-medium">{project.workForm}</span>
                 </div>
               )}
+            </div>
+            <Separator className="bg-gray-200" />
+            {/* Bidding Information */}
+            <div className="mt-2">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                Bidding Information
+              </h3>
+              <div className="flex items-center gap-1 text-sm text-gray-500 font-semibold">
+                <HandCoins className="w-4 h-4 text-yellow-600" />
+                <span>Bidding:</span>
+                <span className="text-base font-bold text-gray-900 ml-1">
+                  {Array.isArray(project.list_of_bid)
+                    ? project.list_of_bid.filter(bid => bid.bid_status === 'accepted' || bid.bid_status === 'approved').length
+                    : 0}
+                </span>
+              </div>
             </div>
           </div>
 
