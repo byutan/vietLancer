@@ -6,11 +6,45 @@ import { Badge } from './ui/badge';
 import { Calendar, DollarSign, Clock, User, Mail, FileText, CheckCircle2, HandCoins } from 'lucide-react';
 import { Separator } from './ui/separator';
 
+
+
 function ProjectCardModalJobPage({ project, onClose }) {
   const [bidDesc, setBidDesc] = useState("");
   const [priceOffer, setPriceOffer] = useState("");
   const [descError, setDescError] = useState("");
   const [priceError, setPriceError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const { user } = useAuth();
+
+  // State to track user's bid after submit (for instant UI update)
+  const [localUserBid, setLocalUserBid] = useState(null);
+
+  // Find current user's bid (if any)
+  let userBid = localUserBid;
+  if (!userBid && user && project.list_of_bid && Array.isArray(project.list_of_bid)) {
+    userBid = project.list_of_bid.find(
+      (bid) => bid.freelancer_email === user.email
+    );
+  }
+
+  // Only allow bid if:
+  // - user is mod, or
+  // - user is verified freelancer AND (chưa từng bid hoặc bid đã bị reject)
+  let canBid = false;
+  if (user) {
+    if (user.role === 'moderator') {
+      canBid = true;
+    } else if (user.role === 'freelancer' && user.email_verify === 'verified') {
+      if (!userBid || (userBid && userBid.bid_status === 'rejected')) {
+        canBid = true;
+      }
+    }
+  }
+
+  // Disable form if user has a bid (bất kể trạng thái) và chưa bị reject
+  const formLocked = !!(userBid && userBid.bid_status !== 'rejected');
 
   const handleBidDescChange = (e) => {
     const value = e.target.value;
@@ -31,14 +65,6 @@ function ProjectCardModalJobPage({ project, onClose }) {
       setPriceError("");
     }
   };
-  const [bidStatus, setBidStatus] = useState("pending");
-  const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-  // Get current user
-  const { user } = useAuth();
-  // Condition to allow bidding
-  const canBid = user && (user.role === 'moderator' || (user.role === 'freelancer' && user.email_verify === 'verified'));
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -179,8 +205,16 @@ function ProjectCardModalJobPage({ project, onClose }) {
                 setSuccessMsg('Bid submitted successfully!');
                 setBidDesc("");
                 setPriceOffer("");
-                setBidStatus("pending");
-                if (typeof onClose === 'function') onClose();
+                // Cập nhật trạng thái bid local để khóa form ngay
+                setLocalUserBid({
+                  freelancer_name: user?.name,
+                  freelancer_email: user?.email,
+                  bid_desc: bidDesc,
+                  price_offer: price,
+                  bid_status: 'pending',
+                  bid_date: new Date().toISOString(),
+                });
+                // Không cần đóng modal ngay, để user thấy form bị khóa
               } else {
                 setErrorMsg(data.message || 'Failed to submit bid.');
               }
@@ -191,35 +225,35 @@ function ProjectCardModalJobPage({ project, onClose }) {
             }
           }}>
             <div>
-              <label className={`block font-semibold mb-1 ${canBid ? '' : 'text-gray-400'}`} htmlFor="bid_desc">Bid Description</label>
+              <label className={`block font-semibold mb-1 ${canBid && !formLocked ? '' : 'text-gray-400'}`} htmlFor="bid_desc">Bid Description</label>
               <textarea
                 id="bid_desc"
-                className={`w-full border rounded-md px-3 py-2 placeholder-gray-500 ${canBid ? 'border-gray-300 bg-white' : 'border-gray-200 bg-gray-200 text-gray-400'}`}
+                className={`w-full border rounded-md px-3 py-2 placeholder-gray-500 ${canBid && !formLocked ? 'border-gray-300 bg-white' : 'border-gray-200 bg-gray-200 text-gray-400'}`}
                 rows={3}
                 value={bidDesc}
                 onChange={handleBidDescChange}
                 placeholder="Enter your bid description..."
-                disabled={!canBid}
+                disabled={!canBid || formLocked}
                 maxLength={2500}
               />
               {descError && <div className="text-xs text-red-500 mt-1">{descError}</div>}
             </div>
             <div>
-              <label className={`block font-semibold mb-1 ${canBid ? '' : 'text-gray-400'}`} htmlFor="price_offer">Offer Price (VND)</label>
+              <label className={`block font-semibold mb-1 ${canBid && !formLocked ? '' : 'text-gray-400'}`} htmlFor="price_offer">Offer Price (VND)</label>
               <input
                 id="price_offer"
                 type="number"
-                className={`w-full border rounded-md px-3 py-2 placeholder-gray-500 ${canBid ? 'border-gray-300 bg-white' : 'border-gray-200 bg-gray-200 text-gray-400'}`}
+                className={`w-full border rounded-md px-3 py-2 placeholder-gray-500 ${canBid && !formLocked ? 'border-gray-300 bg-white' : 'border-gray-200 bg-gray-200 text-gray-400'}`}
                 value={priceOffer}
                 onChange={handlePriceOfferChange}
                 placeholder="Enter your offer price"
                 min={1000000}
                 max={1000000000}
-                disabled={!canBid}
+                disabled={!canBid || formLocked}
               />
               {priceError && <div className="text-xs text-red-500 mt-1">{priceError}</div>}
             </div>
-            {canBid && (
+            {canBid && !formLocked && (
               <div className="flex justify-end gap-2 mt-4">
                 <Button
                   type="submit"
@@ -231,12 +265,15 @@ function ProjectCardModalJobPage({ project, onClose }) {
                 </Button>
               </div>
             )}
+            {formLocked && (
+              <div className="text-center text-gray-500 mt-4 text-sm">You have already submitted a bid for this project. You cannot bid again unless your previous bid is rejected.</div>
+            )}
+            {!canBid && !formLocked && (
+              <div className="text-center text-gray-500 mt-4 text-sm">Only moderators or freelancers with verified email can bid for this project.</div>
+            )}
             {successMsg && <div className="text-green-600 text-sm mt-2 text-center">{successMsg}</div>}
             {errorMsg && <div className="text-red-600 text-sm mt-2 text-center">{errorMsg}</div>}
           </form>
-          {!canBid && (
-            <div className="text-center text-gray-500 mt-4 text-sm">Only moderators or freelancers with verified email can bid for this project.</div>
-          )}
         </div>
 
         <DialogFooter className="gap-2">
