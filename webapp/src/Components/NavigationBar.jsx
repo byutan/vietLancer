@@ -130,9 +130,14 @@ export default function NavBar() {
               Hire Freelancer <DropdownArrow />
             </button>
             {user.role === 'moderator' && (
-              <Link to="/ApproveRequest" onClick={() => window.scrollTo(0, 0)}>
-                <button className={buttonStyle}>Approval Request</button>
-              </Link>
+              <>
+                <Link to="/ApproveRequest" onClick={() => window.scrollTo(0, 0)}>
+                  <button className={buttonStyle}>Approval Request</button>
+                </Link>
+                <Link to="/ApproveBid" onClick={() => window.scrollTo(0, 0)}>
+                  <button className={buttonStyle}>Approval Bid</button>
+                </Link>
+              </>
             )}
             {user && ((user.role === 'client' && user.email_verify === 'verified') || user.role === 'moderator') && (
               <Link to="/ProjectPosting" onClick={() => window.scrollTo(0, 0)}>
@@ -161,9 +166,13 @@ export default function NavBar() {
                 >
                   Profile
                 </Link>
-                <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <Link // 👈 THAY THẾ: Chuyển button thành Link
+                  to="/MyProjectPage" // 👈 THAY THẾ: Thêm đường dẫn MyProjectPage
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setOpenMenu(false)}
+                >
                   My Project
-                </button>
+                </Link>
                 {(user?.role === "client" || user.role === 'moderator') && (
                   <button
                     onClick={() => navigate("/ContractTemplatePage")}

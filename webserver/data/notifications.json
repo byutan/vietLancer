@@ -1,0 +1,67 @@
+[
+  {
+    "id": "notif_1761738266990_c53ggwzcs",
+    "userId": "phatclientv@gmail.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Dự án đã gửi đi xét duyệt",
+      "message": "Dự án \"aaaaa\" của bạn đã được gửi đi xét duyệt. Chúng tôi sẽ thông báo kết quả sớm nhất.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1761738266987",
+      "projectName": "aaaaa",
+      "submittedAt": "2025-10-29T11:44:26.989Z"
+    },
+    "read": false,
+    "createdAt": "2025-10-29T11:44:26.990Z"
+  },
+  {
+    "id": "notif_1761738474140_c117pnst2",
+    "userId": "phatclientv@gmail.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Dự án đã gửi đi xét duyệt",
+      "message": "Dự án \"aaaaaa\" của bạn đã được gửi đi xét duyệt. Chúng tôi sẽ thông báo kết quả sớm nhất.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1761738474139",
+      "projectName": "aaaaaa",
+      "submittedAt": "2025-10-29T11:47:54.140Z"
+    },
+    "read": false,
+    "createdAt": "2025-10-29T11:47:54.140Z"
+  },
+  {
+    "id": "notif_1761740637455_0gvm7xrat",
+    "userEmail": "phatclientv@gmail.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Dự án đã gửi đi xét duyệt",
+      "message": "Dự án \"Testaa\" của bạn đã được gửi đi xét duyệt. Chúng tôi sẽ thông báo kết quả sớm nhất.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1761740637454",
+      "projectName": "Testaa",
+      "submittedAt": "2025-10-29T12:23:57.455Z"
+    },
+    "read": false,
+    "createdAt": "2025-10-29T12:23:57.455Z"
+  },
+  {
+    "id": "notif_1761740672361_uaex6i6y2",
+    "userEmail": "phatclientv@gmail.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Dự án đã được duyệt",
+      "message": "Chúc mừng! Dự án \"Testaa\" của bạn đã được phê duyệt. Freelancer có thể bắt đầu đặt giá thầu.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1761740637454",
+      "projectName": "Testaa",
+      "approvedAt": "2025-10-29T12:24:32.360Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-10-29T12:24:32.361Z"
+  }
+]

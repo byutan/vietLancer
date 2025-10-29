@@ -45,12 +45,13 @@ const generateId = () => {
 };
 
 // Create notification
-export const createNotification = async (userId, type, data) => {
+// userEmail: email của user (thay vì userId)
+export const createNotification = async (userEmail, type, data) => {
   const notifications = await loadNotifications();
   
   const notification = {
     id: generateId(),
-    userId,
+    userEmail, // 🔑 Dùng email làm key
     type, // 'project_submitted', 'project_approved', 'project_rejected', 'bid_submitted', 'bid_approved', 'bid_rejected'
     data,
     read: false,
@@ -63,18 +64,38 @@ export const createNotification = async (userId, type, data) => {
   return notification;
 };
 
+router.get('/unread-count', async (req, res) => {
+  try {
+    const { userEmail } = req.query; // 🔑 Query bằng email
+    
+    if (!userEmail) {
+      return res.status(400).json({ error: 'userEmail is required' });
+    }
+    
+    const notifications = await loadNotifications();
+    const unreadCount = notifications.filter(n => n.userEmail === userEmail && !n.read).length;
+    
+    res.json({
+      success: true,
+      unreadCount
+    });
+  } catch (error) {
+    console.error('Error getting unread count:', error);
+    res.status(500).json({ error: 'Failed to get unread count' });
+  }
+});
 // GET /api/notifications - Get all notifications for a user
 router.get('/', async (req, res) => {
   try {
-    const { userId } = req.query;
+    const { userEmail } = req.query; // 🔑 Query bằng email
     
-    if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
+    if (!userEmail) {
+      return res.status(400).json({ error: 'userEmail is required' });
     }
     
     const notifications = await loadNotifications();
     const userNotifications = notifications
-      .filter(n => n.userId === userId)
+      .filter(n => n.userEmail === userEmail)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     
     res.json({
@@ -89,26 +110,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET /api/notifications/unread-count - Get unread count
-router.get('/unread-count', async (req, res) => {
-  try {
-    const { userId } = req.query;
-    
-    if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
-    }
-    
-    const notifications = await loadNotifications();
-    const unreadCount = notifications.filter(n => n.userId === userId && !n.read).length;
-    
-    res.json({
-      success: true,
-      unreadCount
-    });
-  } catch (error) {
-    console.error('Error getting unread count:', error);
-    res.status(500).json({ error: 'Failed to get unread count' });
-  }
-});
+
 
 // PUT /api/notifications/:id/read - Mark notification as read
 router.put('/:id/read', async (req, res) => {
@@ -138,17 +140,17 @@ router.put('/:id/read', async (req, res) => {
 // PUT /api/notifications/read-all - Mark all notifications as read
 router.put('/read-all', async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { userEmail } = req.body; // 🔑 Body với email
     
-    if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
+    if (!userEmail) {
+      return res.status(400).json({ error: 'userEmail is required' });
     }
     
     const notifications = await loadNotifications();
     let updatedCount = 0;
     
     notifications.forEach(n => {
-      if (n.userId === userId && !n.read) {
+      if (n.userEmail === userEmail && !n.read) {
         n.read = true;
         updatedCount++;
       }
@@ -195,13 +197,13 @@ router.delete('/:id', async (req, res) => {
 // POST /api/notifications/create - Create notification (internal use)
 router.post('/create', async (req, res) => {
   try {
-    const { userId, type, data } = req.body;
+    const { userEmail, type, data } = req.body; // 🔑 Body với email
     
-    if (!userId || !type) {
-      return res.status(400).json({ error: 'userId and type are required' });
+    if (!userEmail || !type) {
+      return res.status(400).json({ error: 'userEmail and type are required' });
     }
     
-    const notification = await createNotification(userId, type, data);
+    const notification = await createNotification(userEmail, type, data);
     
     res.json({
       success: true,

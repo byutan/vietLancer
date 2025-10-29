@@ -9,7 +9,7 @@ function ProjectDetailModal({ project, onClose, onApprove, onReject }) {
   const isPending = project.status === "pending";
   return (
     <Dialog open={true} onOpenChange={onClose}>
-  <DialogContent className="max-w-6xl min-w-[700px] max-h-[90vh] overflow-y-auto bg-white font-poppins" showCloseButton={false}>
+  <DialogContent className="max-w-6xl min-w-[800px] max-h-[90vh] overflow-y-auto bg-white font-poppins" showCloseButton={false}>
         <DialogHeader>
           <div className="flex items-start justify-between gap-4 mb-2">
             <div>
@@ -49,14 +49,14 @@ function ProjectDetailModal({ project, onClose, onApprove, onReject }) {
               Client Information
             </h3>
             <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">Name:</span>
-                <span className="font-medium">{project.clientName}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">Email:</span>
-                <span className="font-medium">{project.clientEmail}</span>
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground font-semibold">Name:</span>
+                  <span className="font-normal">{project.clientName}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground font-semibold">Email:</span>
+                  <span className="font-normal">{project.clientEmail}</span>
+                </div>
             </div>
           </div>
 
