@@ -2,12 +2,14 @@ import express from 'express';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import NotificationService from '../../utils/notificationService.js';
 
 const __fileName = fileURLToPath(import.meta.url);
 const __dirName = path.dirname(__fileName);
 const router = express.Router();
 
 const PROJECTS_FILE = path.join(__dirName, '../../data/projects.json');
+
 const readProjectsData = async () => {
     try {
         const data = await fs.readFile(PROJECTS_FILE, 'utf8');
@@ -35,6 +37,7 @@ const writeProjectsData = async (data) => {
         throw new Error('Unable to write data into file.');
     }
 };
+
 router.post('/projects', async (req, res) => {
     try {
         const {
@@ -46,7 +49,7 @@ router.post('/projects', async (req, res) => {
             paymentMethod,
             workForm,
             clientName,
-            clientEmail
+            clientEmail // 🔑 Email đã có sẵn trong form
         } = req.body;
 
         if (!title) {
@@ -70,7 +73,6 @@ router.post('/projects', async (req, res) => {
             });
         }
 
-
         if (!category) {
             return res.status(400).json({
                 success: false,
@@ -89,6 +91,14 @@ router.post('/projects', async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: 'Please choose work form.'
+            });
+        }
+
+        // 🔑 Validate email
+        if (!clientEmail) {
+            return res.status(400).json({
+                success: false,
+                message: 'Client email is required.'
             });
         }
 
@@ -112,6 +122,7 @@ router.post('/projects', async (req, res) => {
                 message: 'Predicted budget must be at least 1.000.000'
             });
         }
+
         const projects = await readProjectsData(); 
 
         const newProject = {
@@ -125,7 +136,7 @@ router.post('/projects', async (req, res) => {
             workForm,
             status: 'pending',
             clientName: clientName || 'client',
-            clientEmail: clientEmail || '',
+            clientEmail: clientEmail, // 🔑 Lưu email
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         };
@@ -133,6 +144,18 @@ router.post('/projects', async (req, res) => {
         projects.unshift(newProject);
 
         await writeProjectsData(projects);
+
+        // 🔔 GỬI THÔNG BÁO CHO CLIENT (dùng email)
+        try {
+            await NotificationService.notifyProjectSubmitted(clientEmail, {
+                projectId: newProject.id,
+                projectName: newProject.title
+            });
+            console.log(`✅ Notification sent to ${clientEmail} for submitted project "${newProject.title}"`);
+        } catch (notifError) {
+            console.error('⚠️ Failed to send notification:', notifError);
+            // Không return error vì project đã tạo thành công
+        }
 
         res.status(201).json({
             success: true,
@@ -148,6 +171,7 @@ router.post('/projects', async (req, res) => {
         });
     }
 });
+
 router.get('/projects', async (req, res) => {
     try {
         const projects = await readProjectsData();
@@ -163,6 +187,7 @@ router.get('/projects', async (req, res) => {
         });
     }
 });
+
 router.get('/projects/:id', async (req, res) => {
     try {
         const { id } = req.params;
