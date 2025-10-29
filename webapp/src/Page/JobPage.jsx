@@ -260,7 +260,11 @@ export default function JobPage() {
             {selectedProject && (
                 <ProjectCardModalJobPage
                     project={selectedProject}
-                    onClose={() => setSelectedProject(null)}
+                    onClose={() => {
+                        setSelectedProject(null);
+                        // Refetch projects to update UI after modal closes (e.g. after mod duyệt bid)
+                        fetchProjects();
+                    }}
                 />
             )}
             <Footer />
