@@ -13,7 +13,7 @@ import SecurityIcon from '../Public/security.svg';
 import { useNavigate } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { m } from 'framer-motion';
-
+import NotificationBell from './NotificationBell';
 const DropdownArrow = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -144,6 +144,7 @@ export default function NavBar() {
                 <button className={buttonStyle}>Post Project</button>
               </Link>
             )}
+            <NotificationBell />
             <div className="relative" ref={menuRef}>
               <button onClick={() => setOpenMenu(!openMenu)}>
                 <img
