@@ -4,44 +4,44 @@ import { createNotification } from '../routes/api/notification.js';
 const NOTIFICATION_TEMPLATES = {
   // Client notifications
   project_submitted: (data) => ({
-    title: 'Dự án đã gửi đi xét duyệt',
-    message: `Dự án "${data.projectName}" của bạn đã được gửi đi xét duyệt. Chúng tôi sẽ thông báo kết quả sớm nhất.`,
+    title: 'Project Submitted for Review',
+    message: `Your project "${data.projectName}" has been successfully submitted and is now under review. We'll notify you once a decision has been made.`,
     icon: 'clock',
     color: 'blue'
   }),
   
   project_approved: (data) => ({
-    title: 'Dự án đã được duyệt',
-    message: `Chúc mừng! Dự án "${data.projectName}" của bạn đã được phê duyệt. Freelancer có thể bắt đầu đặt giá thầu.`,
+    title: 'Project Approved',
+    message: `Congratulations! Your project "${data.projectName}" has been approved and is now live. Freelancers can start submitting proposals.`,
     icon: 'check-circle',
     color: 'green'
   }),
   
   project_rejected: (data) => ({
-    title: 'Dự án bị từ chối',
-    message: `Rất tiếc, dự án "${data.projectName}" không được phê duyệt. Lý do: ${data.reason || 'Không đáp ứng yêu cầu'}`,
+    title: 'Project Not Approved',
+    message: `Unfortunately, your project "${data.projectName}" was not approved. Reason: ${data.reason || 'Does not meet platform requirements'}. Please review our guidelines and resubmit.`,
     icon: 'x-circle',
     color: 'red'
   }),
   
   // Freelancer notifications
   bid_submitted: (data) => ({
-    title: 'Đề xuất đã gửi thành công',
-    message: `Đề xuất của bạn cho dự án "${data.projectName}" đã được gửi đi. Client sẽ xem xét và phản hồi sớm.`,
+    title: 'Proposal Submitted Successfully',
+    message: `Your proposal for "${data.projectName}" has been submitted. The client will review it and respond shortly.`,
     icon: 'clock',
     color: 'blue'
   }),
   
   bid_approved: (data) => ({
-    title: 'Đề xuất được chấp nhận',
-    message: `Chúc mừng! Đề xuất của bạn cho dự án "${data.projectName}" đã được chấp nhận. Hãy liên hệ với client để bắt đầu làm việc.`,
+    title: 'Proposal Accepted',
+    message: `Great news! Your proposal for "${data.projectName}" has been accepted. Please contact the client to begin work.`,
     icon: 'check-circle',
     color: 'green'
   }),
   
   bid_rejected: (data) => ({
-    title: 'Đề xuất không được chấp nhận',
-    message: `Rất tiếc, đề xuất của bạn cho dự án "${data.projectName}" không được chấp nhận. Đừng nản lòng, hãy thử với các dự án khác!`,
+    title: 'Proposal Not Selected',
+    message: `Your proposal for "${data.projectName}" was not selected this time. Keep refining your approach and explore other opportunities.`,
     icon: 'x-circle',
     color: 'orange'
   })

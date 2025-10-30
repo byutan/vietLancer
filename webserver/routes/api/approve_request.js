@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
     // Ghi file
     await fs.promises.writeFile(DATA_PATH, JSON.stringify(projects, null, 2));
 
-    // 🔔 GỬI THÔNG BÁO CHO CLIENT (dùng email)
+    // Send noti to client
     if (project.clientEmail) {
       try {
         await NotificationService.notifyProjectApproved(project.clientEmail, {
@@ -59,12 +59,12 @@ router.post('/', async (req, res) => {
           projectName: project.title || project.name,
           approvedBy: approvedBy || 'admin'
         });
-        console.log(`✅ Notification sent to ${project.clientEmail} for approved project "${project.title}"`);
+        console.log(`Notification sent to ${project.clientEmail} for approved project "${project.title}"`);
       } catch (notifError) {
-        console.error('⚠️ Failed to send notification:', notifError);
+        console.error('Failed to send notification:', notifError);
       }
     } else {
-      console.warn('⚠️ No clientEmail found in project, notification not sent');
+      console.warn('No clientEmail found in project, notification not sent');
     }
 
     res.json({ 

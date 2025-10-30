@@ -51,7 +51,7 @@ export const createNotification = async (userEmail, type, data) => {
   
   const notification = {
     id: generateId(),
-    userEmail, // 🔑 Dùng email làm key
+    userEmail, 
     type, // 'project_submitted', 'project_approved', 'project_rejected', 'bid_submitted', 'bid_approved', 'bid_rejected'
     data,
     read: false,
@@ -66,7 +66,7 @@ export const createNotification = async (userEmail, type, data) => {
 
 router.get('/unread-count', async (req, res) => {
   try {
-    const { userEmail } = req.query; // 🔑 Query bằng email
+    const { userEmail } = req.query; 
     
     if (!userEmail) {
       return res.status(400).json({ error: 'userEmail is required' });
@@ -87,7 +87,7 @@ router.get('/unread-count', async (req, res) => {
 // GET /api/notifications - Get all notifications for a user
 router.get('/', async (req, res) => {
   try {
-    const { userEmail } = req.query; // 🔑 Query bằng email
+    const { userEmail } = req.query; 
     
     if (!userEmail) {
       return res.status(400).json({ error: 'userEmail is required' });
@@ -197,7 +197,7 @@ router.delete('/:id', async (req, res) => {
 // POST /api/notifications/create - Create notification (internal use)
 router.post('/create', async (req, res) => {
   try {
-    const { userEmail, type, data } = req.body; // 🔑 Body với email
+    const { userEmail, type, data } = req.body; 
     
     if (!userEmail || !type) {
       return res.status(400).json({ error: 'userEmail and type are required' });

@@ -49,7 +49,7 @@ router.post('/projects', async (req, res) => {
             paymentMethod,
             workForm,
             clientName,
-            clientEmail // 🔑 Email đã có sẵn trong form
+            clientEmail 
         } = req.body;
 
         if (!title) {
@@ -136,7 +136,7 @@ router.post('/projects', async (req, res) => {
             workForm,
             status: 'pending',
             clientName: clientName || 'client',
-            clientEmail: clientEmail, // 🔑 Lưu email
+            clientEmail: clientEmail, 
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         };
@@ -145,13 +145,12 @@ router.post('/projects', async (req, res) => {
 
         await writeProjectsData(projects);
 
-        // 🔔 GỬI THÔNG BÁO CHO CLIENT (dùng email)
         try {
             await NotificationService.notifyProjectSubmitted(clientEmail, {
                 projectId: newProject.id,
                 projectName: newProject.title
             });
-            console.log(`✅ Notification sent to ${clientEmail} for submitted project "${newProject.title}"`);
+            console.log(`Notification sent to ${clientEmail} for submitted project "${newProject.title}"`);
         } catch (notifError) {
             console.error('⚠️ Failed to send notification:', notifError);
             // Không return error vì project đã tạo thành công

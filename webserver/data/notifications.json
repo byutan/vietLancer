@@ -1,67 +1,38 @@
 [
   {
-    "id": "notif_1761738266990_c53ggwzcs",
-    "userId": "phatclientv@gmail.com",
-    "type": "project_submitted",
+    "id": "notif_1761834719141_comhqmsw0",
+    "userEmail": "phatfreev@gmail.com",
+    "type": "bid_submitted",
     "data": {
-      "title": "Dự án đã gửi đi xét duyệt",
-      "message": "Dự án \"aaaaa\" của bạn đã được gửi đi xét duyệt. Chúng tôi sẽ thông báo kết quả sớm nhất.",
+      "title": "Đề xuất đã gửi thành công",
+      "message": "Đề xuất của bạn cho dự án \"Testaa\" đã được gửi đi. Client sẽ xem xét và phản hồi sớm.",
       "icon": "clock",
       "color": "blue",
-      "projectId": "project_1761738266987",
-      "projectName": "aaaaa",
-      "submittedAt": "2025-10-29T11:44:26.989Z"
-    },
-    "read": false,
-    "createdAt": "2025-10-29T11:44:26.990Z"
-  },
-  {
-    "id": "notif_1761738474140_c117pnst2",
-    "userId": "phatclientv@gmail.com",
-    "type": "project_submitted",
-    "data": {
-      "title": "Dự án đã gửi đi xét duyệt",
-      "message": "Dự án \"aaaaaa\" của bạn đã được gửi đi xét duyệt. Chúng tôi sẽ thông báo kết quả sớm nhất.",
-      "icon": "clock",
-      "color": "blue",
-      "projectId": "project_1761738474139",
-      "projectName": "aaaaaa",
-      "submittedAt": "2025-10-29T11:47:54.140Z"
-    },
-    "read": false,
-    "createdAt": "2025-10-29T11:47:54.140Z"
-  },
-  {
-    "id": "notif_1761740637455_0gvm7xrat",
-    "userEmail": "phatclientv@gmail.com",
-    "type": "project_submitted",
-    "data": {
-      "title": "Dự án đã gửi đi xét duyệt",
-      "message": "Dự án \"Testaa\" của bạn đã được gửi đi xét duyệt. Chúng tôi sẽ thông báo kết quả sớm nhất.",
-      "icon": "clock",
-      "color": "blue",
+      "bidId": "48800667-61c2-4c39-8dd1-ae5bfbf2383e",
       "projectId": "project_1761740637454",
       "projectName": "Testaa",
-      "submittedAt": "2025-10-29T12:23:57.455Z"
+      "bidAmount": 12222222,
+      "submittedAt": "2025-10-30T14:31:59.140Z"
     },
     "read": false,
-    "createdAt": "2025-10-29T12:23:57.455Z"
+    "createdAt": "2025-10-30T14:31:59.141Z"
   },
   {
-    "id": "notif_1761740672361_uaex6i6y2",
-    "userEmail": "phatclientv@gmail.com",
-    "type": "project_approved",
+    "id": "notif_1761834759444_yel5eblqi",
+    "userEmail": "phatfreev@gmail.com",
+    "type": "bid_submitted",
     "data": {
-      "title": "Dự án đã được duyệt",
-      "message": "Chúc mừng! Dự án \"Testaa\" của bạn đã được phê duyệt. Freelancer có thể bắt đầu đặt giá thầu.",
-      "icon": "check-circle",
-      "color": "green",
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"Testaa\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "78b3d0d6-4ecd-4bc2-8628-afac165f7f6a",
       "projectId": "project_1761740637454",
       "projectName": "Testaa",
-      "approvedAt": "2025-10-29T12:24:32.360Z",
-      "approvedBy": "admin"
+      "bidAmount": 12222222,
+      "submittedAt": "2025-10-30T14:32:39.441Z"
     },
     "read": false,
-    "createdAt": "2025-10-29T12:24:32.361Z"
+    "createdAt": "2025-10-30T14:32:39.444Z"
   }
 ]

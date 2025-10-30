@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
     // Ghi file
     await fs.promises.writeFile(DATA_PATH, JSON.stringify(projects, null, 2));
 
-    // 🔔 GỬI THÔNG BÁO CHO CLIENT (dùng email)
+    // GỬI THÔNG BÁO CHO CLIENT 
     if (project.clientEmail) {
       try {
         await NotificationService.notifyProjectRejected(project.clientEmail, {
@@ -49,12 +49,12 @@ router.post('/', async (req, res) => {
           reason: reason || 'Không đáp ứng yêu cầu',
           rejectedBy: rejectedBy || 'admin'
         });
-        console.log(`✅ Notification sent to ${project.clientEmail} for rejected project "${project.title}"`);
+        console.log(`Notification sent to ${project.clientEmail} for rejected project "${project.title}"`);
       } catch (notifError) {
-        console.error('⚠️ Failed to send notification:', notifError);
+        console.error('Failed to send notification:', notifError);
       }
     } else {
-      console.warn('⚠️ No clientEmail found in project, notification not sent');
+      console.warn('No clientEmail found in project, notification not sent');
     }
 
     res.json({ 
