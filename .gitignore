@@ -25,9 +25,7 @@ dist-ssr
 
 node_modules/
 
-webserver/data/users.json
-
-webserver/data/projects.json
+webserver/data/
 
 webserver/.env
 
