@@ -95,7 +95,10 @@ function ProjectCardModalJobPage({ project, onClose }) {
             <DialogDescription className="text-lg text-gray-700 font-semibold mb-2">{project.description}</DialogDescription>
           </DialogHeader>
 
+          {/* Info section */}
           <div className="space-y-6 py-4">
+            {/* 3 cột: Budget, Created Date, Updated Date */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex flex-col items-start gap-1 p-3 rounded-lg bg-gray-100">
                 <span className="text-xs text-muted-foreground">Budget</span>
                 <span className="font-semibold text-lg">{typeof project.budget === 'number' ? project.budget.toLocaleString('vi-VN') : project.budget} VND</span>
@@ -109,10 +112,23 @@ function ProjectCardModalJobPage({ project, onClose }) {
                 <span className="font-semibold text-lg">{project.updatedAt ? `${new Date(project.updatedAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })} ${new Date(project.updatedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}` : '-'}</span>
               </div>
             </div>
-
             <Separator className="bg-gray-200" />
-                      <div className="space-y-6 py-4">
-
+            <div>
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Client Information
+              </h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground font-semibold">Name:</span>
+                  <span className="font-normal">{project.clientName}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground font-semibold">Email:</span>
+                  <span className="font-normal">{project.clientEmail}</span>
+                </div>
+              </div>
+            </div>
             <Separator className="bg-gray-200" />
             <div>
               <h3 className="font-semibold mb-3">Required Skills</h3>
