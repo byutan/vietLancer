@@ -179,8 +179,8 @@ function ProjectCardModalJobPage({ project, onClose }) {
           </div>
 
         <Separator className="bg-gray-200" />
-        <div className={`mt-8 p-4 border rounded-lg ${canBid ? 'border-green-300 bg-green-50' : 'border-gray-300 bg-gray-100'}`}>
-          <h3 className={`font-bold text-lg mb-4 ${canBid ? 'text-green-700' : 'text-gray-500'}`}>Bid for this project</h3>
+        <div className={`mt-8 p-4 border rounded-lg ${(canBid && !formLocked) ? 'border-green-300 bg-green-50' : 'border-gray-300 bg-gray-100'}`}>
+          <h3 className={`font-bold text-lg mb-4 ${(canBid && !formLocked) ? 'text-green-700' : 'text-gray-500'}`}>Bid for this project</h3>
           <form className="space-y-4" onSubmit={async e => {
             e.preventDefault();
             setSuccessMsg("");
@@ -237,10 +237,10 @@ function ProjectCardModalJobPage({ project, onClose }) {
             }
           }}>
             <div>
-              <label className={`block font-semibold mb-1 ${canBid && !formLocked ? '' : 'text-gray-400'}`} htmlFor="bid_desc">Bid Description</label>
+              <label className={`block font-semibold mb-1 ${(canBid && !formLocked) ? '' : 'text-gray-400'}`} htmlFor="bid_desc">Bid Description</label>
               <textarea
                 id="bid_desc"
-                className={`w-full border rounded-md px-3 py-2 placeholder-gray-500 ${canBid && !formLocked ? 'border-gray-300 bg-white' : 'border-gray-200 bg-gray-200 text-gray-400'}`}
+                className={`w-full border rounded-md px-3 py-2 ${(canBid && !formLocked) ? 'border-green-300 bg-white text-black placeholder-gray-500' : 'border-gray-300 bg-gray-100 text-gray-500 placeholder:text-gray-500'}`}
                 rows={3}
                 value={bidDesc}
                 onChange={handleBidDescChange}
@@ -251,11 +251,11 @@ function ProjectCardModalJobPage({ project, onClose }) {
               {descError && <div className="text-xs text-red-500 mt-1">{descError}</div>}
             </div>
             <div>
-              <label className={`block font-semibold mb-1 ${canBid && !formLocked ? '' : 'text-gray-400'}`} htmlFor="price_offer">Offer Price (VND)</label>
+              <label className={`block font-semibold mb-1 ${(canBid && !formLocked) ? '' : 'text-gray-400'}`} htmlFor="price_offer">Offer Price (VND)</label>
               <input
                 id="price_offer"
                 type="number"
-                className={`w-full border rounded-md px-3 py-2 placeholder-gray-500 ${canBid && !formLocked ? 'border-gray-300 bg-white' : 'border-gray-200 bg-gray-200 text-gray-400'}`}
+                className={`w-full border rounded-md px-3 py-2 ${(canBid && !formLocked) ? 'border-green-300 bg-white text-black placeholder-gray-500' : 'border-gray-300 bg-gray-100 text-gray-500 placeholder:text-gray-500'}`}
                 value={priceOffer}
                 onChange={handlePriceOfferChange}
                 placeholder="Enter your offer price"
