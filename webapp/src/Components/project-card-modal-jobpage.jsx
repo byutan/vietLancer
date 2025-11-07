@@ -285,7 +285,7 @@ function ProjectCardModalJobPage({ project, onClose }) {
               </div>
             )}
             {!canBid && !formLocked && (
-              <div className="text-center text-gray-500 mt-4 text-sm">Only moderators or freelancers with verified email can bid for this project.</div>
+              <div className="text-center text-gray-500 mt-4 text-sm">Only moderators or freelancers with verified email can bid this project.</div>
             )}
             {successMsg && <div className="text-green-600 text-sm mt-2 text-center">{successMsg}</div>}
             {errorMsg && <div className="text-red-600 text-sm mt-2 text-center">{errorMsg}</div>}
