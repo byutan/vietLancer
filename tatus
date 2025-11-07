@@ -1,0 +1,5 @@
+[33m0fb5c21[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmyproject-page[m[33m, [m[1;31morigin/myproject-page[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Merge pull request #7 from byutan/bid
+[33m142a215[m[33m ([m[1;31morigin/bid[m[33m)[m add feature approve bid, update bid to json, appear in browse job
+[33m9311d37[m Merge pull request #6 from byutan/bid
+[33m1539294[m add bid feature: add bid form to modal, call api to write bid into projects.json, update package
+[33mec2bcc3[m chỉnh sửa giới hạn

@@ -13,7 +13,7 @@ import SecurityIcon from '../Public/security.svg';
 import { useNavigate } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { m } from 'framer-motion';
-
+import NotificationBell from './NotificationBell';
 const DropdownArrow = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -146,6 +146,7 @@ export default function NavBar() {
                 </Link>
               </>
             )}
+            <NotificationBell />
             <div className="relative" ref={menuRef}>
               <button onClick={() => setOpenMenu(!openMenu)}>
                 <img
@@ -167,9 +168,13 @@ export default function NavBar() {
                 >
                   Profile
                 </Link>
-                <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <Link // 👈 THAY THẾ: Chuyển button thành Link
+                  to="/MyProjectPage" // 👈 THAY THẾ: Thêm đường dẫn MyProjectPage
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setOpenMenu(false)}
+                >
                   My Project
-                </button>
+                </Link>
                 {(user?.role === "client" || user.role === 'moderator') && (
                   <button
                     onClick={() => navigate("/ContractTemplatePage")}

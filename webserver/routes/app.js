@@ -3,7 +3,7 @@ import serveFavicon from 'serve-favicon';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors'
-
+import notificationRoutes from './api/notification.js';
 import signUpRouter from './api/signup.js'
 import signInRouter from './api/signin.js';
 import updateProfileRouter from './api/profile.js'
@@ -34,7 +34,7 @@ app.use('/api', projectPosting);
 app.use('/api/contract', contractRoutes);
 app.use('/api/approve', approveRouter);
 app.use('/api/reject', rejectRouter);
+// app.use('/api/accept', acceptRouter);
 app.use('/api', bidRouter);
-
-
+app.use('/api/notifications', notificationRoutes);
 export default app;
