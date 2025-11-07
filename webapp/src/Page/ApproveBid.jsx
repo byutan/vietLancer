@@ -14,7 +14,6 @@ const STATUS_OPTIONS = [
 
 export default function ApproveBid() {
     const [bids, setBids] = useState([]);
-    // Lấy thông tin user hiện tại (client) từ AuthContext
     const { user } = useContext(AuthContext);
     // Fetch all projects, then flatten all bids with project info
     const fetchBids = useCallback(async () => {
