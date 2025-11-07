@@ -12,8 +12,39 @@ function ProjectCardModalJobPage({ project, onClose }) {
   const [priceOffer, setPriceOffer] = useState("");
   const [descError, setDescError] = useState("");
   const [priceError, setPriceError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const { user } = useAuth();
 
-  // Live validation handlers
+  // State to track user's bid after submit (for instant UI update)
+  const [localUserBid, setLocalUserBid] = useState(null);
+
+  // Find current user's bid (if any)
+  let userBid = localUserBid;
+  if (!userBid && user && project.list_of_bid && Array.isArray(project.list_of_bid)) {
+    userBid = project.list_of_bid.find(
+      (bid) => bid.freelancer_email === user.email
+    );
+  }
+
+  // Only allow bid if:
+  // - user is mod, or
+  // - user is verified freelancer AND (chưa từng bid hoặc bid đã bị reject)
+  let canBid = false;
+  if (user) {
+    if (user.role === 'moderator') {
+      canBid = true;
+    } else if (user.role === 'freelancer' && user.email_verify === 'verified') {
+      if (!userBid || (userBid && userBid.bid_status === 'rejected')) {
+        canBid = true;
+      }
+    }
+  }
+
+  // Disable form if user has a bid (bất kể trạng thái) và chưa bị reject
+  const formLocked = !!(userBid && userBid.bid_status !== 'rejected');
+
   const handleBidDescChange = (e) => {
     const value = e.target.value;
     setBidDesc(value);
@@ -59,8 +90,6 @@ function ProjectCardModalJobPage({ project, onClose }) {
           </DialogHeader>
 
           <div className="space-y-6 py-4">
-            {/* 3-column info */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex flex-col items-start gap-1 p-3 rounded-lg bg-gray-100">
                 <span className="text-xs text-muted-foreground">Budget</span>
                 <span className="font-semibold text-lg">{typeof project.budget === 'number' ? project.budget.toLocaleString('vi-VN') : project.budget} VND</span>
@@ -76,8 +105,6 @@ function ProjectCardModalJobPage({ project, onClose }) {
             </div>
 
             <Separator className="bg-gray-200" />
-
-            {/* Client Information */}
             <div>
               <h3 className="font-semibold mb-3 flex items-center gap-2">
                 <User className="w-4 h-4" />
@@ -188,9 +215,16 @@ function ProjectCardModalJobPage({ project, onClose }) {
                 setSuccessMsg('Bid submitted successfully!');
                 setBidDesc("");
                 setPriceOffer("");
-                setBidStatus("pending");
-                // Reload project info nếu cần (gọi lại onClose để reload ngoài JobPage)
-                if (typeof onClose === 'function') onClose();
+                // Cập nhật trạng thái bid local để khóa form ngay
+                setLocalUserBid({
+                  freelancer_name: user?.name,
+                  freelancer_email: user?.email,
+                  bid_desc: bidDesc,
+                  price_offer: price,
+                  bid_status: 'pending',
+                  bid_date: new Date().toISOString(),
+                });
+                // Không cần đóng modal ngay, để user thấy form bị khóa
               } else {
                 setErrorMsg(data.message || 'Failed to submit bid.');
               }
@@ -243,6 +277,12 @@ function ProjectCardModalJobPage({ project, onClose }) {
                   {loading ? 'Submitting...' : 'Submit Bid'}
                 </Button>
               </div>
+            )}
+            {formLocked && (
+              <div className="text-center text-gray-500 mt-4 text-sm">You have already submitted a bid for this project. You cannot bid again unless your previous bid is rejected.</div>
+            )}
+            {!canBid && !formLocked && (
+              <div className="text-center text-gray-500 mt-4 text-sm">Only moderators or freelancers with verified email can bid for this project.</div>
             )}
             {successMsg && <div className="text-green-600 text-sm mt-2 text-center">{successMsg}</div>}
             {errorMsg && <div className="text-red-600 text-sm mt-2 text-center">{errorMsg}</div>}
