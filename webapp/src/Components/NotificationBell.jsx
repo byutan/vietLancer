@@ -201,13 +201,13 @@ const NotificationBell = () => {
         <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
           {/* Header */}
           <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-gray-800">Thông báo</h3>
+            <h3 className="text-lg font-semibold text-gray-800">Notifications</h3>
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
                 className="text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
-                Đánh dấu tất cả đã đọc
+                Mark all as read
               </button>
             )}
           </div>
@@ -216,11 +216,11 @@ const NotificationBell = () => {
           <div className="max-h-96 overflow-y-auto">
             {loading ? (
               <div className="px-4 py-8 text-center text-gray-500">
-                Đang tải...
+                Loading...
               </div>
             ) : notifications.length === 0 ? (
               <div className="px-4 py-8 text-center text-gray-500">
-                Không có thông báo nào
+                No notification
               </div>
             ) : (
               notifications.map((notification) => (
@@ -282,7 +282,7 @@ const NotificationBell = () => {
           {notifications.length > 0 && (
             <div className="px-4 py-3 border-t border-gray-200 text-center">
               <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                Xem tất cả thông báo
+                All notifications
               </button>
             </div>
           )}

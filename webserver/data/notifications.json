@@ -36,6 +36,7 @@
     "createdAt": "2025-10-30T14:32:39.444Z"
   },
   {
+<<<<<<< HEAD
     "id": "notif_1761991082228_epocautq4",
     "userEmail": "tienmanhat11a321@gmail.com",
     "type": "project_submitted",
@@ -67,5 +68,109 @@
     },
     "read": true,
     "createdAt": "2025-11-01T09:58:54.757Z"
+=======
+    "id": "notif_1762187179526_vjpa7bxjb",
+    "userEmail": "youremail@email.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"Website thương mại điện tử bán hàng đồ chơi\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "8688222b-fdd3-4f7b-8e3a-0002f4ee6c07",
+      "projectId": "project_1761452842502",
+      "projectName": "Website thương mại điện tử bán hàng đồ chơi",
+      "bidAmount": 2500000,
+      "submittedAt": "2025-11-03T16:26:19.525Z"
+    },
+    "read": true,
+    "createdAt": "2025-11-03T16:26:19.526Z"
+  },
+  {
+    "id": "notif_1762187725967_1iw78epzj",
+    "userEmail": "youremail@email.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Project Submitted for Review",
+      "message": "Your project \"ABCDEFG\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1762187725963",
+      "projectName": "ABCDEFG",
+      "submittedAt": "2025-11-03T16:35:25.966Z"
+    },
+    "read": true,
+    "createdAt": "2025-11-03T16:35:25.967Z"
+  },
+  {
+    "id": "notif_1762187747034_kx78h270z",
+    "userEmail": "youremail@email.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"ABCDEFG\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1762187725963",
+      "projectName": "ABCDEFG",
+      "approvedAt": "2025-11-03T16:35:47.033Z",
+      "approvedBy": "admin"
+    },
+    "read": true,
+    "createdAt": "2025-11-03T16:35:47.034Z"
+  },
+  {
+    "id": "notif_1762187764372_fbiud7wiz",
+    "userEmail": "youremail@email.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"ABCDEFG\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "01b5a363-1a78-4812-bdad-b328a71e61f1",
+      "projectId": "project_1762187725963",
+      "projectName": "ABCDEFG",
+      "bidAmount": 12345678,
+      "submittedAt": "2025-11-03T16:36:04.371Z"
+    },
+    "read": true,
+    "createdAt": "2025-11-03T16:36:04.372Z"
+  },
+  {
+    "id": "notif_1762188359352_6wzh78zxd",
+    "userEmail": "youremail@email.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"Embedded system for smart home\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "238b981d-fdc4-46ff-985b-281f2533fc82",
+      "projectId": "project_1761318000002",
+      "projectName": "Embedded system for smart home",
+      "bidAmount": 123456717,
+      "submittedAt": "2025-11-03T16:45:59.348Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-03T16:45:59.352Z"
+  },
+  {
+    "id": "notif_1762188366918_mb9w3vakh",
+    "userEmail": "youremail@email.com",
+    "type": "bid_rejected",
+    "data": {
+      "title": "Proposal Not Selected",
+      "message": "Your proposal for \"Embedded system for smart home\" was not selected this time. Keep refining your approach and explore other opportunities.",
+      "icon": "x-circle",
+      "color": "orange",
+      "bidId": "238b981d-fdc4-46ff-985b-281f2533fc82",
+      "projectId": "project_1761318000002",
+      "projectName": "Embedded system for smart home",
+      "rejectedAt": "2025-11-03T16:46:06.917Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-03T16:46:06.918Z"
+>>>>>>> 0c123710920589b8d6beffe6f06edcbda10fe038
   }
 ]

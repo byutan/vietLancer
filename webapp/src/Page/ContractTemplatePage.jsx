@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import mammoth from "mammoth";
 import Footer from "../Components/Footer";
+import DocxViewer from "../Components/DocxViewer";
 
 export default function ContractTemplatePage() {
   const [templates, setTemplates] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [previewHtml, setPreviewHtml] = useState("");
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -37,23 +36,11 @@ export default function ContractTemplatePage() {
     }
   };
 
-  const handlePreview = async (fileName) => {
-    try {
-      const res = await fetch(`http://localhost:3000/uploads/${fileName}`);
-      const arrayBuffer = await res.arrayBuffer();
-      const { value } = await mammoth.convertToHtml({ arrayBuffer });
-
-      setPreviewHtml(value);
-      setSelected(fileName);
-    } catch (err) {
-      console.error("Preview failed:", err);
-      setPreviewHtml("<p class='text-red-500'>Không thể hiển thị nội dung file.</p>");
-      setSelected(fileName);
-    }
+  const handlePreview = (fileName) => {
+    setSelected(fileName);
   };
 
   return (
-    // 👇 Đây là phần chính giúp Footer luôn ở dưới
     <div className="min-h-screen flex flex-col font-poppins">
       <main className="flex-grow p-6">
         <h2 className="text-xl font-bold mb-4 font-lora">
@@ -84,16 +71,8 @@ export default function ContractTemplatePage() {
                 {selected.replace(/\.(docx|doc)$/i, "")}
               </h3>
 
-              <div
-                className="border p-6 rounded-lg bg-white text-gray-900 leading-relaxed overflow-auto max-h-[80vh]"
-                style={{
-                  fontFamily: "Times New Roman, serif",
-                  lineHeight: "1.8",
-                  fontSize: "15px",
-                  whiteSpace: "pre-wrap",
-                }}
-                dangerouslySetInnerHTML={{ __html: previewHtml }}
-              />
+              {/* 👉 Thay iframe bằng DocxViewer */}
+              <DocxViewer fileUrl={`http://localhost:3000/uploads/${selected}`} />
 
               <div className="flex justify-center gap-4 mt-6">
                 <button
@@ -104,10 +83,7 @@ export default function ContractTemplatePage() {
                 </button>
 
                 <button
-                  onClick={() => {
-                    setSelected(null);
-                    setPreviewHtml("");
-                  }}
+                  onClick={() => setSelected(null)}
                   className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-700 transition"
                 >
                   Close
@@ -118,7 +94,6 @@ export default function ContractTemplatePage() {
         )}
       </main>
 
-      {/* 👇 Footer luôn ở cuối */}
       <Footer />
     </div>
   );
