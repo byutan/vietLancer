@@ -138,5 +138,235 @@
     },
     "read": false,
     "createdAt": "2025-11-03T16:46:06.918Z"
+  },
+  {
+    "id": "notif_1762526336141_vxt1bsq1i",
+    "userEmail": "phat@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"Embedded system for smart home\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "0d3aa903-d297-44fb-a329-3d92e956e00f",
+      "projectId": "project_1761318000002",
+      "projectName": "Embedded system for smart home",
+      "bidAmount": 1123123,
+      "submittedAt": "2025-11-07T14:38:56.141Z"
+    },
+    "read": true,
+    "createdAt": "2025-11-07T14:38:56.141Z"
+  },
+  {
+    "id": "notif_1762526993391_s02iy9cuz",
+    "userEmail": "phat@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"Embedded system for smart home\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "da77acd9-af3b-4958-a118-cf4d687fbe09",
+      "projectId": "project_1761318000002",
+      "projectName": "Embedded system for smart home",
+      "bidAmount": 12312312,
+      "submittedAt": "2025-11-07T14:49:53.390Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T14:49:53.391Z"
+  },
+  {
+    "id": "notif_1762527060557_o78c7kmhp",
+    "userEmail": "lyvanhung@example.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"Custom software solution\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1761318000008",
+      "projectName": "Custom software solution",
+      "approvedAt": "2025-11-07T14:51:00.557Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T14:51:00.557Z"
+  },
+  {
+    "id": "notif_1762527234192_b0z8i5pfb",
+    "userEmail": "tranminhquan@example.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"Develop a mobile banking app\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1761318000001",
+      "projectName": "Develop a mobile banking app",
+      "approvedAt": "2025-11-07T14:53:54.192Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T14:53:54.192Z"
+  },
+  {
+    "id": "notif_1762527237844_02ti3jxao",
+    "userEmail": "lethihong@example.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"Embedded system for smart home\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1761318000002",
+      "projectName": "Embedded system for smart home",
+      "approvedAt": "2025-11-07T14:53:57.844Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T14:53:57.844Z"
+  },
+  {
+    "id": "notif_1762527277311_4mykc3z4c",
+    "userEmail": "phat@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"Develop a mobile banking app\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "a2aa5d86-2d2a-48e5-8c52-d251aeb7afb4",
+      "projectId": "project_1761318000001",
+      "projectName": "Develop a mobile banking app",
+      "bidAmount": 1231231,
+      "submittedAt": "2025-11-07T14:54:37.311Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T14:54:37.311Z"
+  },
+  {
+    "id": "notif_1762527299660_5o37q9eod",
+    "userEmail": "phat@gmail.com",
+    "type": "bid_approved",
+    "data": {
+      "title": "Proposal Accepted",
+      "message": "Great news! Your proposal for \"Develop a mobile banking app\" has been accepted. Please contact the client to begin work.",
+      "icon": "check-circle",
+      "color": "green",
+      "bidId": "a2aa5d86-2d2a-48e5-8c52-d251aeb7afb4",
+      "projectId": "project_1761318000001",
+      "projectName": "Develop a mobile banking app",
+      "bidAmount": 1231231,
+      "approvedAt": "2025-11-07T14:54:59.659Z",
+      "clientEmail": "tranminhquan@example.com"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T14:54:59.660Z"
+  },
+  {
+    "id": "notif_1762527352635_adqxywx9m",
+    "userEmail": "phat@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"Embedded system for smart home\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "3da3dc14-4820-442f-865b-790ed7e515c7",
+      "projectId": "project_1761318000002",
+      "projectName": "Embedded system for smart home",
+      "bidAmount": 1231231,
+      "submittedAt": "2025-11-07T14:55:52.635Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T14:55:52.635Z"
+  },
+  {
+    "id": "notif_1762527357065_859wcv8bh",
+    "userEmail": "phat@gmail.com",
+    "type": "bid_approved",
+    "data": {
+      "title": "Proposal Accepted",
+      "message": "Great news! Your proposal for \"Embedded system for smart home\" has been accepted. Please contact the client to begin work.",
+      "icon": "check-circle",
+      "color": "green",
+      "bidId": "3da3dc14-4820-442f-865b-790ed7e515c7",
+      "projectId": "project_1761318000002",
+      "projectName": "Embedded system for smart home",
+      "bidAmount": 1231231,
+      "approvedAt": "2025-11-07T14:55:57.064Z",
+      "clientEmail": "lethihong@example.com"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T14:55:57.065Z"
+  },
+  {
+    "id": "notif_1762527578922_jx2i5q5ny",
+    "userEmail": "phamvanbinh@example.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"UI/UX redesign for e-commerce platform\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1761318000003",
+      "projectName": "UI/UX redesign for e-commerce platform",
+      "approvedAt": "2025-11-07T14:59:38.922Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T14:59:38.922Z"
+  },
+  {
+    "id": "notif_1762527632204_0h6hnm7nh",
+    "userEmail": "ngothilan@example.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"Automated testing for web application\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1761318000004",
+      "projectName": "Automated testing for web application",
+      "approvedAt": "2025-11-07T15:00:32.204Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T15:00:32.204Z"
+  },
+  {
+    "id": "notif_1762527686318_ewstfo3cv",
+    "userEmail": "dangquoctoan@example.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"DevOps pipeline setup\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1761318000005",
+      "projectName": "DevOps pipeline setup",
+      "approvedAt": "2025-11-07T15:01:26.318Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T15:01:26.318Z"
+  },
+  {
+    "id": "notif_1762530189244_ydvhk5n0a",
+    "userEmail": "phat@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"UI/UX redesign for e-commerce platform\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "cd7b01aa-9337-4294-b2af-1e1e26fbde49",
+      "projectId": "project_1761318000003",
+      "projectName": "UI/UX redesign for e-commerce platform",
+      "bidAmount": 123123123,
+      "submittedAt": "2025-11-07T15:43:09.243Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-07T15:43:09.244Z"
   }
 ]
