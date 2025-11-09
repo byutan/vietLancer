@@ -250,4 +250,61 @@ router.get('/freelancer/bids', (req, res) => {
   }
 });
 
+
+// -----------------------------------------------------------------
+// HÀM MỚI: DÀNH CHO CLIENT "REJECT"
+// React sẽ gọi API này khi Client bấm nút "Reject"
+// -----------------------------------------------------------------
+router.patch('/projects/:projectId/bids/:bidId', (req, res) => {
+    const { projectId, bidId } = req.params;
+    const { client_status } = req.body; // React gửi: { client_status: 'client_rejected' }
+
+    if (client_status !== 'client_rejected') {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'Invalid action' 
+        });
+    }
+
+    try {
+        const projects = readProjects();
+        const project = projects.find(p => p.id === projectId);
+
+        if (!project) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Project not found' 
+            });
+        }
+
+        const bid = project.list_of_bid?.find(b => b.bid_ID === bidId);
+        if (!bid) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Bid not found' 
+            });
+        }
+
+        // Thêm "biến khác" (client_status) VÀO BID
+        bid.client_status = 'client_rejected';
+
+        writeProjects(projects); // Lưu file
+
+        // Trả về JSON
+        res.status(200).json({ 
+            success: true, 
+            message: 'Bid rejected successfully' 
+        });
+
+    } catch (error) {
+        console.error('Error rejecting bid:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Server error', 
+            error: error.message 
+        });
+    }
+});
+
+
 export default router;
