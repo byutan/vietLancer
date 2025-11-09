@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useContext } from "react";
+import AuthContext from "../ContextAPI/AuthContext";
 import BidDetailModal from "../Components/bid-detail-modal";
 import BidCard from "../Components/bid-card";
 import { Badge } from "../Components/ui/badge";
@@ -13,38 +14,41 @@ const STATUS_OPTIONS = [
 
 export default function ApproveBid() {
     const [bids, setBids] = useState([]);
+    const { user } = useContext(AuthContext);
     // Fetch all projects, then flatten all bids with project info
     const fetchBids = useCallback(async () => {
         try {
             const res = await fetch("http://localhost:3000/api/projects");
             const data = await res.json();
             if (data.success && Array.isArray(data.projects)) {
-                // Flatten all bids from all projects, attach project info
-                const allBids = data.projects.flatMap(project =>
-                    (project.list_of_bid || []).map(bid => ({
-                        ...bid,
-                        bid_status: bid.bid_status === 'accepted' ? 'approved' : bid.bid_status,
-                        project_id: project.id,
-                        projectTitle: project.title,
-                        projectDescription: project.description,
-                        projectCategory: project.category,
-                        projectSkills: project.skills,
-                        projectPaymentMethod: project.paymentMethod,
-                        projectWorkForm: project.workForm,
-                        projectStatus: project.status,
-                        projectClient: project.clientName,
-                        projectClientEmail: project.clientEmail,
-                        projectBudget: project.budget,
-                        projectCreatedAt: project.createdAt,
-                        projectUpdatedAt: project.updatedAt
-                    }))
-                );
+                // Chỉ lấy các bid thuộc project mà client hiện tại sở hữu
+                const allBids = data.projects
+                    .filter(project => user && project.clientEmail === user.email)
+                    .flatMap(project =>
+                        (project.list_of_bid || []).map(bid => ({
+                            ...bid,
+                            bid_status: bid.bid_status === 'accepted' ? 'approved' : bid.bid_status,
+                            project_id: project.id,
+                            projectTitle: project.title,
+                            projectDescription: project.description,
+                            projectCategory: project.category,
+                            projectSkills: project.skills,
+                            projectPaymentMethod: project.paymentMethod,
+                            projectWorkForm: project.workForm,
+                            projectStatus: project.status,
+                            projectClient: project.clientName,
+                            projectClientEmail: project.clientEmail,
+                            projectBudget: project.budget,
+                            projectCreatedAt: project.createdAt,
+                            projectUpdatedAt: project.updatedAt
+                        }))
+                    );
                 setBids(allBids);
             }
         } catch {
             // Optionally handle error
         }
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         fetchBids();
