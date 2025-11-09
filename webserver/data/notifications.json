@@ -36,39 +36,6 @@
     "createdAt": "2025-10-30T14:32:39.444Z"
   },
   {
-<<<<<<< HEAD
-    "id": "notif_1761991082228_epocautq4",
-    "userEmail": "tienmanhat11a321@gmail.com",
-    "type": "project_submitted",
-    "data": {
-      "title": "Project Submitted for Review",
-      "message": "Your project \"testewaead\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
-      "icon": "clock",
-      "color": "blue",
-      "projectId": "project_1761991082219",
-      "projectName": "testewaead",
-      "submittedAt": "2025-11-01T09:58:02.225Z"
-    },
-    "read": true,
-    "createdAt": "2025-11-01T09:58:02.228Z"
-  },
-  {
-    "id": "notif_1761991134757_pdkzvh1a3",
-    "userEmail": "tienmanhat11a321@gmail.com",
-    "type": "project_approved",
-    "data": {
-      "title": "Project Approved",
-      "message": "Congratulations! Your project \"testewaead\" has been approved and is now live. Freelancers can start submitting proposals.",
-      "icon": "check-circle",
-      "color": "green",
-      "projectId": "project_1761991082219",
-      "projectName": "testewaead",
-      "approvedAt": "2025-11-01T09:58:54.755Z",
-      "approvedBy": "admin"
-    },
-    "read": true,
-    "createdAt": "2025-11-01T09:58:54.757Z"
-=======
     "id": "notif_1762187179526_vjpa7bxjb",
     "userEmail": "youremail@email.com",
     "type": "bid_submitted",
