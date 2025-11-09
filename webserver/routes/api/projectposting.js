@@ -213,4 +213,56 @@ router.get('/projects/:id', async (req, res) => {
     }
 });
 
+
+// -----------------------------------------------------------------
+// HÀM MỚI: DÀNH CHO CLIENT "ACCEPT" (HIRE)
+// React sẽ gọi API này khi Client bấm nút "Accept"
+// -----------------------------------------------------------------
+router.patch('/projects/:projectId/hire', async (req, res) => {
+    const { projectId } = req.params;
+    const { hired_bid_ID } = req.body; // Lấy ID của bid được thuê từ React
+
+    if (!hired_bid_ID) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'Missing hired_bid_ID' 
+        });
+    }
+
+    try {
+        const projects = await readProjectsData();
+        const projectIndex = projects.findIndex(p => p.id === projectId);
+
+        if (projectIndex === -1) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Project not found' 
+            });
+        }
+
+        // Cập nhật 2 "biến khác" (status và hired_bid_ID) vào project
+        projects[projectIndex].status = 'in_progress';
+        projects[projectIndex].hired_bid_ID = hired_bid_ID;
+        projects[projectIndex].updatedAt = new Date().toISOString(); // Cập nhật thời gian
+
+        await writeProjectsData(projects); // Lưu file JSON
+
+        // Trả về JSON (Rất quan trọng!)
+        res.status(200).json({ 
+            success: true,
+            message: 'Freelancer hired successfully', 
+            project: projects[projectIndex] 
+        });
+
+    } catch (error) {
+        console.error('Error hiring freelancer:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Server error', 
+            error: error.message 
+        });
+    }
+});
+
+
 export default router;

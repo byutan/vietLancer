@@ -138,5 +138,217 @@
     },
     "read": false,
     "createdAt": "2025-11-03T16:46:06.918Z"
+  },
+  {
+    "id": "notif_1762355131089_d5ye40but",
+    "userEmail": "hengry16082005@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"Tạo web học tiếng Nhật\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "01b9eae4-b0c7-4a50-a265-1c238847ebe9",
+      "projectId": "project_1761664910704",
+      "projectName": "Tạo web học tiếng Nhật",
+      "bidAmount": 10000000,
+      "submittedAt": "2025-11-05T15:05:31.085Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-05T15:05:31.089Z"
+  },
+  {
+    "id": "notif_1762355984498_mlj88s3ig",
+    "userEmail": "hengry16082005@gmail.com",
+    "type": "bid_rejected",
+    "data": {
+      "title": "Proposal Not Selected",
+      "message": "Your proposal for \"Tạo web học tiếng Nhật\" was not selected this time. Keep refining your approach and explore other opportunities.",
+      "icon": "x-circle",
+      "color": "orange",
+      "bidId": "01b9eae4-b0c7-4a50-a265-1c238847ebe9",
+      "projectId": "project_1761664910704",
+      "projectName": "Tạo web học tiếng Nhật",
+      "rejectedAt": "2025-11-05T15:19:44.497Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-05T15:19:44.498Z"
+  },
+  {
+    "id": "notif_1762652447772_4im5jecyj",
+    "userEmail": "phatclientv@gmail.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Project Submitted for Review",
+      "message": "Your project \"nihon go web study\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1762652447757",
+      "projectName": "nihon go web study",
+      "submittedAt": "2025-11-09T01:40:47.770Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T01:40:47.772Z"
+  },
+  {
+    "id": "notif_1762652457583_v0ynly047",
+    "userEmail": "phatclientv@gmail.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"nihon go web study\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1762652447757",
+      "projectName": "nihon go web study",
+      "approvedAt": "2025-11-09T01:40:57.581Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T01:40:57.583Z"
+  },
+  {
+    "id": "notif_1762652665939_p075b0whd",
+    "userEmail": "hengry16082005@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"nihon go web study\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "75d03293-7df8-4ad2-b5d2-dd6c00e6064e",
+      "projectId": "project_1762652447757",
+      "projectName": "nihon go web study",
+      "bidAmount": 111111111,
+      "submittedAt": "2025-11-09T01:44:25.938Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T01:44:25.939Z"
+  },
+  {
+    "id": "notif_1762652772853_tteoz4zqy",
+    "userEmail": "hengry16082005@gmail.com",
+    "type": "bid_approved",
+    "data": {
+      "title": "Proposal Accepted",
+      "message": "Great news! Your proposal for \"nihon go web study\" has been accepted. Please contact the client to begin work.",
+      "icon": "check-circle",
+      "color": "green",
+      "bidId": "75d03293-7df8-4ad2-b5d2-dd6c00e6064e",
+      "projectId": "project_1762652447757",
+      "projectName": "nihon go web study",
+      "bidAmount": 111111111,
+      "approvedAt": "2025-11-09T01:46:12.853Z",
+      "clientEmail": "phatclientv@gmail.com"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T01:46:12.853Z"
+  },
+  {
+    "id": "notif_1762654164241_7z2qe9rbs",
+    "userEmail": "hengry@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"nihon go web study\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "94661989-1c3e-4f9e-8c3e-89e5f7076493",
+      "projectId": "project_1762652447757",
+      "projectName": "nihon go web study",
+      "bidAmount": 11111111,
+      "submittedAt": "2025-11-09T02:09:24.240Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T02:09:24.241Z"
+  },
+  {
+    "id": "notif_1762654227541_kt7t9xw8y",
+    "userEmail": "hengry@gmail.com",
+    "type": "bid_approved",
+    "data": {
+      "title": "Proposal Accepted",
+      "message": "Great news! Your proposal for \"nihon go web study\" has been accepted. Please contact the client to begin work.",
+      "icon": "check-circle",
+      "color": "green",
+      "bidId": "94661989-1c3e-4f9e-8c3e-89e5f7076493",
+      "projectId": "project_1762652447757",
+      "projectName": "nihon go web study",
+      "bidAmount": 11111111,
+      "approvedAt": "2025-11-09T02:10:27.538Z",
+      "clientEmail": "phatclientv@gmail.com"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T02:10:27.541Z"
+  },
+  {
+    "id": "notif_1762654888557_8nopw7ndr",
+    "userEmail": "phatclientv@gmail.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Project Submitted for Review",
+      "message": "Your project \"Tạo web cá độ\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1762654888551",
+      "projectName": "Tạo web cá độ",
+      "submittedAt": "2025-11-09T02:21:28.555Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T02:21:28.557Z"
+  },
+  {
+    "id": "notif_1762655050427_pv5isf7rc",
+    "userEmail": "phatclientv@gmail.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"Tạo web cá độ\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1762654888551",
+      "projectName": "Tạo web cá độ",
+      "approvedAt": "2025-11-09T02:24:10.426Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T02:24:10.427Z"
+  },
+  {
+    "id": "notif_1762655108566_p1mokyq85",
+    "userEmail": "hengry@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"Tạo web cá độ\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "68186eac-c4a5-4c12-b866-2a672aac8c2c",
+      "projectId": "project_1762654888551",
+      "projectName": "Tạo web cá độ",
+      "bidAmount": 13333333,
+      "submittedAt": "2025-11-09T02:25:08.564Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T02:25:08.566Z"
+  },
+  {
+    "id": "notif_1762655116260_48tj7bwod",
+    "userEmail": "hengry@gmail.com",
+    "type": "bid_approved",
+    "data": {
+      "title": "Proposal Accepted",
+      "message": "Great news! Your proposal for \"Tạo web cá độ\" has been accepted. Please contact the client to begin work.",
+      "icon": "check-circle",
+      "color": "green",
+      "bidId": "68186eac-c4a5-4c12-b866-2a672aac8c2c",
+      "projectId": "project_1762654888551",
+      "projectName": "Tạo web cá độ",
+      "bidAmount": 13333333,
+      "approvedAt": "2025-11-09T02:25:16.249Z",
+      "clientEmail": "phatclientv@gmail.com"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T02:25:16.260Z"
   }
 ]
