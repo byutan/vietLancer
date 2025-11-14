@@ -184,7 +184,14 @@ export default function NavBar() {
                     Contract template
                   </button>
                 )}
-
+                {(user.role === "freelancer"  || user.role === 'moderator') && (
+                  <button
+                    onClick={() => navigate("/my-bids")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    my Bids
+                  </button>
+                )}
                 <button
                   onClick={handleSignOut}
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
