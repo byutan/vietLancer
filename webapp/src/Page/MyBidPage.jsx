@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import AuthContext from "../ContextAPI/AuthContext";
-import { useNavigate } from "react-router-dom";
 import Footer from "../Components/Footer";
 
 const API_URL = "http://localhost:3000/api/projects";
@@ -8,7 +7,6 @@ const API_URL = "http://localhost:3000/api/projects";
 export default function MyBidPage() {
   const { user } = useContext(AuthContext);
   const freelancerEmail = user?.email;
-  const navigate = useNavigate();
 
   const [bids, setBids] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,25 +21,27 @@ export default function MyBidPage() {
         const data = await res.json();
         const projects = Array.isArray(data.projects) ? data.projects : [];
 
-        // Lọc tất cả các bid mà freelancer đã gửi
         const myBids = [];
-        projects.forEach((project) => {
-          (project.list_of_bid || []).forEach((bid) => {
-            if (
-              bid.freelancer_email &&
-              bid.freelancer_email.trim() === freelancerEmail.trim()
-            ) {
+
+        projects.forEach((proj) => {
+          (proj.list_of_bid || []).forEach((bid) => {
+            if (bid.freelancer_email?.trim() === freelancerEmail.trim()) {
               myBids.push({
-                projectId: project.id,
-                projectTitle: project.title,
-                projectDescription: project.description,
-                projectStatus: project.status,
+                projectId: proj.id,
+                projectTitle: proj.title,
+                projectDescription: proj.description,
+
+                // ------------ CLIENT INFO ------------
+                clientName: proj.clientName,
+                clientEmail: proj.clientEmail,
+                clientAvatar: proj.clientAvatar || "",
+
+                // ------------ BID INFO ------------
                 bidId: bid.bid_ID,
                 bidDesc: bid.bid_desc,
                 priceOffer: bid.price_offer,
                 bidStatus: bid.bid_status,
-                clientStatus: bid.client_status,
-                contractStatus: project.contractStatus || "pending",
+                clientStatus: bid.client_status || null,
               });
             }
           });
@@ -62,21 +62,6 @@ export default function MyBidPage() {
   const formatCurrency = (amount) => {
     if (typeof amount !== "number") return amount;
     return new Intl.NumberFormat("vi-VN").format(amount) + " VND";
-  };
-
-  const goToContract = async (projectId, bidId) => {
-    // Gọi API backend để lấy hoặc tạo contractId
-    const res = await fetch(`/api/negotiation/create-from-bid`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId, bidId }),
-    });
-    const data = await res.json();
-    if (res.ok && data.contractId) {
-      navigate(`/contract/${data.contractId}`);
-    } else {
-      alert("Cannot open contract: " + (data.error || "unknown error"));
-    }
   };
 
   if (!user || user.role !== "freelancer") {
@@ -127,6 +112,7 @@ export default function MyBidPage() {
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
                 Offer: {formatCurrency(bid.priceOffer)}
               </span>
+
               <span
                 className={`px-3 py-1 rounded-full ${
                   bid.bidStatus === "accepted"
@@ -143,27 +129,39 @@ export default function MyBidPage() {
               </span>
             </div>
 
-            {bid.contractStatus && (
-              <div className="mb-4 text-gray-700">
-                Contract status:{" "}
-                <strong className="text-indigo-600">
-                  {bid.contractStatus.toUpperCase()}
-                </strong>
-              </div>
-            )}
-
             <p className="text-gray-800 mb-4">
               Your proposal: <em>{bid.bidDesc}</em>
             </p>
 
-            {/* Nếu bid được accept thì hiển thị nút contract */}
+            {/* ---------- SHOW CLIENT INFO IF FREELANCER WAS ACCEPTED ---------- */}
             {bid.bidStatus === "accepted" && (
-              <button
-                onClick={() => goToContract(bid.projectId, bid.bidId)}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition shadow-md"
-              >
-                View Contract
-              </button>
+              <div className="p-4 bg-gray-50 border rounded-lg mt-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                  Client Information
+                </h3>
+
+                <div className="flex items-center gap-4">
+                  {/* Avatar */}
+                  {bid.clientAvatar ? (
+                    <img
+                      src={bid.clientAvatar}
+                      alt="avatar"
+                      className="w-20 h-20 rounded-full object-cover border"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center text-gray-700">
+                      No Avatar
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="text-gray-800 text-lg font-semibold">
+                      Name: {bid.clientName}
+                    </p>
+                    <p className="text-gray-700">Email: {bid.clientEmail}</p>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         ))}

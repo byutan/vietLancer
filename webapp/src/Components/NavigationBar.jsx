@@ -186,10 +186,10 @@ export default function NavBar() {
                 )}
                 {(user.role === "freelancer"  || user.role === 'moderator') && (
                   <button
-                    onClick={() => navigate("/my-bids")}
+                    onClick={() => navigate("/MyBidPage")}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    my Bids
+                    My Bids
                   </button>
                 )}
                 <button

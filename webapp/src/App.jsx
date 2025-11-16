@@ -30,7 +30,7 @@ function App() {
           <Route path="/ApproveBid" element={<ApproveBid />} />
           <Route path="/ProjectPosting" element={<ProjectPosting />} />
           <Route path="/ContractTemplatePage" element={<ContractTemplatePage />} />
-          <Route path="/my-bids" element={<MyBidPage />} />
+          <Route path="/MyBidPage" element={<MyBidPage />} />
           <Route path="/MyProjectPage" element={<MyProjectPage />} /> {/* 👈 THÊM: Router cho MyProjectPage */}
         </Routes>
       </AuthProvider>
