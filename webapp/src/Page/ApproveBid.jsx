@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback, useContext } from "react";
 import AuthContext from "../ContextAPI/AuthContext";
 import BidDetailModal from "../Components/bid-detail-modal";
 import BidCard from "../Components/bid-card";
+import { useNavigate } from "react-router-dom";
 import { Badge } from "../Components/ui/badge";
 import { FileText, CheckCircle2, XCircle, Search } from "lucide-react";
 import Footer from "../Components/Footer";
@@ -15,15 +16,23 @@ const STATUS_OPTIONS = [
 export default function ApproveBid() {
     const [bids, setBids] = useState([]);
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (user && user.role !== 'moderator') {
+            navigate("/HomePage"); 
+            alert("Bạn không có quyền truy cập trang này!");
+        }
+    }, [user, navigate]);
     // Fetch all projects, then flatten all bids with project info
     const fetchBids = useCallback(async () => {
+        if (!user || user.role !== 'moderator') return;
         try {
             const res = await fetch("http://localhost:3000/api/projects");
             const data = await res.json();
             if (data.success && Array.isArray(data.projects)) {
                 // Chỉ lấy các bid thuộc project mà client hiện tại sở hữu
                 const allBids = data.projects
-                    .filter(project => user && project.clientEmail === user.email)
+                    // .filter(project => user && project.clientEmail === user.email)
                     .flatMap(project =>
                         (project.list_of_bid || []).map(bid => ({
                             ...bid,
@@ -106,7 +115,13 @@ export default function ApproveBid() {
             {name}
         </label>
     );
-
+    if (!user || user.role !== 'moderator') {
+        return (
+            <div className="font-poppins flex h-screen items-center justify-center">
+                <p className="text-xl text-gray-500">Checking authorization</p>
+            </div>
+        );
+    }
     return (
         <div className="font-poppins flex flex-col min-h-screen">
             <div className="flex-grow flex">

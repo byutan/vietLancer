@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
+import { useNavigate } from "react-router-dom";
 import AuthContext from '../ContextAPI/AuthContext';
 import Footer from '../Components/Footer'
 
@@ -6,6 +7,7 @@ const API_URL = "http://localhost:3000/api/projects";
 
 export default function MyProjectPage() {
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     const clientEmail = user?.email;
 
     const [clientProjects, setClientProjects] = useState([]);
@@ -63,14 +65,11 @@ export default function MyProjectPage() {
         loadProjects();
     }, [clientEmail, fetchProjects]);
 
-    // HÀM XỬ LÝ HÀNH ĐỘNG CỦA CLIENT
     const handleClientAction = async (projectId, bidId, action) => {
-        
+
         try {
             let res;
             if (action === 'accept') {
-                // HÀNH ĐỘNG "ACCEPT" (THUÊ)
-                // Gọi API để thuê (API bạn đã thêm vào projectposting.js)
                 res = await fetch(`${API_URL}/${projectId}/hire`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
@@ -78,12 +77,10 @@ export default function MyProjectPage() {
                 });
 
             } else {
-                // HÀNH ĐỘNG "REJECT" (TỪ CHỐI)
-                // Gọi API để reject (API bạn đã thêm vào bid.js)
                 res = await fetch(`${API_URL}/${projectId}/bids/${bidId}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ client_status: 'client_rejected' }) // Biến mới
+                    body: JSON.stringify({ client_status: 'client_rejected' })
                 });
             }
 
@@ -92,23 +89,19 @@ export default function MyProjectPage() {
                 throw new Error(errorData.message || `Failed to ${action} bid`);
             }
 
-            // Cập nhật state ở local (frontend)
             setClientProjects(prevProjects => {
                 return prevProjects.map(project => {
                     if (project.id === projectId) {
-                        
+
                         if (action === 'accept') {
-                            // Nếu "Accept", cập nhật toàn bộ project
                             return {
                                 ...project,
-                                status: 'in_progress', // Cập nhật trạng thái dự án
-                                hired_bid_ID: bidId   // Lưu ID của bid đã thuê
+                                status: 'in_progress',
+                                hired_bid_ID: bidId
                             };
                         } else {
-                            // Nếu "Reject", chỉ cập nhật bid đó
                             const updatedBids = project.list_of_bid.map(bid => {
                                 if (bid.bid_ID === bidId) {
-                                    // Thêm biến mới để lọc ra ở giao diện
                                     return { ...bid, client_status: 'client_rejected' };
                                 }
                                 return bid;
@@ -121,7 +114,11 @@ export default function MyProjectPage() {
             });
 
             console.log(`Client successfully ${action}ed bid ${bidId}`);
-
+            if (action === 'accept') {
+                navigate('/ContractTemplatePage', {
+                    state: { projectId, bidId }
+                });
+            }
         } catch (error) {
             console.error(`Error ${action}ing bid:`, error);
             alert(`Error: ${error.message}`);
@@ -172,7 +169,7 @@ export default function MyProjectPage() {
                 <hr className="mb-8" />
 
                 {clientProjects.map(project => {
-                    
+
                     // -----------------------------------------------------------------
                     // ĐÂY LÀ DÒNG ĐÃ SỬA LỖI
                     // -----------------------------------------------------------------
@@ -187,7 +184,7 @@ export default function MyProjectPage() {
                         ? project.list_of_bid.filter(bid => {
                             // Điều kiện 1: Bid phải được Admin accepted
                             const isAdminAccepted = bid.bid_status === 'accepted';
-                            
+
                             // Điều kiện 2: Bid không bị Client rejected
                             const isNotClientRejected = bid.client_status !== 'client_rejected';
 
@@ -234,9 +231,9 @@ export default function MyProjectPage() {
                                             <div className="flex-1 min-w-0">
                                                 <div className="font-bold text-lg text-gray-700">{bid.freelancer_name}</div>
                                                 <div className="text-sm text-gray-500 mb-2">Email: {bid.freelancer_email}</div>
-                                                
+
                                                 <p className="text-gray-800 line-clamp-2 mb-2">
-                                                        Proposal: {bid.bid_desc}
+                                                    Proposal: {bid.bid_desc}
                                                 </p>
 
                                                 <div className="font-semibold text-orange-600">
@@ -245,7 +242,7 @@ export default function MyProjectPage() {
                                             </div>
 
                                             <div className="ml-4 flex flex-col items-end space-y-2 flex-shrink-0">
-                                                
+
                                                 {/* Nếu project chưa hire ai */}
                                                 {!isHired && (
                                                     <>
