@@ -140,72 +140,143 @@
     "createdAt": "2025-11-03T16:46:06.918Z"
   },
   {
-    "id": "notif_1762678424257_lxqmwrxt6",
-    "userEmail": "youremail@email.com",
-    "type": "bid_submitted",
-    "data": {
-      "title": "Proposal Submitted Successfully",
-      "message": "Your proposal for \"Develop a mobile banking app\" has been submitted. The client will review it and respond shortly.",
-      "icon": "clock",
-      "color": "blue",
-      "bidId": "97e5258a-6462-40ff-850c-50616c4646ff",
-      "projectId": "project_1761318000001",
-      "projectName": "Develop a mobile banking app",
-      "bidAmount": 10000000,
-      "submittedAt": "2025-11-09T08:53:44.256Z"
-    },
-    "read": true,
-    "createdAt": "2025-11-09T08:53:44.257Z"
-  },
-  {
-    "id": "notif_1762678638483_1hmarz6uf",
-    "userEmail": "youremail@email.com",
+    "id": "notif_1762662485856_8veschq0o",
+    "userEmail": "tienmanhat11a321@gmail.com",
     "type": "project_submitted",
     "data": {
       "title": "Project Submitted for Review",
-      "message": "Your project \"ABCDEFGHI\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "message": "Your project \"tester\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
       "icon": "clock",
       "color": "blue",
-      "projectId": "project_1762678638479",
-      "projectName": "ABCDEFGHI",
-      "submittedAt": "2025-11-09T08:57:18.482Z"
+      "projectId": "project_1762662485852",
+      "projectName": "tester",
+      "submittedAt": "2025-11-09T04:28:05.855Z"
     },
     "read": true,
-    "createdAt": "2025-11-09T08:57:18.483Z"
+    "createdAt": "2025-11-09T04:28:05.856Z"
   },
   {
-    "id": "notif_1762678754111_npzojqmpj",
-    "userEmail": "youremail@email.com",
+    "id": "notif_1762662503486_ph5823oec",
+    "userEmail": "tienmanhat11a321@gmail.com",
     "type": "project_approved",
     "data": {
       "title": "Project Approved",
-      "message": "Congratulations! Your project \"ABCDEFGHI\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "message": "Congratulations! Your project \"tester\" has been approved and is now live. Freelancers can start submitting proposals.",
       "icon": "check-circle",
       "color": "green",
-      "projectId": "project_1762678638479",
-      "projectName": "ABCDEFGHI",
-      "approvedAt": "2025-11-09T08:59:14.110Z",
+      "projectId": "project_1762662485852",
+      "projectName": "tester",
+      "approvedAt": "2025-11-09T04:28:23.486Z",
       "approvedBy": "admin"
     },
     "read": true,
-    "createdAt": "2025-11-09T08:59:14.111Z"
+    "createdAt": "2025-11-09T04:28:23.486Z"
   },
   {
-    "id": "notif_1762678777152_2hc3xbr9u",
-    "userEmail": "youremail@email.com",
+    "id": "notif_1762662535798_yhdbufmj7",
+    "userEmail": "nguyentphat2005@gmail.com",
     "type": "bid_submitted",
     "data": {
       "title": "Proposal Submitted Successfully",
-      "message": "Your proposal for \"ABCDEFGHI\" has been submitted. The client will review it and respond shortly.",
+      "message": "Your proposal for \"tester\" has been submitted. The client will review it and respond shortly.",
       "icon": "clock",
       "color": "blue",
-      "bidId": "450fba83-ad48-4188-a9c1-03dd2af6972e",
-      "projectId": "project_1762678638479",
-      "projectName": "ABCDEFGHI",
-      "bidAmount": 12000000,
-      "submittedAt": "2025-11-09T08:59:37.151Z"
+      "bidId": "b0d98986-c3a0-498f-866b-63ef05de41c7",
+      "projectId": "project_1762662485852",
+      "projectName": "tester",
+      "bidAmount": 10000000,
+      "submittedAt": "2025-11-09T04:28:55.796Z"
     },
     "read": true,
-    "createdAt": "2025-11-09T08:59:37.152Z"
+    "createdAt": "2025-11-09T04:28:55.798Z"
+  },
+  {
+    "id": "notif_1762662577830_0hrbm0mrx",
+    "userEmail": "nguyentphat2005@gmail.com",
+    "type": "bid_approved",
+    "data": {
+      "title": "Proposal Accepted",
+      "message": "Great news! Your proposal for \"tester\" has been accepted. Please contact the client to begin work.",
+      "icon": "check-circle",
+      "color": "green",
+      "bidId": "b0d98986-c3a0-498f-866b-63ef05de41c7",
+      "projectId": "project_1762662485852",
+      "projectName": "tester",
+      "bidAmount": 10000000,
+      "approvedAt": "2025-11-09T04:29:37.828Z",
+      "clientEmail": "tienmanhat11a321@gmail.com"
+    },
+    "read": true,
+    "createdAt": "2025-11-09T04:29:37.830Z"
+  },
+  {
+    "id": "notif_1762670400981_naj9zx6re",
+    "userEmail": "tienmanhat11a321@gmail.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Project Submitted for Review",
+      "message": "Your project \"adasdasd\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1762670400976",
+      "projectName": "adasdasd",
+      "submittedAt": "2025-11-09T06:40:00.979Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T06:40:00.981Z"
+  },
+  {
+    "id": "notif_1762670471712_tjte53qxo",
+    "userEmail": "tienmanhat11a321@gmail.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"adasdasd\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1762670400976",
+      "projectName": "adasdasd",
+      "approvedAt": "2025-11-09T06:41:11.712Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T06:41:11.712Z"
+  },
+  {
+    "id": "notif_1762670513931_ptl55jxb0",
+    "userEmail": "nguyentphat2005@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"adasdasd\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "5524994d-a13c-4e4e-abae-8827bcd6d6cc",
+      "projectId": "project_1762670400976",
+      "projectName": "adasdasd",
+      "bidAmount": 200000000,
+      "submittedAt": "2025-11-09T06:41:53.930Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-09T06:41:53.931Z"
+  },
+  {
+    "id": "notif_1762670525982_aewhfxpdr",
+    "userEmail": "nguyentphat2005@gmail.com",
+    "type": "bid_approved",
+    "data": {
+      "title": "Proposal Accepted",
+      "message": "Great news! Your proposal for \"adasdasd\" has been accepted. Please contact the client to begin work.",
+      "icon": "check-circle",
+      "color": "green",
+      "bidId": "5524994d-a13c-4e4e-abae-8827bcd6d6cc",
+      "projectId": "project_1762670400976",
+      "projectName": "adasdasd",
+      "bidAmount": 200000000,
+      "approvedAt": "2025-11-09T06:42:05.980Z",
+      "clientEmail": "tienmanhat11a321@gmail.com"
+    },
+    "read": true,
+    "createdAt": "2025-11-09T06:42:05.982Z"
   }
 ]

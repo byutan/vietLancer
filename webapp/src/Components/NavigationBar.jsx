@@ -137,9 +137,15 @@ export default function NavBar() {
               </>
             )}
             {user && ((user.role === 'client' && user.email_verify === 'verified') || user.role === 'moderator') && (
+              <>
               <Link to="/ProjectPosting" onClick={() => window.scrollTo(0, 0)}>
                 <button className={buttonStyle}>Post Project</button>
               </Link>
+              
+              <Link to="/ApproveBid" onClick={() => window.scrollTo(0, 0)}>
+                  <button className={buttonStyle}>Approval Bid</button>
+                </Link>
+              </>
             )}
             <NotificationBell />
             <div className="relative" ref={menuRef}>
@@ -178,7 +184,14 @@ export default function NavBar() {
                     Contract template
                   </button>
                 )}
-
+                {(user.role === "freelancer"  || user.role === 'moderator') && (
+                  <button
+                    onClick={() => navigate("/MyBidPage")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    My Bids
+                  </button>
+                )}
                 <button
                   onClick={handleSignOut}
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
