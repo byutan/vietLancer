@@ -134,9 +134,6 @@ export default function NavBar() {
                 <Link to="/ApproveRequest" onClick={() => window.scrollTo(0, 0)}>
                   <button className={buttonStyle}>Approval Request</button>
                 </Link>
-                <Link to="/ApproveBid" onClick={() => window.scrollTo(0, 0)}>
-                  <button className={buttonStyle}>Approval Bid</button>
-                </Link>
               </>
             )}
             {user && ((user.role === 'client' && user.email_verify === 'verified') || user.role === 'moderator') && (

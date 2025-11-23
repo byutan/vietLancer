@@ -119,7 +119,7 @@
       "bidAmount": 123456717,
       "submittedAt": "2025-11-03T16:45:59.348Z"
     },
-    "read": false,
+    "read": true,
     "createdAt": "2025-11-03T16:45:59.352Z"
   },
   {
@@ -136,7 +136,76 @@
       "projectName": "Embedded system for smart home",
       "rejectedAt": "2025-11-03T16:46:06.917Z"
     },
-    "read": false,
+    "read": true,
     "createdAt": "2025-11-03T16:46:06.918Z"
+  },
+  {
+    "id": "notif_1762678424257_lxqmwrxt6",
+    "userEmail": "youremail@email.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"Develop a mobile banking app\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "97e5258a-6462-40ff-850c-50616c4646ff",
+      "projectId": "project_1761318000001",
+      "projectName": "Develop a mobile banking app",
+      "bidAmount": 10000000,
+      "submittedAt": "2025-11-09T08:53:44.256Z"
+    },
+    "read": true,
+    "createdAt": "2025-11-09T08:53:44.257Z"
+  },
+  {
+    "id": "notif_1762678638483_1hmarz6uf",
+    "userEmail": "youremail@email.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Project Submitted for Review",
+      "message": "Your project \"ABCDEFGHI\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1762678638479",
+      "projectName": "ABCDEFGHI",
+      "submittedAt": "2025-11-09T08:57:18.482Z"
+    },
+    "read": true,
+    "createdAt": "2025-11-09T08:57:18.483Z"
+  },
+  {
+    "id": "notif_1762678754111_npzojqmpj",
+    "userEmail": "youremail@email.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"ABCDEFGHI\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1762678638479",
+      "projectName": "ABCDEFGHI",
+      "approvedAt": "2025-11-09T08:59:14.110Z",
+      "approvedBy": "admin"
+    },
+    "read": true,
+    "createdAt": "2025-11-09T08:59:14.111Z"
+  },
+  {
+    "id": "notif_1762678777152_2hc3xbr9u",
+    "userEmail": "youremail@email.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"ABCDEFGHI\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "450fba83-ad48-4188-a9c1-03dd2af6972e",
+      "projectId": "project_1762678638479",
+      "projectName": "ABCDEFGHI",
+      "bidAmount": 12000000,
+      "submittedAt": "2025-11-09T08:59:37.151Z"
+    },
+    "read": true,
+    "createdAt": "2025-11-09T08:59:37.152Z"
   }
 ]
