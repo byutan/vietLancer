@@ -29,7 +29,7 @@ function App() {
           <Route path="/ProjectPosting" element={<ProjectPosting />} />
           <Route path="/ContractTemplatePage" element={<ContractTemplatePage />} />
           <Route path="/MyBidPage" element={<MyBidPage />} />
-          <Route path="/MyProjectPage" element={<MyProjectPage />} /> {/* 👈 THÊM: Router cho MyProjectPage */}
+          <Route path="/MyProjectPage" element={<MyProjectPage />} />
         </Routes>
       </AuthProvider>
     </Router>
