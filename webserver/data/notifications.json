@@ -278,5 +278,247 @@
     },
     "read": true,
     "createdAt": "2025-11-09T06:42:05.982Z"
+  },
+  {
+    "id": "notif_1763306314457_w7pof1z95",
+    "userEmail": "tienmanhat11a321@gmail.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Project Submitted for Review",
+      "message": "Your project \"test_0101\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1763306314452",
+      "projectName": "test_0101",
+      "submittedAt": "2025-11-16T15:18:34.456Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-16T15:18:34.457Z"
+  },
+  {
+    "id": "notif_1763306387225_v2tnfb8t4",
+    "userEmail": "tienmanhat11a321@gmail.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"test_0101\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1763306314452",
+      "projectName": "test_0101",
+      "approvedAt": "2025-11-16T15:19:47.224Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-16T15:19:47.225Z"
+  },
+  {
+    "id": "notif_1763306460542_2vu5hx0sf",
+    "userEmail": "yaggvl6780@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"test_0101\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "be98d94b-2b11-4bc4-8a66-a4fd4cbe67d1",
+      "projectId": "project_1763306314452",
+      "projectName": "test_0101",
+      "bidAmount": 2000000,
+      "submittedAt": "2025-11-16T15:21:00.540Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-16T15:21:00.542Z"
+  },
+  {
+    "id": "notif_1763306467827_z1b04738g",
+    "userEmail": "yaggvl6780@gmail.com",
+    "type": "bid_approved",
+    "data": {
+      "title": "Proposal Accepted",
+      "message": "Great news! Your proposal for \"test_0101\" has been accepted. Please contact the client to begin work.",
+      "icon": "check-circle",
+      "color": "green",
+      "bidId": "be98d94b-2b11-4bc4-8a66-a4fd4cbe67d1",
+      "projectId": "project_1763306314452",
+      "projectName": "test_0101",
+      "bidAmount": 2000000,
+      "approvedAt": "2025-11-16T15:21:07.825Z",
+      "clientEmail": "tienmanhat11a321@gmail.com"
+    },
+    "read": false,
+    "createdAt": "2025-11-16T15:21:07.827Z"
+  },
+  {
+    "id": "notif_1763899647207_ebhjmwhwe",
+    "userEmail": "phat@gmail.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Project Submitted for Review",
+      "message": "Your project \"test bản mới\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1763899647203",
+      "projectName": "test bản mới",
+      "submittedAt": "2025-11-23T12:07:27.206Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:07:27.207Z"
+  },
+  {
+    "id": "notif_1763899661105_3xv5fmloj",
+    "userEmail": "phat@gmail.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"test bản mới\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1763899647203",
+      "projectName": "test bản mới",
+      "approvedAt": "2025-11-23T12:07:41.103Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:07:41.105Z"
+  },
+  {
+    "id": "notif_1763899769737_zgtp9xqpv",
+    "userEmail": "phat@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"test bản mới\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "08047037-ce4c-416c-bb7f-b0c94afe43e3",
+      "projectId": "project_1763899647203",
+      "projectName": "test bản mới",
+      "bidAmount": 22222222,
+      "submittedAt": "2025-11-23T12:09:29.735Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:09:29.737Z"
+  },
+  {
+    "id": "notif_1763900004768_ax4ysobwn",
+    "userEmail": "phatclientv@gmail.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Project Submitted for Review",
+      "message": "Your project \"tiênnnnn\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1763900004765",
+      "projectName": "tiênnnnn",
+      "submittedAt": "2025-11-23T12:13:24.767Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:13:24.768Z"
+  },
+  {
+    "id": "notif_1763900045356_kduk43i4v",
+    "userEmail": "phatclientv@gmail.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"tiênnnnn\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1763900004765",
+      "projectName": "tiênnnnn",
+      "approvedAt": "2025-11-23T12:14:05.355Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:14:05.356Z"
+  },
+  {
+    "id": "notif_1763900115753_bs41nchiw",
+    "userEmail": "yaggvl6780@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"tiênnnnn\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "b24967e5-2ea5-49e7-b34c-333bfc85bcae",
+      "projectId": "project_1763900004765",
+      "projectName": "tiênnnnn",
+      "bidAmount": 33333333,
+      "submittedAt": "2025-11-23T12:15:15.752Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:15:15.753Z"
+  },
+  {
+    "id": "notif_1763900132869_akwwar9wr",
+    "userEmail": "yaggvl6780@gmail.com",
+    "type": "bid_approved",
+    "data": {
+      "title": "Proposal Accepted",
+      "message": "Great news! Your proposal for \"tiênnnnn\" has been accepted. Please contact the client to begin work.",
+      "icon": "check-circle",
+      "color": "green",
+      "bidId": "b24967e5-2ea5-49e7-b34c-333bfc85bcae",
+      "projectId": "project_1763900004765",
+      "projectName": "tiênnnnn",
+      "bidAmount": 33333333,
+      "approvedAt": "2025-11-23T12:15:32.868Z",
+      "clientEmail": "phatclientv@gmail.com"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:15:32.869Z"
+  },
+  {
+    "id": "notif_1763902084184_08phmhsva",
+    "userEmail": "yaggvl6780@gmail.com",
+    "type": "project_submitted",
+    "data": {
+      "title": "Project Submitted for Review",
+      "message": "Your project \"tester\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1763902084177",
+      "projectName": "tester",
+      "submittedAt": "2025-11-23T12:48:04.182Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:48:04.184Z"
+  },
+  {
+    "id": "notif_1763902104950_05esy7t9q",
+    "userEmail": "yaggvl6780@gmail.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"tester\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1763902084177",
+      "projectName": "tester",
+      "approvedAt": "2025-11-23T12:48:24.950Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:48:24.950Z"
+  },
+  {
+    "id": "notif_1763902125700_mjxw5vyc9",
+    "userEmail": "tienmanhat11a321@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"test bản mới\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "e3835ead-6d47-47d3-9e30-01ca0d02bf99",
+      "projectId": "project_1763899647203",
+      "projectName": "test bản mới",
+      "bidAmount": 22222222,
+      "submittedAt": "2025-11-23T12:48:45.699Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:48:45.700Z"
   }
 ]
