@@ -130,18 +130,17 @@ export default function NavBar() {
               <>
                 <Link to="/ApproveRequest" onClick={() => window.scrollTo(0, 0)}>
                   <button className={buttonStyle}>Approval Request</button>
+                </Link>              
+                <Link to="/ApproveBid" onClick={() => window.scrollTo(0, 0)}>
+                  <button className={buttonStyle}>Approval Bid</button>
                 </Link>
               </>
             )}
-            {user && ((user.role === 'client' && user.email_verify === 'verified') || user.role === 'moderator') && (
+            {user && ((user.role === 'client' && user.email_verify === 'verified')) && (
               <>
               <Link to="/ProjectPosting" onClick={() => window.scrollTo(0, 0)}>
                 <button className={buttonStyle}>Post Project</button>
               </Link>
-              
-              <Link to="/ApproveBid" onClick={() => window.scrollTo(0, 0)}>
-                  <button className={buttonStyle}>Approval Bid</button>
-                </Link>
               </>
             )}
             <NotificationBell />
@@ -166,8 +165,8 @@ export default function NavBar() {
                 >
                   Profile
                 </Link>
-                <Link // 👈 THAY THẾ: Chuyển button thành Link
-                  to="/MyProjectPage" // 👈 THAY THẾ: Thêm đường dẫn MyProjectPage
+                <Link  
+                  to="/MyProjectPage" 
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={() => setOpenMenu(false)}
                 >

@@ -17,7 +17,7 @@ const IT_CATEGORIES = [
     "Other",
 ];
 
-const WORK_FORM_OPTIONS = ["Offline", "Online", "Hybrid", "Other"];
+const WORK_FORM_OPTIONS = ["Offline", "Online", "Both", "Other"];
 const PAYMENT_METHOD_OPTIONS = ["Per Hour", "Per Month", "Per Project", "Other"];
 const SALARY_RANGE_OPTIONS = [
     "Under 1.000.000 VND",
