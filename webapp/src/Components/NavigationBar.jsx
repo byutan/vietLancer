@@ -126,9 +126,6 @@ export default function NavBar() {
 
               </div>
             </div>
-            <button className={`${buttonStyle} flex items-center group`}>
-              Hire Freelancer <DropdownArrow />
-            </button>
             {user.role === 'moderator' && (
               <>
                 <Link to="/ApproveRequest" onClick={() => window.scrollTo(0, 0)}>
@@ -141,10 +138,6 @@ export default function NavBar() {
               <Link to="/ProjectPosting" onClick={() => window.scrollTo(0, 0)}>
                 <button className={buttonStyle}>Post Project</button>
               </Link>
-              
-              <Link to="/ApproveBid" onClick={() => window.scrollTo(0, 0)}>
-                  <button className={buttonStyle}>Approval Bid</button>
-                </Link>
               </>
             )}
             <NotificationBell />
