@@ -1,282 +1,104 @@
 [
   {
-    "id": "notif_1761834719141_comhqmsw0",
-    "userEmail": "phatfreev@gmail.com",
-    "type": "bid_submitted",
-    "data": {
-      "title": "Đề xuất đã gửi thành công",
-      "message": "Đề xuất của bạn cho dự án \"Testaa\" đã được gửi đi. Client sẽ xem xét và phản hồi sớm.",
-      "icon": "clock",
-      "color": "blue",
-      "bidId": "48800667-61c2-4c39-8dd1-ae5bfbf2383e",
-      "projectId": "project_1761740637454",
-      "projectName": "Testaa",
-      "bidAmount": 12222222,
-      "submittedAt": "2025-10-30T14:31:59.140Z"
-    },
-    "read": false,
-    "createdAt": "2025-10-30T14:31:59.141Z"
-  },
-  {
-    "id": "notif_1761834759444_yel5eblqi",
-    "userEmail": "phatfreev@gmail.com",
-    "type": "bid_submitted",
-    "data": {
-      "title": "Proposal Submitted Successfully",
-      "message": "Your proposal for \"Testaa\" has been submitted. The client will review it and respond shortly.",
-      "icon": "clock",
-      "color": "blue",
-      "bidId": "78b3d0d6-4ecd-4bc2-8628-afac165f7f6a",
-      "projectId": "project_1761740637454",
-      "projectName": "Testaa",
-      "bidAmount": 12222222,
-      "submittedAt": "2025-10-30T14:32:39.441Z"
-    },
-    "read": false,
-    "createdAt": "2025-10-30T14:32:39.444Z"
-  },
-  {
-    "id": "notif_1762187179526_vjpa7bxjb",
-    "userEmail": "youremail@email.com",
-    "type": "bid_submitted",
-    "data": {
-      "title": "Proposal Submitted Successfully",
-      "message": "Your proposal for \"Website thương mại điện tử bán hàng đồ chơi\" has been submitted. The client will review it and respond shortly.",
-      "icon": "clock",
-      "color": "blue",
-      "bidId": "8688222b-fdd3-4f7b-8e3a-0002f4ee6c07",
-      "projectId": "project_1761452842502",
-      "projectName": "Website thương mại điện tử bán hàng đồ chơi",
-      "bidAmount": 2500000,
-      "submittedAt": "2025-11-03T16:26:19.525Z"
-    },
-    "read": true,
-    "createdAt": "2025-11-03T16:26:19.526Z"
-  },
-  {
-    "id": "notif_1762187725967_1iw78epzj",
-    "userEmail": "youremail@email.com",
+    "id": "notif_1763898009039_3lnoke4eq",
+    "userEmail": "nguyenhthang1234@gmail.com",
     "type": "project_submitted",
     "data": {
       "title": "Project Submitted for Review",
-      "message": "Your project \"ABCDEFG\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "message": "Your project \"WEBSITE BÁN HÀNG ĐỒ CHƠI\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
       "icon": "clock",
       "color": "blue",
-      "projectId": "project_1762187725963",
-      "projectName": "ABCDEFG",
-      "submittedAt": "2025-11-03T16:35:25.966Z"
+      "projectId": "project_1763898009035",
+      "projectName": "WEBSITE BÁN HÀNG ĐỒ CHƠI",
+      "submittedAt": "2025-11-23T11:40:09.038Z"
     },
-    "read": true,
-    "createdAt": "2025-11-03T16:35:25.967Z"
+    "read": false,
+    "createdAt": "2025-11-23T11:40:09.039Z"
   },
   {
-    "id": "notif_1762187747034_kx78h270z",
-    "userEmail": "youremail@email.com",
+    "id": "notif_1763898089506_a0geezall",
+    "userEmail": "nguyenhthang1234@gmail.com",
     "type": "project_approved",
     "data": {
       "title": "Project Approved",
-      "message": "Congratulations! Your project \"ABCDEFG\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "message": "Congratulations! Your project \"WEBSITE BÁN HÀNG ĐỒ CHƠI\" has been approved and is now live. Freelancers can start submitting proposals.",
       "icon": "check-circle",
       "color": "green",
-      "projectId": "project_1762187725963",
-      "projectName": "ABCDEFG",
-      "approvedAt": "2025-11-03T16:35:47.033Z",
+      "projectId": "project_1763898009035",
+      "projectName": "WEBSITE BÁN HÀNG ĐỒ CHƠI",
+      "approvedAt": "2025-11-23T11:41:29.505Z",
       "approvedBy": "admin"
     },
-    "read": true,
-    "createdAt": "2025-11-03T16:35:47.034Z"
+    "read": false,
+    "createdAt": "2025-11-23T11:41:29.506Z"
   },
   {
-    "id": "notif_1762187764372_fbiud7wiz",
-    "userEmail": "youremail@email.com",
+    "id": "notif_1763898127697_eafl0y78b",
+    "userEmail": "nhthang205@gmail.com",
     "type": "bid_submitted",
     "data": {
       "title": "Proposal Submitted Successfully",
-      "message": "Your proposal for \"ABCDEFG\" has been submitted. The client will review it and respond shortly.",
+      "message": "Your proposal for \"WEBSITE BÁN HÀNG ĐỒ CHƠI\" has been submitted. The client will review it and respond shortly.",
       "icon": "clock",
       "color": "blue",
-      "bidId": "01b5a363-1a78-4812-bdad-b328a71e61f1",
-      "projectId": "project_1762187725963",
-      "projectName": "ABCDEFG",
-      "bidAmount": 12345678,
-      "submittedAt": "2025-11-03T16:36:04.371Z"
-    },
-    "read": true,
-    "createdAt": "2025-11-03T16:36:04.372Z"
-  },
-  {
-    "id": "notif_1762188359352_6wzh78zxd",
-    "userEmail": "youremail@email.com",
-    "type": "bid_submitted",
-    "data": {
-      "title": "Proposal Submitted Successfully",
-      "message": "Your proposal for \"Embedded system for smart home\" has been submitted. The client will review it and respond shortly.",
-      "icon": "clock",
-      "color": "blue",
-      "bidId": "238b981d-fdc4-46ff-985b-281f2533fc82",
-      "projectId": "project_1761318000002",
-      "projectName": "Embedded system for smart home",
-      "bidAmount": 123456717,
-      "submittedAt": "2025-11-03T16:45:59.348Z"
+      "bidId": "f4fdb3d3-0093-4aa0-89ee-548ab11da92c",
+      "projectId": "project_1763898009035",
+      "projectName": "WEBSITE BÁN HÀNG ĐỒ CHƠI",
+      "bidAmount": 123456789,
+      "submittedAt": "2025-11-23T11:42:07.696Z"
     },
     "read": false,
-    "createdAt": "2025-11-03T16:45:59.352Z"
+    "createdAt": "2025-11-23T11:42:07.697Z"
   },
   {
-    "id": "notif_1762188366918_mb9w3vakh",
-    "userEmail": "youremail@email.com",
-    "type": "bid_rejected",
-    "data": {
-      "title": "Proposal Not Selected",
-      "message": "Your proposal for \"Embedded system for smart home\" was not selected this time. Keep refining your approach and explore other opportunities.",
-      "icon": "x-circle",
-      "color": "orange",
-      "bidId": "238b981d-fdc4-46ff-985b-281f2533fc82",
-      "projectId": "project_1761318000002",
-      "projectName": "Embedded system for smart home",
-      "rejectedAt": "2025-11-03T16:46:06.917Z"
-    },
-    "read": false,
-    "createdAt": "2025-11-03T16:46:06.918Z"
-  },
-  {
-    "id": "notif_1762662485856_8veschq0o",
-    "userEmail": "tienmanhat11a321@gmail.com",
+    "id": "notif_1763900766154_jbbihcu85",
+    "userEmail": "nguyenhthang1234@gmail.com",
     "type": "project_submitted",
     "data": {
       "title": "Project Submitted for Review",
-      "message": "Your project \"tester\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "message": "Your project \"LAP TIRNH WEB BAN HANGFD\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
       "icon": "clock",
       "color": "blue",
-      "projectId": "project_1762662485852",
-      "projectName": "tester",
-      "submittedAt": "2025-11-09T04:28:05.855Z"
+      "projectId": "project_1763900766149",
+      "projectName": "LAP TIRNH WEB BAN HANGFD",
+      "submittedAt": "2025-11-23T12:26:06.153Z"
     },
-    "read": true,
-    "createdAt": "2025-11-09T04:28:05.856Z"
+    "read": false,
+    "createdAt": "2025-11-23T12:26:06.154Z"
   },
   {
-    "id": "notif_1762662503486_ph5823oec",
-    "userEmail": "tienmanhat11a321@gmail.com",
+    "id": "notif_1763900778301_ouekmvrbr",
+    "userEmail": "nguyenhthang1234@gmail.com",
     "type": "project_approved",
     "data": {
       "title": "Project Approved",
-      "message": "Congratulations! Your project \"tester\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "message": "Congratulations! Your project \"LAP TIRNH WEB BAN HANGFD\" has been approved and is now live. Freelancers can start submitting proposals.",
       "icon": "check-circle",
       "color": "green",
-      "projectId": "project_1762662485852",
-      "projectName": "tester",
-      "approvedAt": "2025-11-09T04:28:23.486Z",
-      "approvedBy": "admin"
-    },
-    "read": true,
-    "createdAt": "2025-11-09T04:28:23.486Z"
-  },
-  {
-    "id": "notif_1762662535798_yhdbufmj7",
-    "userEmail": "nguyentphat2005@gmail.com",
-    "type": "bid_submitted",
-    "data": {
-      "title": "Proposal Submitted Successfully",
-      "message": "Your proposal for \"tester\" has been submitted. The client will review it and respond shortly.",
-      "icon": "clock",
-      "color": "blue",
-      "bidId": "b0d98986-c3a0-498f-866b-63ef05de41c7",
-      "projectId": "project_1762662485852",
-      "projectName": "tester",
-      "bidAmount": 10000000,
-      "submittedAt": "2025-11-09T04:28:55.796Z"
-    },
-    "read": true,
-    "createdAt": "2025-11-09T04:28:55.798Z"
-  },
-  {
-    "id": "notif_1762662577830_0hrbm0mrx",
-    "userEmail": "nguyentphat2005@gmail.com",
-    "type": "bid_approved",
-    "data": {
-      "title": "Proposal Accepted",
-      "message": "Great news! Your proposal for \"tester\" has been accepted. Please contact the client to begin work.",
-      "icon": "check-circle",
-      "color": "green",
-      "bidId": "b0d98986-c3a0-498f-866b-63ef05de41c7",
-      "projectId": "project_1762662485852",
-      "projectName": "tester",
-      "bidAmount": 10000000,
-      "approvedAt": "2025-11-09T04:29:37.828Z",
-      "clientEmail": "tienmanhat11a321@gmail.com"
-    },
-    "read": true,
-    "createdAt": "2025-11-09T04:29:37.830Z"
-  },
-  {
-    "id": "notif_1762670400981_naj9zx6re",
-    "userEmail": "tienmanhat11a321@gmail.com",
-    "type": "project_submitted",
-    "data": {
-      "title": "Project Submitted for Review",
-      "message": "Your project \"adasdasd\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
-      "icon": "clock",
-      "color": "blue",
-      "projectId": "project_1762670400976",
-      "projectName": "adasdasd",
-      "submittedAt": "2025-11-09T06:40:00.979Z"
-    },
-    "read": false,
-    "createdAt": "2025-11-09T06:40:00.981Z"
-  },
-  {
-    "id": "notif_1762670471712_tjte53qxo",
-    "userEmail": "tienmanhat11a321@gmail.com",
-    "type": "project_approved",
-    "data": {
-      "title": "Project Approved",
-      "message": "Congratulations! Your project \"adasdasd\" has been approved and is now live. Freelancers can start submitting proposals.",
-      "icon": "check-circle",
-      "color": "green",
-      "projectId": "project_1762670400976",
-      "projectName": "adasdasd",
-      "approvedAt": "2025-11-09T06:41:11.712Z",
+      "projectId": "project_1763900766149",
+      "projectName": "LAP TIRNH WEB BAN HANGFD",
+      "approvedAt": "2025-11-23T12:26:18.301Z",
       "approvedBy": "admin"
     },
     "read": false,
-    "createdAt": "2025-11-09T06:41:11.712Z"
+    "createdAt": "2025-11-23T12:26:18.301Z"
   },
   {
-    "id": "notif_1762670513931_ptl55jxb0",
-    "userEmail": "nguyentphat2005@gmail.com",
+    "id": "notif_1763900807160_gkz5dtrqx",
+    "userEmail": "nhthang205@gmail.com",
     "type": "bid_submitted",
     "data": {
       "title": "Proposal Submitted Successfully",
-      "message": "Your proposal for \"adasdasd\" has been submitted. The client will review it and respond shortly.",
+      "message": "Your proposal for \"LAP TIRNH WEB BAN HANGFD\" has been submitted. The client will review it and respond shortly.",
       "icon": "clock",
       "color": "blue",
-      "bidId": "5524994d-a13c-4e4e-abae-8827bcd6d6cc",
-      "projectId": "project_1762670400976",
-      "projectName": "adasdasd",
-      "bidAmount": 200000000,
-      "submittedAt": "2025-11-09T06:41:53.930Z"
+      "bidId": "30228456-1616-4f2e-922c-53a65bf837e1",
+      "projectId": "project_1763900766149",
+      "projectName": "LAP TIRNH WEB BAN HANGFD",
+      "bidAmount": 1234567,
+      "submittedAt": "2025-11-23T12:26:47.159Z"
     },
     "read": false,
-    "createdAt": "2025-11-09T06:41:53.931Z"
-  },
-  {
-    "id": "notif_1762670525982_aewhfxpdr",
-    "userEmail": "nguyentphat2005@gmail.com",
-    "type": "bid_approved",
-    "data": {
-      "title": "Proposal Accepted",
-      "message": "Great news! Your proposal for \"adasdasd\" has been accepted. Please contact the client to begin work.",
-      "icon": "check-circle",
-      "color": "green",
-      "bidId": "5524994d-a13c-4e4e-abae-8827bcd6d6cc",
-      "projectId": "project_1762670400976",
-      "projectName": "adasdasd",
-      "bidAmount": 200000000,
-      "approvedAt": "2025-11-09T06:42:05.980Z",
-      "clientEmail": "tienmanhat11a321@gmail.com"
-    },
-    "read": true,
-    "createdAt": "2025-11-09T06:42:05.982Z"
+    "createdAt": "2025-11-23T12:26:47.160Z"
   }
 ]
