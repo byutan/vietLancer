@@ -1,310 +1,333 @@
 import express from 'express';
-import fs from 'fs';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import pool from '../../config/db.js'; // Import kết nối DB
 import NotificationService from '../../utils/notificationService.js';
 
 const router = express.Router();
-const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
 
-// Helper: read/write projects
-function readProjects() {
-  return JSON.parse(fs.readFileSync(projectsPath, 'utf8'));
-}
-function writeProjects(projects) {
-  fs.writeFileSync(projectsPath, JSON.stringify(projects, null, 2));
-}
-
-// POST /api/projects/:id/bid - Freelancer gửi bid
+// ============================================================
+// 1. POST /api/projects/:id/bid - Freelancer gửi bid
+// ============================================================
 router.post('/projects/:id/bid', async (req, res) => {
-  const { id } = req.params;
-  const { freelancer_name, freelancer_email, bid_desc, price_offer } = req.body;
-  
-  if (!freelancer_name || !freelancer_email || !bid_desc || !price_offer) {
-    return res.status(400).json({ 
-      success: false, 
-      message: 'Missing required fields.' 
-    });
-  }
-
-  try {
-    const projects = readProjects();
-    const project = projects.find(p => p.id === id);
-    
-    if (!project) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Project not found.' 
-      });
-    }
-
-    // Check if project is approved (chỉ bid vào project đã approved)
-    if (project.status !== 'approved') {
-      return res.status(400).json({
-        success: false,
-        message: 'Can only bid on approved projects.'
-      });
-    }
-
-    const bid = {
-      bid_ID: uuidv4(),
-      freelancer_name,
-      freelancer_email,
-      bid_desc,
-      price_offer: Number(price_offer),
-      bid_status: 'pending',
-      bid_date: new Date().toISOString()
-    };
-    
-    if (!Array.isArray(project.list_of_bid)) {
-      project.list_of_bid = [];
-    }
-    
-    project.list_of_bid.push(bid);
-    writeProjects(projects);
-
-    // Send submit bid noti
+    const connection = await pool.getConnection();
     try {
-      await NotificationService.notifyBidSubmitted(freelancer_email, {
-        bidId: bid.bid_ID,
-        projectId: project.id,
-        projectName: project.title || project.name,
-        bidAmount: price_offer
-      });
-      console.log(`Notification sent to freelancer ${freelancer_email} for submitted bid`);
-    } catch (notifError) {
-      console.error('Failed to send notification:', notifError);
-      // Không return error vì bid đã submit thành công
+        const { id } = req.params; // Project ID
+        const { freelancer_email, bid_desc, price_offer } = req.body;
+
+        if (!freelancer_email || !bid_desc || !price_offer) {
+            return res.status(400).json({ success: false, message: 'Missing required fields.' });
+        }
+
+        // --- BẮT ĐẦU TRANSACTION ---
+        await connection.beginTransaction();
+
+        // 1. Lấy thông tin Freelancer từ Email
+        // Ta cần lấy ID của User để lưu vào cột fID trong bảng Bid
+        const [users] = await connection.query(
+            "SELECT ID, full_name FROM User WHERE email = ?", 
+            [freelancer_email]
+        );
+        
+        if (users.length === 0) {
+            await connection.rollback();
+            return res.status(404).json({ success: false, message: 'Freelancer account not found.' });
+        }
+        const freelancerId = users[0].ID;
+        const freelancerName = users[0].full_name;
+
+        // 2. Lấy thông tin Project
+        // Ta cần cID (Client ID) để lưu vào bảng Bid (theo schema của bạn có cột cID trong bảng Bid)
+        const [projects] = await connection.query(
+            "SELECT project_ID, project_name, project_status, cID FROM Project WHERE project_ID = ?", 
+            [id]
+        );
+
+        if (projects.length === 0) {
+            await connection.rollback();
+            return res.status(404).json({ success: false, message: 'Project not found.' });
+        }
+
+        const project = projects[0];
+
+        // 3. Kiểm tra trạng thái dự án
+        // Trong DB: project_status ENUM('Open', 'In Progress', 'Completed', 'Cancelled')
+        // Logic cũ check 'approved', logic mới check 'Open'
+        if (project.project_status !== 'Open') {
+            await connection.rollback();
+            return res.status(400).json({ success: false, message: 'Can only bid on Open projects.' });
+        }
+
+        // 4. Insert vào bảng Bid
+        // Schema: Bid (bid_desc, price_offer, bid_status, bid_date, project_ID, fID, cID)
+        const [insertResult] = await connection.query(
+            `INSERT INTO Bid (bid_desc, price_offer, bid_status, bid_date, project_ID, fID, cID)
+             VALUES (?, ?, 'Pending', NOW(), ?, ?, ?)`,
+            [bid_desc, price_offer, project.project_ID, freelancerId, project.cID]
+        );
+
+        const newBidId = insertResult.insertId;
+
+        // --- COMMIT TRANSACTION ---
+        await connection.commit();
+
+        // 5. Gửi thông báo
+        try {
+            await NotificationService.notifyBidSubmitted(freelancer_email, {
+                bidId: newBidId,
+                projectId: project.project_ID,
+                projectName: project.project_name,
+                bidAmount: price_offer
+            });
+            console.log(`Notification sent to ${freelancer_email}`);
+        } catch (notifError) {
+            console.error('Failed to send notification:', notifError);
+        }
+
+        res.json({
+            success: true,
+            message: 'Bid submitted successfully.',
+            bid: {
+                bid_ID: newBidId,
+                freelancer_name: freelancerName,
+                freelancer_email: freelancer_email,
+                price_offer,
+                bid_status: 'Pending',
+                bid_date: new Date()
+            }
+        });
+
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error submitting bid:', error);
+        res.status(500).json({ success: false, message: 'Server error: ' + error.message });
+    } finally {
+        connection.release();
     }
-
-    res.json({ 
-      success: true, 
-      message: 'Bid submitted successfully. You will be notified once reviewed.', 
-      bid 
-    });
-
-  } catch (error) {
-    console.error('Error submitting bid:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error: ' + error.message
-    });
-  }
 });
 
-// POST /api/projects/:projectId/bid/:bidId/approve - Mod duyệt bid
+// ============================================================
+// 2. POST .../approve - Mod (hoặc Client) duyệt/từ chối bid
+// ============================================================
 router.post('/projects/:projectId/bid/:bidId/approve', async (req, res) => {
-  const { projectId, bidId } = req.params;
-  const { status } = req.body; // 'accepted' hoặc 'rejected'
-  
-  if (!['accepted', 'rejected'].includes(status)) {
-    return res.status(400).json({ 
-      success: false, 
-      message: 'Invalid status. Must be "accepted" or "rejected".' 
-    });
-  }
-
-  try {
-    const projects = readProjects();
-    const project = projects.find(p => p.id === projectId);
-    
-    if (!project) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Project not found.' 
-      });
-    }
-    
-    const bid = project.list_of_bid?.find(b => b.bid_ID === bidId);
-    
-    if (!bid) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Bid not found.' 
-      });
-    }
-
-    // Update bid status
-    bid.bid_status = status;
-    bid.reviewed_at = new Date().toISOString();
-    
-    writeProjects(projects);
-
-    // sent bid approval noti
-    try {
-      if (status === 'accepted') {
-        // Bid được chấp nhận
-        await NotificationService.notifyBidApproved(bid.freelancer_email, {
-          bidId: bid.bid_ID,
-          projectId: project.id,
-          projectName: project.title || project.name,
-          bidAmount: bid.price_offer,
-          clientEmail: project.clientEmail // Client email để freelancer liên hệ
-        });
-        console.log(`Notification sent to freelancer ${bid.freelancer_email} - Bid ACCEPTED`);
-      } else if (status === 'rejected') {
-        // Bid bị từ chối
-        await NotificationService.notifyBidRejected(bid.freelancer_email, {
-          bidId: bid.bid_ID,
-          projectId: project.id,
-          projectName: project.title || project.name
-        });
-        console.log(`Notification sent to freelancer ${bid.freelancer_email} - Bid REJECTED`);
-      }
-    } catch (notifError) {
-      console.error('Failed to send notification:', notifError);
-      // Không return error vì bid đã được xử lý thành công
-    }
-
-    res.json({ 
-      success: true, 
-      message: `Bid ${status} successfully. Freelancer has been notified.`, 
-      bid 
-    });
-
-  } catch (error) {
-    console.error('Error approving/rejecting bid:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error: ' + error.message
-    });
-  }
-});
-
-// GET /api/projects/:id/bids - Lấy danh sách bids của 1 project
-router.get('/projects/:id/bids', (req, res) => {
-  try {
-    const { id } = req.params;
-    const projects = readProjects();
-    const project = projects.find(p => p.id === id);
-    
-    if (!project) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Project not found.' 
-      });
-    }
-
-    const bids = project.list_of_bid || [];
-    
-    res.json({
-      success: true,
-      projectId: project.id,
-      projectName: project.title || project.name,
-      bids: bids.sort((a, b) => new Date(b.bid_date) - new Date(a.bid_date))
-    });
-
-  } catch (error) {
-    console.error('Error getting bids:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error: ' + error.message
-    });
-  }
-});
-
-// GET /api/freelancer/bids - Lấy tất cả bids của freelancer (theo email)
-router.get('/freelancer/bids', (req, res) => {
-  try {
-    const { email } = req.query;
-    
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        message: 'Freelancer email is required.'
-      });
-    }
-
-    const projects = readProjects();
-    const freelancerBids = [];
-
-    // Tìm tất cả bids của freelancer này
-    projects.forEach(project => {
-      if (Array.isArray(project.list_of_bid)) {
-        project.list_of_bid.forEach(bid => {
-          if (bid.freelancer_email === email) {
-            freelancerBids.push({
-              ...bid,
-              projectId: project.id,
-              projectName: project.title || project.name,
-              projectStatus: project.status
-            });
-          }
-        });
-      }
-    });
-
-    res.json({
-      success: true,
-      freelancerEmail: email,
-      totalBids: freelancerBids.length,
-      bids: freelancerBids.sort((a, b) => new Date(b.bid_date) - new Date(a.bid_date))
-    });
-
-  } catch (error) {
-    console.error('Error getting freelancer bids:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error: ' + error.message
-    });
-  }
-});
-
-
-// -----------------------------------------------------------------
-// HÀM MỚI: DÀNH CHO CLIENT "REJECT"
-// React sẽ gọi API này khi Client bấm nút "Reject"
-// -----------------------------------------------------------------
-router.patch('/projects/:projectId/bids/:bidId', (req, res) => {
     const { projectId, bidId } = req.params;
-    const { client_status } = req.body; // React gửi: { client_status: 'client_rejected' }
+    const { status } = req.body; // 'accepted' hoặc 'rejected'
 
-    if (client_status !== 'client_rejected') {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'Invalid action' 
+    // Map status từ API sang status của DB (viết hoa chữ đầu)
+    // API: 'accepted' -> DB: 'Accepted'
+    const dbStatus = status.charAt(0).toUpperCase() + status.slice(1);
+
+    if (!['Accepted', 'Rejected'].includes(dbStatus)) {
+        return res.status(400).json({ success: false, message: 'Invalid status. Must be "accepted" or "rejected".' });
+    }
+
+    const connection = await pool.getConnection();
+
+    try {
+        // 1. Lấy thông tin Bid và Email freelancer để gửi noti
+        const query = `
+            SELECT b.*, u.email as freelancer_email, p.project_name, p.cID
+            FROM Bid b
+            JOIN User u ON b.fID = u.ID
+            JOIN Project p ON b.project_ID = p.project_ID
+            WHERE b.bid_id = ? AND b.project_ID = ?
+        `;
+        const [rows] = await connection.query(query, [bidId, projectId]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Bid not found.' });
+        }
+        const bidData = rows[0];
+
+        // 2. Cập nhật trạng thái Bid
+        await connection.query(
+            "UPDATE Bid SET bid_status = ? WHERE bid_id = ?",
+            [dbStatus, bidId]
+        );
+
+        // 3. (Optional) Nếu Accept bid -> Cập nhật Project sang 'In Progress' luôn?
+        // Tùy logic nghiệp vụ của bạn. Ở đây mình giữ nguyên chỉ update Bid.
+
+        // 4. Gửi thông báo
+        try {
+            if (dbStatus === 'Accepted') {
+                 // Lấy email Client để gửi cho freelancer liên hệ
+                 const [clientUser] = await connection.query("SELECT email FROM User WHERE ID = ?", [bidData.cID]);
+                 const clientEmail = clientUser.length > 0 ? clientUser[0].email : '';
+
+                await NotificationService.notifyBidApproved(bidData.freelancer_email, {
+                    bidId: bidData.bid_id,
+                    projectId: projectId,
+                    projectName: bidData.project_name,
+                    bidAmount: bidData.price_offer,
+                    clientEmail: clientEmail
+                });
+            } else {
+                await NotificationService.notifyBidRejected(bidData.freelancer_email, {
+                    bidId: bidData.bid_id,
+                    projectId: projectId,
+                    projectName: bidData.project_name
+                });
+            }
+        } catch (notifError) {
+            console.error('Notification error:', notifError);
+        }
+
+        res.json({
+            success: true,
+            message: `Bid ${status} successfully.`,
+            bid: { ...bidData, bid_status: dbStatus }
         });
+
+    } catch (error) {
+        console.error('Error approving/rejecting bid:', error);
+        res.status(500).json({ success: false, message: 'Server error: ' + error.message });
+    } finally {
+        connection.release();
+    }
+});
+
+// ============================================================
+// 3. GET /projects/:id/bids - Lấy danh sách bids của 1 project
+// ============================================================
+router.get('/projects/:id/bids', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Query join bảng User để lấy tên Freelancer
+        const query = `
+            SELECT 
+                b.bid_id as bid_ID,
+                b.bid_desc,
+                b.price_offer,
+                b.bid_status,
+                b.bid_date,
+                u.full_name as freelancer_name,
+                u.email as freelancer_email,
+                -- Lấy thêm cột client_status (giả lập từ bid_status) để frontend cũ không lỗi
+                CASE 
+                    WHEN b.bid_status = 'Rejected' THEN 'client_rejected' 
+                    ELSE NULL 
+                END as client_status
+            FROM Bid b
+            JOIN User u ON b.fID = u.ID
+            WHERE b.project_ID = ?
+            ORDER BY b.bid_date DESC
+        `;
+
+        const [bids] = await pool.query(query, [id]);
+
+        // Lấy tên project (để trả về đúng format cũ)
+        const [projects] = await pool.query("SELECT project_name FROM Project WHERE project_ID = ?", [id]);
+        
+        if (projects.length === 0) {
+             return res.status(404).json({ success: false, message: 'Project not found.' });
+        }
+
+        res.json({
+            success: true,
+            projectId: id,
+            projectName: projects[0].project_name,
+            bids: bids
+        });
+
+    } catch (error) {
+        console.error('Error getting bids:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// ============================================================
+// 4. GET /freelancer/bids - Lấy bids của Freelancer
+// ============================================================
+router.get('/freelancer/bids', async (req, res) => {
+    try {
+        const { email } = req.query;
+        if (!email) return res.status(400).json({ success: false, message: 'Email required.' });
+
+        // 1. Tìm ID của freelancer từ email
+        const [users] = await pool.query("SELECT ID FROM User WHERE email = ?", [email]);
+        if (users.length === 0) {
+            return res.json({ success: true, freelancerEmail: email, totalBids: 0, bids: [] });
+        }
+        const freelancerId = users[0].ID;
+
+        // 2. Query Bids kèm thông tin Project
+        const query = `
+            SELECT 
+                b.bid_id as bid_ID,
+                b.bid_desc,
+                b.price_offer,
+                b.bid_status,
+                b.bid_date,
+                p.project_ID as projectId,
+                p.project_name as projectName,
+                p.project_status as projectStatus
+            FROM Bid b
+            JOIN Project p ON b.project_ID = p.project_ID
+            WHERE b.fID = ?
+            ORDER BY b.bid_date DESC
+        `;
+
+        const [bids] = await pool.query(query, [freelancerId]);
+
+        // Map thêm freelancer_email vào từng bid để khớp format cũ
+        const formattedBids = bids.map(bid => ({
+            ...bid,
+            freelancer_email: email
+        }));
+
+        res.json({
+            success: true,
+            freelancerEmail: email,
+            totalBids: formattedBids.length,
+            bids: formattedBids
+        });
+
+    } catch (error) {
+        console.error('Error getting freelancer bids:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// ============================================================
+// 5. PATCH .../bids/:bidId - Client từ chối (Reject)
+// ============================================================
+router.patch('/projects/:projectId/bids/:bidId', async (req, res) => {
+    const { projectId, bidId } = req.params;
+    const { client_status } = req.body; 
+
+    // Logic cũ: client_status = 'client_rejected'
+    // Logic mới: Update cột bid_status = 'Rejected'
+    
+    if (client_status !== 'client_rejected') {
+        return res.status(400).json({ success: false, message: 'Invalid action' });
     }
 
     try {
-        const projects = readProjects();
-        const project = projects.find(p => p.id === projectId);
+        // Kiểm tra xem Bid có thuộc Project này không
+        const [check] = await pool.query(
+            "SELECT bid_id FROM Bid WHERE bid_id = ? AND project_ID = ?", 
+            [bidId, projectId]
+        );
 
-        if (!project) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Project not found' 
-            });
+        if (check.length === 0) {
+            return res.status(404).json({ success: false, message: 'Bid not found in this project' });
         }
 
-        const bid = project.list_of_bid?.find(b => b.bid_ID === bidId);
-        if (!bid) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Bid not found' 
-            });
-        }
+        // Update Database
+        await pool.query(
+            "UPDATE Bid SET bid_status = 'Rejected' WHERE bid_id = ?",
+            [bidId]
+        );
 
-        // Thêm "biến khác" (client_status) VÀO BID
-        bid.client_status = 'client_rejected';
-
-        writeProjects(projects); // Lưu file
-
-        // Trả về JSON
-        res.status(200).json({ 
-            success: true, 
-            message: 'Bid rejected successfully' 
+        res.status(200).json({
+            success: true,
+            message: 'Bid rejected successfully'
         });
 
     } catch (error) {
         console.error('Error rejecting bid:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Server error', 
-            error: error.message 
-        });
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
     }
 });
-
 
 export default router;

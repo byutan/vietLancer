@@ -1,98 +1,135 @@
 import express from 'express';
-import fs from 'fs';
-import path from 'path';
-import fetch from 'node-fetch';
-import { fileURLToPath } from 'url';
+import pool from '../../config/db.js'; // Import kết nối DB
 import NotificationService from '../../utils/notificationService.js';
 
 const router = express.Router();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const DATA_PATH = path.join(__dirname, '../../data/projects.json');
 
-// Approve project and update its updatedAt field to current time (UTC)
+// ============================================================
+// 1. POST /api/approve - Duyệt dự án
+// ============================================================
 router.post('/', async (req, res) => {
-  const { id, approvedBy } = req.body;
-  
-  if (!id) {
-    return res.status(400).json({ error: 'Missing project id' });
-  }
+    const { id, approvedBy } = req.body; // approvedBy nên là Admin ID (số)
 
-  try {
-    // Đọc file
-    const data = await fs.promises.readFile(DATA_PATH, 'utf8');
-    let projects = JSON.parse(data);
-
-    // Tìm project
-    const idx = projects.findIndex(p => p.id === id || p.ProjectID === id);
-    
-    if (idx === -1) {
-      return res.status(404).json({ error: 'Project not found' });
+    if (!id) {
+        return res.status(400).json({ error: 'Missing project id' });
     }
 
-    const project = projects[idx];
+    const connection = await pool.getConnection();
 
-    // Fetch UTC time from postman-echo.com/time/now, store as UTC
-    let updatedAt;
     try {
-      const response = await fetch('https://postman-echo.com/time/now');
-      const data = await response.json();
-      updatedAt = new Date(data.iso).toISOString();
-    } catch (e) {
-      updatedAt = new Date().toISOString();
-    }
+        await connection.beginTransaction();
 
-    // Cập nhật project
-    projects[idx].status = 'approved';
-    projects[idx].approvedBy = approvedBy || 'admin';
-    projects[idx].approvedAt = updatedAt;
-    projects[idx].updatedAt = updatedAt;
+        // 1. Tìm Project và lấy Email của Client (để gửi thông báo)
+        const queryInfo = `
+            SELECT 
+                p.project_ID, 
+                p.project_name, 
+                p.cID,
+                u.email as clientEmail,
+                u.full_name as clientName
+            FROM Project p
+            JOIN Client c ON p.cID = c.client_ID
+            JOIN User u ON c.client_ID = u.ID
+            WHERE p.project_ID = ?
+        `;
 
-    // Ghi file
-    await fs.promises.writeFile(DATA_PATH, JSON.stringify(projects, null, 2));
+        const [rows] = await connection.query(queryInfo, [id]);
 
-    // Send noti to client
-    if (project.clientEmail) {
-      try {
-        await NotificationService.notifyProjectApproved(project.clientEmail, {
-          projectId: project.id,
-          projectName: project.title || project.name,
-          approvedBy: approvedBy || 'admin'
+        if (rows.length === 0) {
+            await connection.rollback();
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        const project = rows[0];
+
+        // 2. Cập nhật trạng thái Project
+        // - status: chuyển thành 'Open' (để Freelancer bắt đầu thấy và Bid)
+        // - approved_date: lấy thời gian hiện tại
+        // - admin_ID: người duyệt (approvedBy)
+        
+        // Kiểm tra xem approvedBy có phải là số (ID) không, nếu không thì để NULL
+        const adminId = isNaN(approvedBy) ? null : approvedBy;
+
+        const updateQuery = `
+            UPDATE Project 
+            SET 
+                project_status = 'Open', 
+                approved_date = NOW(), 
+                admin_ID = ? 
+            WHERE project_ID = ?
+        `;
+
+        await connection.query(updateQuery, [adminId, id]);
+
+        await connection.commit();
+
+        // 3. Gửi thông báo cho Client
+        if (project.clientEmail) {
+            try {
+                await NotificationService.notifyProjectApproved(project.clientEmail, {
+                    projectId: project.project_ID,
+                    projectName: project.project_name,
+                    approvedBy: approvedBy || 'Admin'
+                });
+                console.log(`Notification sent to ${project.clientEmail} for project "${project.project_name}"`);
+            } catch (notifError) {
+                console.error('Failed to send notification:', notifError);
+            }
+        }
+
+        // 4. Trả về kết quả
+        res.json({
+            success: true,
+            message: 'Project approved successfully',
+            project: {
+                id: project.project_ID,
+                title: project.project_name,
+                status: 'Open',
+                approvedBy: adminId,
+                approvedAt: new Date(),
+                clientEmail: project.clientEmail
+            }
         });
-        console.log(`Notification sent to ${project.clientEmail} for approved project "${project.title}"`);
-      } catch (notifError) {
-        console.error('Failed to send notification:', notifError);
-      }
-    } else {
-      console.warn('No clientEmail found in project, notification not sent');
-    }
 
-    res.json({ 
-      success: true, 
-      project: projects[idx],
-      message: 'Project approved successfully'
-    });
-
-  } catch (err) {
-    console.error('Error approving project:', err);
-    
-    if (err.code === 'ENOENT') {
-      return res.status(500).json({ error: 'Projects file not found' });
+    } catch (err) {
+        await connection.rollback();
+        console.error('Error approving project:', err);
+        res.status(500).json({ error: 'Server error: ' + err.message });
+    } finally {
+        connection.release();
     }
-    
-    res.status(500).json({ error: 'Server error: ' + err.message });
-  }
 });
 
-// GET /api/projects - return all projects (moved from accept.js)
+// ============================================================
+// 2. GET /api/approve/projects - Lấy tất cả project (thường dùng cho Admin dashboard)
+// ============================================================
 router.get('/projects', async (req, res) => {
-  try {
-    const data = await fs.promises.readFile(DATA_PATH, 'utf8');
-    const projects = JSON.parse(data);
-    res.json({ success: true, projects });
-  } catch (e) {
-    res.status(500).json({ success: false, message: 'Cannot read projects.json' });
-  }
+    try {
+        // Lấy danh sách dự án kèm tên Client và trạng thái
+        const query = `
+            SELECT 
+                p.project_ID as id,
+                p.project_name as title,
+                p.project_desc as description,
+                p.project_status as status,
+                p.salary as budget,
+                p.approved_date as approvedAt,
+                u.full_name as clientName,
+                u.email as clientEmail
+            FROM Project p
+            LEFT JOIN Client c ON p.cID = c.client_ID
+            LEFT JOIN User u ON c.client_ID = u.ID
+            ORDER BY p.project_ID DESC
+        `;
+
+        const [projects] = await pool.query(query);
+
+        res.json({ success: true, projects });
+
+    } catch (e) {
+        console.error("Error reading projects:", e);
+        res.status(500).json({ success: false, message: 'Cannot read projects from database' });
+    }
 });
 
 export default router;
