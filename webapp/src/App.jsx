@@ -4,7 +4,6 @@ import SignUpPage from "./Page/SignUp";
 import ProfilePage from "./Page/ProfilePage";
 import JobPage from './Page/JobPage';
 import ApproveRequest from "./Page/ApproveRequest";
-import ApproveBid from "./Page/ApproveBid";
 import AuthProvider from "./ContextAPI/AuthProvider";
 import NavigationBar from './Components/NavigationBar';
 import ProjectPosting from './Page/ProjectPosting';
@@ -31,7 +30,7 @@ function App() {
           <Route path="/ProjectPosting" element={<ProjectPosting />} />
           <Route path="/ContractTemplatePage" element={<ContractTemplatePage />} />
           <Route path="/MyBidPage" element={<MyBidPage />} />
-          <Route path="/MyProjectPage" element={<MyProjectPage />} /> 
+          <Route path="/MyProjectPage" element={<MyProjectPage />} />
         </Routes>
       </AuthProvider>
     </Router>

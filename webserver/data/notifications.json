@@ -1,6 +1,6 @@
 [
   {
-    "id": "notif_1763908902606_ehlvzhkuh",
+    "id": "notif_1763898009039_3lnoke4eq",
     "userEmail": "nguyenhthang1234@gmail.com",
     "type": "project_submitted",
     "data": {
@@ -8,82 +8,15 @@
       "message": "Your project \"WEBSITE BÁN HÀNG ĐỒ CHƠI\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
       "icon": "clock",
       "color": "blue",
-      "projectId": "project_1763908902603",
+      "projectId": "project_1763898009035",
       "projectName": "WEBSITE BÁN HÀNG ĐỒ CHƠI",
-      "submittedAt": "2025-11-23T14:41:42.605Z"
+      "submittedAt": "2025-11-23T11:40:09.038Z"
     },
-    "read": true,
-    "createdAt": "2025-11-23T14:41:42.606Z"
+    "read": false,
+    "createdAt": "2025-11-23T11:40:09.039Z"
   },
   {
-    "id": "notif_1763908956182_kxbyjk0ao",
-    "userEmail": "nguyenhthang1234@gmail.com",
-    "type": "project_submitted",
-    "data": {
-      "title": "Project Submitted for Review",
-      "message": "Your project \"ỨNG DỤNG GIAO DỊCH SÀN CHỨNG KHOÁN\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
-      "icon": "clock",
-      "color": "blue",
-      "projectId": "project_1763908956179",
-      "projectName": "ỨNG DỤNG GIAO DỊCH SÀN CHỨNG KHOÁN",
-      "submittedAt": "2025-11-23T14:42:36.181Z"
-    },
-    "read": true,
-    "createdAt": "2025-11-23T14:42:36.182Z"
-  },
-  {
-    "id": "notif_1763908986330_7rgmng332",
-    "userEmail": "nguyenhthang1234@gmail.com",
-    "type": "project_submitted",
-    "data": {
-      "title": "Project Submitted for Review",
-      "message": "Your project \"PHẦN MỀM QUẢN LÝ NHÂN SỰ CÔNG TY DỆT MAY\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
-      "icon": "clock",
-      "color": "blue",
-      "projectId": "project_1763908986328",
-      "projectName": "PHẦN MỀM QUẢN LÝ NHÂN SỰ CÔNG TY DỆT MAY",
-      "submittedAt": "2025-11-23T14:43:06.329Z"
-    },
-    "read": true,
-    "createdAt": "2025-11-23T14:43:06.330Z"
-  },
-  {
-    "id": "notif_1763909046377_ja1q55gvt",
-    "userEmail": "nguyenhthang1234@gmail.com",
-    "type": "project_approved",
-    "data": {
-      "title": "Project Approved",
-      "message": "Congratulations! Your project \"PHẦN MỀM QUẢN LÝ NHÂN SỰ CÔNG TY DỆT MAY\" has been approved and is now live. Freelancers can start submitting proposals.",
-      "icon": "check-circle",
-      "color": "green",
-      "projectId": "project_1763908986328",
-      "projectName": "PHẦN MỀM QUẢN LÝ NHÂN SỰ CÔNG TY DỆT MAY",
-      "approvedAt": "2025-11-23T14:44:06.377Z",
-      "approvedBy": "admin"
-    },
-    "read": true,
-    "createdAt": "2025-11-23T14:44:06.378Z"
-  },
-  {
-    "id": "notif_1763909048058_xckp6gjh8",
-    "userEmail": "nguyenhthang1234@gmail.com",
-    "type": "project_rejected",
-    "data": {
-      "title": "Project Not Approved",
-      "message": "Unfortunately, your project \"ỨNG DỤNG GIAO DỊCH SÀN CHỨNG KHOÁN\" was not approved. Reason: Không đáp ứng yêu cầu. Please review our guidelines and resubmit.",
-      "icon": "x-circle",
-      "color": "red",
-      "projectId": "project_1763908956179",
-      "projectName": "ỨNG DỤNG GIAO DỊCH SÀN CHỨNG KHOÁN",
-      "reason": "Không đáp ứng yêu cầu",
-      "rejectedAt": "2025-11-23T14:44:08.057Z",
-      "rejectedBy": "admin"
-    },
-    "read": true,
-    "createdAt": "2025-11-23T14:44:08.058Z"
-  },
-  {
-    "id": "notif_1763909049984_rsf6gyg6l",
+    "id": "notif_1763898089506_a0geezall",
     "userEmail": "nguyenhthang1234@gmail.com",
     "type": "project_approved",
     "data": {
@@ -91,49 +24,81 @@
       "message": "Congratulations! Your project \"WEBSITE BÁN HÀNG ĐỒ CHƠI\" has been approved and is now live. Freelancers can start submitting proposals.",
       "icon": "check-circle",
       "color": "green",
-      "projectId": "project_1763908902603",
+      "projectId": "project_1763898009035",
       "projectName": "WEBSITE BÁN HÀNG ĐỒ CHƠI",
-      "approvedAt": "2025-11-23T14:44:09.983Z",
+      "approvedAt": "2025-11-23T11:41:29.505Z",
       "approvedBy": "admin"
     },
-    "read": true,
-    "createdAt": "2025-11-23T14:44:09.984Z"
+    "read": false,
+    "createdAt": "2025-11-23T11:41:29.506Z"
   },
   {
-    "id": "notif_1763909202332_wrjfgxurl",
+    "id": "notif_1763898127697_eafl0y78b",
     "userEmail": "nhthang205@gmail.com",
     "type": "bid_submitted",
     "data": {
       "title": "Proposal Submitted Successfully",
-      "message": "Your proposal for \"PHẦN MỀM QUẢN LÝ NHÂN SỰ CÔNG TY DỆT MAY\" has been submitted. The client will review it and respond shortly.",
+      "message": "Your proposal for \"WEBSITE BÁN HÀNG ĐỒ CHƠI\" has been submitted. The client will review it and respond shortly.",
       "icon": "clock",
       "color": "blue",
-      "bidId": "ebf7fecf-e83b-42c6-ae0a-0924432b0abb",
-      "projectId": "project_1763908986328",
-      "projectName": "PHẦN MỀM QUẢN LÝ NHÂN SỰ CÔNG TY DỆT MAY",
-      "bidAmount": 6500000,
-      "submittedAt": "2025-11-23T14:46:42.331Z"
+      "bidId": "f4fdb3d3-0093-4aa0-89ee-548ab11da92c",
+      "projectId": "project_1763898009035",
+      "projectName": "WEBSITE BÁN HÀNG ĐỒ CHƠI",
+      "bidAmount": 123456789,
+      "submittedAt": "2025-11-23T11:42:07.696Z"
     },
     "read": false,
-    "createdAt": "2025-11-23T14:46:42.332Z"
+    "createdAt": "2025-11-23T11:42:07.697Z"
   },
   {
-    "id": "notif_1763909238778_s8w8xl7gm",
-    "userEmail": "nhthang205@gmail.com",
-    "type": "bid_approved",
+    "id": "notif_1763900766154_jbbihcu85",
+    "userEmail": "nguyenhthang1234@gmail.com",
+    "type": "project_submitted",
     "data": {
-      "title": "Proposal Accepted",
-      "message": "Great news! Your proposal for \"PHẦN MỀM QUẢN LÝ NHÂN SỰ CÔNG TY DỆT MAY\" has been accepted. Please contact the client to begin work.",
-      "icon": "check-circle",
-      "color": "green",
-      "bidId": "ebf7fecf-e83b-42c6-ae0a-0924432b0abb",
-      "projectId": "project_1763908986328",
-      "projectName": "PHẦN MỀM QUẢN LÝ NHÂN SỰ CÔNG TY DỆT MAY",
-      "bidAmount": 6500000,
-      "approvedAt": "2025-11-23T14:47:18.777Z",
-      "clientEmail": "nguyenhthang1234@gmail.com"
+      "title": "Project Submitted for Review",
+      "message": "Your project \"LAP TIRNH WEB BAN HANGFD\" has been successfully submitted and is now under review. We'll notify you once a decision has been made.",
+      "icon": "clock",
+      "color": "blue",
+      "projectId": "project_1763900766149",
+      "projectName": "LAP TIRNH WEB BAN HANGFD",
+      "submittedAt": "2025-11-23T12:26:06.153Z"
     },
     "read": false,
-    "createdAt": "2025-11-23T14:47:18.778Z"
+    "createdAt": "2025-11-23T12:26:06.154Z"
+  },
+  {
+    "id": "notif_1763900778301_ouekmvrbr",
+    "userEmail": "nguyenhthang1234@gmail.com",
+    "type": "project_approved",
+    "data": {
+      "title": "Project Approved",
+      "message": "Congratulations! Your project \"LAP TIRNH WEB BAN HANGFD\" has been approved and is now live. Freelancers can start submitting proposals.",
+      "icon": "check-circle",
+      "color": "green",
+      "projectId": "project_1763900766149",
+      "projectName": "LAP TIRNH WEB BAN HANGFD",
+      "approvedAt": "2025-11-23T12:26:18.301Z",
+      "approvedBy": "admin"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:26:18.301Z"
+  },
+  {
+    "id": "notif_1763900807160_gkz5dtrqx",
+    "userEmail": "nhthang205@gmail.com",
+    "type": "bid_submitted",
+    "data": {
+      "title": "Proposal Submitted Successfully",
+      "message": "Your proposal for \"LAP TIRNH WEB BAN HANGFD\" has been submitted. The client will review it and respond shortly.",
+      "icon": "clock",
+      "color": "blue",
+      "bidId": "30228456-1616-4f2e-922c-53a65bf837e1",
+      "projectId": "project_1763900766149",
+      "projectName": "LAP TIRNH WEB BAN HANGFD",
+      "bidAmount": 1234567,
+      "submittedAt": "2025-11-23T12:26:47.159Z"
+    },
+    "read": false,
+    "createdAt": "2025-11-23T12:26:47.160Z"
   }
 ]
