@@ -11,7 +11,6 @@ import ProjectPosting from './Page/ProjectPosting';
 import ContractTemplatePage from "./Page/ContractTemplatePage";
 import MyProjectPage from "./Page/MyProjectPage"; 
 import MyBidPage from "./Page/MyBidPage";
-import ApproveBid from "./Page/ApproveBid";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
