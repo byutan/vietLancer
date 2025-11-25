@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { FileText, CheckCircle2, XCircle, Search } from "lucide-react";
 import Footer from "../Components/Footer";
 
-// ✅ CẬP NHẬT 1: Khớp Status với Database MySQL (Viết hoa chữ cái đầu)
 const STATUS_OPTIONS = [
     { value: "Pending", label: "Pending", icon: FileText, color: "bg-yellow-500" },
     { value: "Accepted", label: "Approved", icon: CheckCircle2, color: "bg-green-500" },
@@ -18,7 +17,6 @@ export default function ApproveBid() {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    // ✅ CẬP NHẬT 2: Check role là 'moderator' (theo logic signin.js)
     useEffect(() => {
         if (user && user.role !== 'admin') {
             navigate("/HomePage"); 
@@ -26,24 +24,28 @@ export default function ApproveBid() {
         }
     }, [user, navigate]);
 
-    // ✅ CẬP NHẬT 3: Gọi API chuyên biệt lấy Bid Pending (Nhanh hơn nhiều)
     const fetchBids = useCallback(async () => {
         if (!user || user.role !== 'admin') return;
         try {
-            // Gọi API /all mà ta đã tạo trong bid.js
             const res = await fetch("http://localhost:3000/api/projects/bids/all");
             const data = await res.json();
             
             if (data.success) {
-                // Backend trả về mảng phẳng (flat array) rồi, không cần map phức tạp nữa
-                // Tuy nhiên, cần map lại tên trường một chút nếu BidCard yêu cầu tên khác
                 const formattedBids = data.bids.map(bid => ({
                     ...bid,
-                    // Map các trường từ SQL sang tên mà Component con (BidCard) có thể đang dùng
-                    projectTitle: bid.project_name, 
-                    freelancer_name: bid.freelancer_name,
-                    price_offer: bid.price_offer,
-                    bid_status: bid.bid_status
+                    // Map dữ liệu từ Backend sang tên dễ dùng
+                    projectTitle: bid.project_name,
+                    projectDesc: bid.project_desc,
+                    projectBudget: bid.project_budget,
+                    
+                    clientName: bid.client_name,
+                    clientEmail: bid.client_email,
+                    
+                    freelancerName: bid.freelancer_name,
+                    freelancerEmail: bid.freelancer_email,
+                    
+                    priceOffer: bid.price_offer,
+                    bidStatus: bid.bid_status
                 }));
                 
                 setBids(formattedBids);
@@ -64,16 +66,14 @@ export default function ApproveBid() {
     const filteredBids = useMemo(() => {
         return bids.filter((bid) => {
             const lowerSearch = searchTerm.toLowerCase();
-            
-            // Kiểm tra null safety (?.) để tránh crash
             const matchesSearch =
                 (bid.projectTitle?.toLowerCase().includes(lowerSearch)) ||
-                (bid.freelancer_name?.toLowerCase().includes(lowerSearch)) ||
-                (bid.price_offer?.toString().includes(lowerSearch)) ||
-                (bid.bid_status?.toLowerCase().includes(lowerSearch));
+                (bid.freelancerName?.toLowerCase().includes(lowerSearch)) ||
+                (bid.clientName?.toLowerCase().includes(lowerSearch)) || // Tìm theo tên Client
+                (bid.priceOffer?.toString().includes(lowerSearch)) ||
+                (bid.bidStatus?.toLowerCase().includes(lowerSearch));
 
-            const matchesStatus = !selectedStatus || bid.bid_status === selectedStatus;
-            
+            const matchesStatus = !selectedStatus || bid.bidStatus === selectedStatus;
             return matchesSearch && matchesStatus;
         });
     }, [bids, searchTerm, selectedStatus]);
@@ -84,7 +84,6 @@ export default function ApproveBid() {
             await fetch(`http://localhost:3000/api/projects/${selectedBid.project_ID}/bid/${bidId}/approve`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                // ✅ Gửi status là 'accepted' (API backend sẽ tự convert thành 'Accepted')
                 body: JSON.stringify({ status: 'accepted' })
             });
             setSelectedBid(null);
@@ -118,13 +117,8 @@ export default function ApproveBid() {
         </label>
     );
 
-    // Kiểm tra role trước khi render
     if (!user || user.role !== 'admin') {
-        return (
-            <div className="font-poppins flex h-screen items-center justify-center">
-                <p className="text-xl text-gray-500">Checking authorization...</p>
-            </div>
-        );
+        return <div className="flex h-screen items-center justify-center">Checking authorization...</div>;
     }
 
     return (
@@ -144,11 +138,7 @@ export default function ApproveBid() {
                     </div>
                     <nav>
                         <h3 className="text-sm uppercase text-gray-500 font-semibold mb-3">Status</h3>
-                        <FilterCheckbox
-                            name="All"
-                            checked={selectedStatus === null}
-                            onChange={() => setSelectedStatus(null)}
-                        />
+                        <FilterCheckbox name="All" checked={selectedStatus === null} onChange={() => setSelectedStatus(null)} />
                         {STATUS_OPTIONS.map((status) => (
                             <FilterCheckbox
                                 key={status.value}
@@ -164,17 +154,14 @@ export default function ApproveBid() {
                         <h1 className="text-2xl font-bold font-lora">Bid Approval</h1>
                         <span className="text-2xl font-bold">{filteredBids.length} bid{filteredBids.length !== 1 ? 's' : ''}</span>
                     </div>
-                    <p className="text-gray-600 mb-4">List of bids awaiting approval.</p>
+                    <p className="text-gray-600 mb-4">Manage freelancer proposals.</p>
                     <div className="space-y-3 mt-2">
                         {filteredBids.length > 0 ? (
                             filteredBids.map((bid) => (
-                                // Lưu ý: Đảm bảo key là unique (bid_id)
-                                <BidCard key={bid.bid_id || bid.bid_ID} bid={bid} onClick={() => setSelectedBid(bid)} />
+                                <BidCard key={bid.bid_id} bid={bid} onClick={() => setSelectedBid(bid)} />
                             ))
                         ) : (
-                            <div className="text-center py-12">
-                                <p className="text-muted-foreground font-lora">No suitable bids</p>
-                            </div>
+                            <div className="text-center py-12"><p className="text-muted-foreground font-lora">No bids found</p></div>
                         )}
                     </div>
                 </main>

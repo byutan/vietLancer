@@ -1,6 +1,15 @@
 import React from "react";
 import { Badge } from "./ui/badge"; // Lưu ý: Kiểm tra lại đường dẫn import Badge nếu báo lỗi
 import { DollarSign, CalendarDays, User } from "lucide-react";
+const formatCurrency = (amount) => {
+
+    const num = Number(amount);
+
+    if (isNaN(num)) return amount;
+
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(num);
+
+  };
 
 function ProjectCard({ project, onClick }) {
   
@@ -84,11 +93,9 @@ function ProjectCard({ project, onClick }) {
           {/* Budget & Date */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1 text-sm text-gray-500">
-              <DollarSign className="w-3.5 h-3.5 text-green-600" />
               <span className="text-xs font-semibold text-gray-900">
-                {typeof project.budget === 'number' ? project.budget.toLocaleString('vi-VN') : project.budget}
+                {formatCurrency(project.budget)}
               </span>
-              <span className="text-[10px] font-medium text-gray-500">VND</span>
             </div>
             
             <div className="flex items-center gap-1 text-sm text-gray-500">

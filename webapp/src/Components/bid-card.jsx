@@ -9,7 +9,15 @@ const Badge = ({ children, className, variant = "default" }) => {
     </span>
   );
 };
+const formatCurrency = (amount) => {
 
+    const num = Number(amount);
+
+    if (isNaN(num)) return amount;
+
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(num);
+
+  };
 function BidCard({ bid, onClick }) {
   
   // 1. Hàm chuẩn hóa status để lấy đúng màu
@@ -86,12 +94,11 @@ function BidCard({ bid, onClick }) {
         {/* Footer: Offer & Date */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1 text-sm">
-            <DollarSign className="w-4 h-4 text-green-600" />
             <span className="text-gray-500 font-medium">Offer:</span>
             <span className="text-base font-bold text-gray-900 ml-1">
-                {typeof bid.price_offer === 'number' ? bid.price_offer.toLocaleString('vi-VN') : bid.price_offer}
+                
+              {formatCurrency(bid.price_offer)}
             </span>
-            <span className="text-xs font-bold text-gray-500 ml-1">VND</span>
           </div>
           
           <div className="flex items-center gap-1 text-sm text-gray-500">

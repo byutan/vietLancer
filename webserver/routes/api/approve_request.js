@@ -53,9 +53,10 @@ router.post('/', async (req, res) => {
         const updateQuery = `
             UPDATE Project 
             SET 
-                project_status = 'Open', 
-                approved_date = NOW(), 
-                admin_ID = ? 
+            project_status = 'Open', 
+            approved_date = NOW(), 
+            bid_end_date = DATE_ADD(NOW(), INTERVAL 7 DAY),
+            admin_ID = ? 
             WHERE project_ID = ?
         `;
 
