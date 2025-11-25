@@ -1,66 +1,114 @@
 import express from 'express';
-import fs from 'fs';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs'; // Thư viện để mã hóa mật khẩu
+import pool from '../../config/db.js'; // Import kết nối DB
 
 const router = express.Router();
 
-router.post('/signup', (req, res) => {
+router.post('/signup', async (req, res) => {
+    // 1. Lấy kết nối từ pool để dùng Transaction
+    const connection = await pool.getConnection();
+
     try {
-        const usersFile = process.env.USERS_FILE;
         const { name, email, password, role } = req.body;
-        console.log("Incoming update:", req.body);
-        console.log("Token:", req.headers['authorization']);
-        console.log("User file path:", process.env.USERS_FILE);
-        let users = [];
-        if (fs.existsSync(usersFile)) {
-            const data = fs.readFileSync(usersFile, 'utf-8');
-            if (data) {
-                users = JSON.parse(data);
-            }
+        
+        // Log kiểm tra (có thể xóa sau này)
+        console.log("Incoming register request:", { name, email, role });
+
+        // Validate cơ bản
+        if (!name || !email || !password || !role) {
+            return res.status(400).json({ error: 'Vui lòng điền đầy đủ thông tin.' });
         }
-        const exists = users.find(u => u.email === email);
-        if (exists) {
-            return res.status(400).json({ error: 'Email has already been registered.' });
+
+        // 2. Kiểm tra Email đã tồn tại chưa
+        const [existingUser] = await connection.query(
+            "SELECT ID FROM User WHERE email = ?", 
+            [email]
+        );
+
+        if (existingUser.length > 0) {
+            return res.status(400).json({ error: 'Email đã được đăng ký.' });
         }
-        const newUser = {
+
+        // 3. Mã hóa mật khẩu (Không bao giờ lưu password gốc)
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // --- BẮT ĐẦU GIAO DỊCH (TRANSACTION) ---
+        await connection.beginTransaction();
+
+        // 4. Insert vào bảng USER trước
+        // Lưu ý: verify_status mặc định là 0 (false) tương ứng với 'unverified'
+        const [insertUserResult] = await connection.query(
+            `INSERT INTO User (email, password, full_name, verify_status) 
+             VALUES (?, ?, ?, ?)`,
+            [email, hashedPassword, name, 0]
+        );
+
+        const newUserId = insertUserResult.insertId; // Lấy ID vừa tạo
+
+        // 5. Insert vào bảng Role tương ứng (Freelancer hoặc Client)
+        if (role === 'freelancer') {
+            await connection.query(
+                "INSERT INTO Freelancer (freelancer_ID) VALUES (?)", 
+                [newUserId]
+            );
+        } else if (role === 'client') {
+            await connection.query(
+                "INSERT INTO Client (client_ID) VALUES (?)", 
+                [newUserId]
+            );
+        } else {
+            // Nếu role gửi lên không đúng, rollback và báo lỗi
+            throw new Error("Invalid role specified");
+        }
+
+        // --- LƯU GIAO DỊCH (COMMIT) ---
+        await connection.commit();
+
+        // 6. Tạo JWT Token
+        // Payload nên chứa ID và Role để tiện phân quyền sau này
+        const payload = {
+            id: newUserId,
+            email: email,
+            role: role,
+            name: name,
+            email_verify: 'unverified'
+        };
+
+        const secretKey = process.env.JWT_SECRET || 'secret_mac_dinh'; // Fallback nếu chưa config .env
+        const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+
+        // 7. Trả về kết quả
+        // Lưu ý: Không trả về password trong response
+        const userResponse = {
+            id: newUserId,
             name,
             email,
-            password,
             role,
+            verify_status: false,
+            // Các trường skill, phone, address lúc đăng ký chưa có thì trả về null hoặc rỗng
             phone: '',
             address: '',
-            dob: '',
-            avatar: '',
-            email_verify: 'unverified',
-            skills: {
-                languages: [],
-                education: [],
-                experience: []
-            }
+            avatar: ''
         };
-        users.push( newUser );
-        fs.writeFileSync(usersFile, JSON.stringify(users, null, 2), { encoding: 'utf8' });
-        const payload = {
-            email: newUser.email,
-            role: newUser.role,
-            name: newUser.name,
-            email_verify: newUser.email_verify,
-            phone: newUser.phone,
-            address: newUser.address,
-            dob: newUser.dob,
-            avatar: newUser.avatar,
-            skills: newUser.skills
-        };
-        const secretKey = process.env.JWT_SECRET;
-        const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+
         return res.status(201).json({ 
-            message: 'Successfully registered.',
+            message: 'Đăng ký thành công.',
             token: token,
-            user: newUser
+            user: userResponse
         });
-    } catch {
-        return res.status(500).json({ error: 'Failed to connect to the server.' });
+
+    } catch (error) {
+        // Nếu có lỗi, hoàn tác tất cả thay đổi trong DB
+        await connection.rollback();
+        
+        console.error("Signup Error:", error);
+        return res.status(500).json({ error: 'Lỗi server, vui lòng thử lại sau.' });
+    } finally {
+        // Luôn luôn giải phóng kết nối
+        connection.release();
     }
-})
+});
 
 export default router;

@@ -10,6 +10,7 @@ import ProjectPosting from './Page/ProjectPosting';
 import ContractTemplatePage from "./Page/ContractTemplatePage";
 import MyProjectPage from "./Page/MyProjectPage"; 
 import MyBidPage from "./Page/MyBidPage";
+import ApproveBid from "./Page/ApproveBid";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -26,9 +27,9 @@ function App() {
           <Route path="/JobPage" element={<JobPage />} />
           <Route path="/JobPage/:category" element={<JobPage />} />
           <Route path="/ApproveRequest" element={<ApproveRequest />} />
-          <Route path="/ApproveBid" element={<ApproveBid />} />
           <Route path="/ProjectPosting" element={<ProjectPosting />} />
           <Route path="/ContractTemplatePage" element={<ContractTemplatePage />} />
+          <Route path="/ApproveBid" element={<ApproveBid />} />
           <Route path="/MyBidPage" element={<MyBidPage />} />
           <Route path="/MyProjectPage" element={<MyProjectPage />} />
         </Routes>

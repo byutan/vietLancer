@@ -1,107 +1,103 @@
 import express from 'express';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import pool from '../../config/db.js'; // Import kết nối DB
 
 const router = express.Router();
 
-// ES6 modules không có __dirname, cần tạo
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const NOTIFICATIONS_FILE = path.join(__dirname, '../../data/notifications.json');
-
-// Ensure data directory exists
-const ensureDataDir = async () => {
-  const dataDir = path.join(__dirname, '../../data');
-  try {
-    await fs.access(dataDir);
-  } catch {
-    await fs.mkdir(dataDir, { recursive: true });
-  }
-};
-
-// Load notifications from JSON
-const loadNotifications = async () => {
-  try {
-    await ensureDataDir();
-    const data = await fs.readFile(NOTIFICATIONS_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    // If file doesn't exist, return empty array
-    return [];
-  }
-};
-
-// Save notifications to JSON
-const saveNotifications = async (notifications) => {
-  await ensureDataDir();
-  await fs.writeFile(NOTIFICATIONS_FILE, JSON.stringify(notifications, null, 2));
-};
-
-// Generate unique ID
+// Hàm tạo ID unique (Giữ nguyên vì DB dùng VARCHAR cho ID thông báo)
 const generateId = () => {
   return `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 };
 
-// Create notification
-// userEmail: email của user (thay vì userId)
+// ==========================================
+// SERVICE HELPER (Để dùng nội bộ trong code khác)
+// ==========================================
 export const createNotification = async (userEmail, type, data) => {
-  const notifications = await loadNotifications();
-  
-  const notification = {
-    id: generateId(),
-    userEmail, 
-    type, // 'project_submitted', 'project_approved', 'project_rejected', 'bid_submitted', 'bid_approved', 'bid_rejected'
-    data,
-    read: false,
-    createdAt: new Date().toISOString()
-  };
-  
-  notifications.push(notification);
-  await saveNotifications(notifications);
-  
-  return notification;
+  try {
+    const id = generateId();
+    // Chuyển object data sang chuỗi JSON để lưu vào MySQL
+    const jsonData = JSON.stringify(data);
+
+    const query = `
+      INSERT INTO Notification (id, userEmail, type, data, is_read, created_at)
+      VALUES (?, ?, ?, ?, 0, NOW())
+    `;
+
+    await pool.query(query, [id, userEmail, type, jsonData]);
+
+    // Trả về object đúng format frontend cần
+    return {
+      id,
+      userEmail,
+      type,
+      data,
+      read: false,
+      createdAt: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('Error in createNotification service:', error);
+    throw error;
+  }
 };
 
+// ==========================================
+// ROUTES
+// ==========================================
+
+// GET /api/notifications/unread-count - Đếm số thông báo chưa đọc
 router.get('/unread-count', async (req, res) => {
   try {
-    const { userEmail } = req.query; 
-    
+    const { userEmail } = req.query;
+
     if (!userEmail) {
       return res.status(400).json({ error: 'userEmail is required' });
     }
-    
-    const notifications = await loadNotifications();
-    const unreadCount = notifications.filter(n => n.userEmail === userEmail && !n.read).length;
-    
+
+    // is_read = 0 nghĩa là chưa đọc (false)
+    const [rows] = await pool.query(
+      "SELECT COUNT(*) as count FROM Notification WHERE userEmail = ? AND is_read = 0",
+      [userEmail]
+    );
+
     res.json({
       success: true,
-      unreadCount
+      unreadCount: rows[0].count
     });
   } catch (error) {
     console.error('Error getting unread count:', error);
     res.status(500).json({ error: 'Failed to get unread count' });
   }
 });
-// GET /api/notifications - Get all notifications for a user
+
+// GET /api/notifications - Lấy tất cả thông báo của user
 router.get('/', async (req, res) => {
   try {
-    const { userEmail } = req.query; 
-    
+    const { userEmail } = req.query;
+
     if (!userEmail) {
       return res.status(400).json({ error: 'userEmail is required' });
     }
-    
-    const notifications = await loadNotifications();
-    const userNotifications = notifications
-      .filter(n => n.userEmail === userEmail)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    
+
+    const [rows] = await pool.query(
+      "SELECT * FROM Notification WHERE userEmail = ? ORDER BY created_at DESC",
+      [userEmail]
+    );
+
+    // Map lại dữ liệu cho khớp với frontend cũ
+    const userNotifications = rows.map(row => ({
+      id: row.id,
+      userEmail: row.userEmail,
+      type: row.type,
+      data: row.data, // MySQL driver thường tự parse JSON column thành object
+      read: Boolean(row.is_read), // Convert 0/1 sang false/true
+      createdAt: row.created_at
+    }));
+
+    const unreadCount = userNotifications.filter(n => !n.read).length;
+
     res.json({
       success: true,
       notifications: userNotifications,
-      unreadCount: userNotifications.filter(n => !n.read).length
+      unreadCount
     });
   } catch (error) {
     console.error('Error getting notifications:', error);
@@ -109,27 +105,31 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/notifications/unread-count - Get unread count
-
-
-// PUT /api/notifications/:id/read - Mark notification as read
+// PUT /api/notifications/:id/read - Đánh dấu ĐÃ ĐỌC một thông báo
 router.put('/:id/read', async (req, res) => {
   try {
     const { id } = req.params;
-    
-    const notifications = await loadNotifications();
-    const notification = notifications.find(n => n.id === id);
-    
-    if (!notification) {
+
+    // Kiểm tra thông báo có tồn tại không
+    const [check] = await pool.query("SELECT * FROM Notification WHERE id = ?", [id]);
+    if (check.length === 0) {
       return res.status(404).json({ error: 'Notification not found' });
     }
-    
-    notification.read = true;
-    await saveNotifications(notifications);
-    
+
+    // Cập nhật is_read = 1 (true)
+    await pool.query("UPDATE Notification SET is_read = 1 WHERE id = ?", [id]);
+
+    // Lấy lại thông báo đã update để trả về
+    const [updatedRows] = await pool.query("SELECT * FROM Notification WHERE id = ?", [id]);
+    const row = updatedRows[0];
+
     res.json({
       success: true,
-      notification
+      notification: {
+        ...row,
+        read: true, // Force true
+        data: row.data
+      }
     });
   } catch (error) {
     console.error('Error marking notification as read:', error);
@@ -137,30 +137,24 @@ router.put('/:id/read', async (req, res) => {
   }
 });
 
-// PUT /api/notifications/read-all - Mark all notifications as read
+// PUT /api/notifications/read-all - Đánh dấu ĐÃ ĐỌC tất cả
 router.put('/read-all', async (req, res) => {
   try {
-    const { userEmail } = req.body; // 🔑 Body với email
-    
+    const { userEmail } = req.body;
+
     if (!userEmail) {
       return res.status(400).json({ error: 'userEmail is required' });
     }
-    
-    const notifications = await loadNotifications();
-    let updatedCount = 0;
-    
-    notifications.forEach(n => {
-      if (n.userEmail === userEmail && !n.read) {
-        n.read = true;
-        updatedCount++;
-      }
-    });
-    
-    await saveNotifications(notifications);
-    
+
+    // Update toàn bộ thông báo của email này thành is_read = 1
+    const [result] = await pool.query(
+      "UPDATE Notification SET is_read = 1 WHERE userEmail = ? AND is_read = 0",
+      [userEmail]
+    );
+
     res.json({
       success: true,
-      updatedCount
+      updatedCount: result.affectedRows
     });
   } catch (error) {
     console.error('Error marking all as read:', error);
@@ -168,22 +162,17 @@ router.put('/read-all', async (req, res) => {
   }
 });
 
-// DELETE /api/notifications/:id - Delete notification
+// DELETE /api/notifications/:id - Xóa thông báo
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    
-    let notifications = await loadNotifications();
-    const initialLength = notifications.length;
-    
-    notifications = notifications.filter(n => n.id !== id);
-    
-    if (notifications.length === initialLength) {
+
+    const [result] = await pool.query("DELETE FROM Notification WHERE id = ?", [id]);
+
+    if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Notification not found' });
     }
-    
-    await saveNotifications(notifications);
-    
+
     res.json({
       success: true,
       message: 'Notification deleted'
@@ -194,17 +183,17 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// POST /api/notifications/create - Create notification (internal use)
+// POST /api/notifications/create - API tạo thông báo (Internal use)
 router.post('/create', async (req, res) => {
   try {
-    const { userEmail, type, data } = req.body; 
-    
+    const { userEmail, type, data } = req.body;
+
     if (!userEmail || !type) {
       return res.status(400).json({ error: 'userEmail and type are required' });
     }
-    
+
     const notification = await createNotification(userEmail, type, data);
-    
+
     res.json({
       success: true,
       notification

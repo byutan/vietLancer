@@ -297,7 +297,7 @@ export default function ProfilePage() {
                                             value={personalInfo.email}
                                             readOnly={true}
                                         />
-                                        {user?.email_verify === 'verified' ? (
+                                        {user?.verify_status === 'verified' ? (
                                             <img src={VerifiedIcon} alt="Verified" className="w-5 h-5 text-green-500 flex-shrink-0" title="Email verified" />
                                         ) : user?.email_verify === 'unverified' ? (
                                             <>

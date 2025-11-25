@@ -58,7 +58,7 @@ export default function NavBar() {
   }, []);
 
   useEffect(() => { }, [user]);
-
+  console.log("User Info:", user);
   const handleSignOut = () => {
     signOut();
     setOpenMenu(false);
@@ -126,7 +126,7 @@ export default function NavBar() {
 
               </div>
             </div>
-            {user.role === 'moderator' && (
+            {user.role === 'admin' && (
               <>
                 <Link to="/ApproveRequest" onClick={() => window.scrollTo(0, 0)}>
                   <button className={buttonStyle}>Approval Request</button>
@@ -172,7 +172,7 @@ export default function NavBar() {
                 >
                   My Project
                 </Link>
-                {(user?.role === "client" || user.role === 'moderator') && (
+                {(user?.role === "client" || user.role === 'admin') && (
                   <button
                     onClick={() => navigate("/ContractTemplatePage")}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -180,7 +180,7 @@ export default function NavBar() {
                     Contract template
                   </button>
                 )}
-                {(user.role === "freelancer"  || user.role === 'moderator') && (
+                {(user.role === "freelancer"  || user.role === 'admin') && (
                   <button
                     onClick={() => navigate("/MyBidPage")}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

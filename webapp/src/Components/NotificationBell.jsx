@@ -156,7 +156,7 @@ const NotificationBell = () => {
   // Fetch notifications on mount and set interval
   useEffect(() => {
     fetchUnreadCount();
-    const interval = setInterval(fetchUnreadCount, 30000); // Update every 30 seconds
+    const interval = setInterval(fetchUnreadCount, 5000); // Update every 30 seconds
     return () => clearInterval(interval);
   }, [userEmail]);
 
