@@ -22,7 +22,16 @@ function ProjectCardModalJobPage({ project, onClose }) {
 
   // 1. Tìm Bid của User hiện tại (nếu có)
   let userBid = localUserBid;
-  
+  const formatCurrency = (amount) => {
+
+    const num = Number(amount);
+
+    if (isNaN(num)) return amount;
+
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(num);
+
+  };
+
   // Kiểm tra kỹ list_of_bid trước khi find để tránh lỗi crash
   if (!userBid && user && Array.isArray(project.list_of_bid)) {
     userBid = project.list_of_bid.find(
@@ -113,7 +122,7 @@ function ProjectCardModalJobPage({ project, onClose }) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex flex-col items-start gap-1 p-3 rounded-lg bg-gray-100">
                 <span className="text-xs text-muted-foreground">Budget</span>
-                <span className="font-semibold text-lg">{typeof project.budget === 'number' ? project.budget.toLocaleString('vi-VN') : project.budget} VND</span>
+                <span className="font-semibold text-lg">{formatCurrency(project.budget)}</span>
               </div>
               <div className="flex flex-col items-start gap-1 p-3 rounded-lg bg-gray-100">
                 <span className="text-xs text-muted-foreground">Posted Date</span>

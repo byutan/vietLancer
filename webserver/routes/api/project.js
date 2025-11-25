@@ -137,7 +137,7 @@ router.get('/projects/:id', async (req, res) => {
 });
 
 // -----------------------------------------------------------------
-// 4. GET /projects/client/:email - Lấy dự án CỦA CLIENT (Đã sửa lỗi logic)
+// 4. GET /projects/client/:email - Lấy dự án CỦA CLIENT (Kèm Bids & Hired Info)
 // -----------------------------------------------------------------
 router.get('/projects/client/:email', async (req, res) => {
     try {
@@ -168,8 +168,11 @@ router.get('/projects/client/:email', async (req, res) => {
             
             project.list_of_bid = bids; 
             
-            // ❌ ĐÃ XÓA LOGIC TỰ ĐỘNG GÁN HIRED_BID DỰA TRÊN STATUS ACCEPTED
-            // Frontend sẽ tự quyết định dựa trên project.status === 'In Progress'
+            // Tìm hired bid (accepted)
+            const hiredBid = bids.find(b => b.bid_status && b.bid_status.toLowerCase() === 'in progress');
+            if (hiredBid) {
+                project.hired_bid_ID = hiredBid.bid_ID;
+            }
         }
 
         res.json({ success: true, projects });
@@ -192,6 +195,7 @@ router.patch('/projects/:projectId/hire', async (req, res) => {
     try {
         await connection.beginTransaction();
 
+        // Get info for notification
         const [bids] = await connection.query(
             `SELECT b.*, u.email as freelancer_email, p.project_name, client_u.email as client_email
              FROM Bid b JOIN User u ON b.fID = u.ID JOIN Project p ON b.project_ID = p.project_ID
@@ -201,14 +205,21 @@ router.patch('/projects/:projectId/hire', async (req, res) => {
         if (bids.length === 0) { await connection.rollback(); return res.status(404).json({ success: false, message: 'Bid not found' }); }
         const hiredBid = bids[0];
 
-        // Update Bid -> Accepted
+        // 1. Update Bid được chọn -> Accepted
         await connection.query("UPDATE Bid SET bid_status = 'Accepted' WHERE bid_id = ?", [hired_bid_ID]);
         
-        // Update Project -> In Progress (Quan trọng)
+        // 2. 🔥 CẬP NHẬT QUAN TRỌNG: Từ chối tất cả các Bid khác trong cùng Project
+        await connection.query(
+            "UPDATE Bid SET bid_status = 'Rejected' WHERE project_ID = ? AND bid_id != ?", 
+            [projectId, hired_bid_ID]
+        );
+
+        // 3. Update Project -> In Progress
         await connection.query("UPDATE Project SET project_status = 'In Progress' WHERE project_ID = ?", [projectId]);
 
         await connection.commit();
 
+        // Gửi thông báo cho người được nhận
         try {
             await NotificationService.notifyBidApproved(hiredBid.freelancer_email, {
                 bidId: hiredBid.bid_id, projectId, projectName: hiredBid.project_name,

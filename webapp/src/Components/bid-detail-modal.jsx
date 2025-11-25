@@ -4,7 +4,15 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { User, FileText, CheckCircle2, XCircle, DollarSign, Briefcase } from 'lucide-react';
 import { Separator } from './ui/separator';
+const formatCurrency = (amount) => {
 
+    const num = Number(amount);
+
+    if (isNaN(num)) return amount;
+
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(num);
+
+  };
 function BidDetailModal({ bid, onClose, onApprove, onReject }) {
   if (!bid) return null;
 
@@ -42,7 +50,7 @@ function BidDetailModal({ bid, onClose, onApprove, onReject }) {
                     <div className="text-sm space-y-1">
                         <div className="flex gap-2"><span className="font-semibold w-16">Name:</span> <span>{bid.clientName}</span></div>
                         <div className="flex gap-2"><span className="font-semibold w-16">Email:</span> <span>{bid.clientEmail}</span></div>
-                        <div className="flex gap-2"><span className="font-semibold w-16">Budget:</span> <span>{Number(bid.projectBudget).toLocaleString('vi-VN')} VND</span></div>
+                        <div className="flex gap-2"><span className="font-semibold w-16">Budget:</span> <span>{formatCurrency(bid.projectBudget)}</span></div>
                     </div>
                 </div>
 
@@ -75,8 +83,8 @@ function BidDetailModal({ bid, onClose, onApprove, onReject }) {
                     <div className="flex justify-between items-center bg-green-50 p-3 rounded border border-green-100">
                         <span className="text-sm font-semibold text-green-800">Bid Amount</span>
                         <span className="text-lg font-bold text-green-700 flex items-center gap-1">
-                            <DollarSign className="w-4 h-4" />
-                            {Number(bid.priceOffer).toLocaleString('vi-VN')}
+                            
+                            {formatCurrency(bid.priceOffer)}
                         </span>
                     </div>
                     

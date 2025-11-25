@@ -126,7 +126,7 @@ export default function MyProjectPage() {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(num);
     };
 
-    if (!user || (user.role !== 'client' && user.role !== 'moderator')) {
+    if (!user || (user.role !== 'client' && user.role !== 'admin')) {
         return <div className="p-8 text-center text-xl">Unauthorized access.</div>;
     }
 
