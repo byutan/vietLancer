@@ -1,15 +1,17 @@
-import React from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from './ui/dialog'
-import { Button } from './ui/button'
-import { Badge } from './ui/badge'
-import { Calendar, DollarSign, Clock, User, Mail, CheckCircle2, XCircle, FileText } from 'lucide-react'
-import { Separator } from './ui/separator'
+import React from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from './ui/dialog';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { User, CheckCircle2, XCircle } from 'lucide-react';
+import { Separator } from './ui/separator';
 
 function ProjectDetailModal({ project, onClose, onApprove, onReject }) {
-  const isPending = project.status === "pending";
+  // ✅ FIX: So sánh không phân biệt hoa thường để bắt được trạng thái từ MySQL
+  const isPending = project.status && project.status.toLowerCase() === "pending";
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
-  <DialogContent className="max-w-6xl min-w-[800px] max-h-[90vh] overflow-y-auto bg-white font-poppins" showCloseButton={false}>
+      <DialogContent className="max-w-6xl min-w-[800px] max-h-[90vh] overflow-y-auto bg-white font-poppins" showCloseButton={false}>
         <DialogHeader>
           <div className="flex items-start justify-between gap-4 mb-2">
             <div>
@@ -32,11 +34,11 @@ function ProjectDetailModal({ project, onClose, onApprove, onReject }) {
             </div>
             <div className="flex flex-col items-start gap-1 p-3 rounded-lg bg-gray-100">
               <span className="text-xs text-muted-foreground">Created Date</span>
-              <span className="font-semibold text-lg">{project.createdAt ? `${new Date(project.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })} ${new Date(project.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}` : '-'}</span>
+              <span className="font-semibold text-lg">{project.createdAt ? `${new Date(project.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}` : '-'}</span>
             </div>
             <div className="flex flex-col items-start gap-1 p-3 rounded-lg bg-gray-100">
               <span className="text-xs text-muted-foreground">Updated Date</span>
-              <span className="font-semibold text-lg">{project.updatedAt ? `${new Date(project.updatedAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })} ${new Date(project.updatedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}` : '-'}</span>
+              <span className="font-semibold text-lg">{project.updatedAt ? `${new Date(project.updatedAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}` : '-'}</span>
             </div>
           </div>
 
@@ -49,14 +51,14 @@ function ProjectDetailModal({ project, onClose, onApprove, onReject }) {
               Client Information
             </h3>
             <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground font-semibold">Name:</span>
-                  <span className="font-normal">{project.clientName}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground font-semibold">Email:</span>
-                  <span className="font-normal">{project.clientEmail}</span>
-                </div>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground font-semibold">Name:</span>
+                <span className="font-normal">{project.clientName}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground font-semibold">Email:</span>
+                <span className="font-normal">{project.clientEmail}</span>
+              </div>
             </div>
           </div>
 
@@ -74,16 +76,17 @@ function ProjectDetailModal({ project, onClose, onApprove, onReject }) {
             </div>
           </div>
           <Separator className="bg-gray-200" />
+          
           {/* Payment Method & Work Form */}
           <div className="space-y-2">
             {project.paymentMethod && (
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground font-semibold">Payment Method:</span>
+                {/* ✅ FIX: Map đúng giá trị ENUM mới từ MySQL */}
                 <span className="font-medium">
-                  {project.paymentMethod === 'per_project' ? 'Per Project'
-                    : project.paymentMethod === 'per_hour' ? 'Per Hour'
-                    : project.paymentMethod === 'per_month' ? 'Per Month'
-                    : project.paymentMethod === 'other' ? 'Other'
+                  {project.paymentMethod === 'Fixed' ? 'Fixed Price (Per Project)'
+                    : project.paymentMethod === 'Hourly' ? 'Hourly Rate'
+                    : project.paymentMethod === 'Milestone' ? 'By Milestone'
                     : project.paymentMethod}
                 </span>
               </div>
@@ -91,34 +94,16 @@ function ProjectDetailModal({ project, onClose, onApprove, onReject }) {
             {project.workForm && (
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground font-semibold">Work Form:</span>
-                <span className="font-medium">{project.workForm}</span>
+                {/* ✅ FIX: Map đúng giá trị ENUM mới từ MySQL */}
+                <span className="font-medium">
+                   {project.workForm === 'Remote' ? 'Remote (Online)'
+                    : project.workForm === 'Onsite' ? 'Onsite (Offline)'
+                    : project.workForm === 'Hybrid' ? 'Hybrid (Both)'
+                    : project.workForm}
+                </span>
               </div>
             )}
           </div>
-
-          {/* <Separator className="bg-gray-200" /> */}
-
-          {/* Detailed Requirements (hide if '-') */}
-          {/* {project.requirements && project.requirements !== '-' && (
-            <>
-              <div>
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  Detailed Requirements
-                </h3>
-                <p className="text-base text-muted-foreground leading-relaxed text-pretty">{project.requirements}</p>
-              </div>
-              <Separator className="bg-gray-200" />
-            </>
-          )} */}
-
-          {/* Deliverables (hide if '-') */}
-          {/* {project.deliverables && project.deliverables !== '-' && (
-            <div>
-              <h3 className="font-semibold mb-3">Deliverables</h3>
-              <p className="text-base text-muted-foreground leading-relaxed text-pretty">{project.deliverables}</p>
-            </div>
-          )} */}
         </div>
 
         <DialogFooter className="gap-2">
@@ -130,6 +115,8 @@ function ProjectDetailModal({ project, onClose, onApprove, onReject }) {
           >
             Close
           </Button>
+          
+          {/* ✅ Nút Approve/Reject sẽ hiện ra vì logic isPending đã sửa */}
           {isPending && (
             <>
               <Button

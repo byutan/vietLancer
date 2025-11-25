@@ -4,6 +4,42 @@ import NotificationService from '../../utils/notificationService.js';
 
 const router = express.Router();
 
+// webserver/routes/api/bid.js
+
+// ... imports ...
+
+// 🔥 API MỚI: Lấy TẤT CẢ Bids (Không lọc status)
+// URL: /api/projects/bids/all
+router.get('/projects/bids/all', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                b.bid_id,
+                b.bid_desc,
+                b.price_offer,
+                b.bid_status,
+                b.bid_date,
+                b.project_ID,
+                p.project_name,
+                u.full_name as freelancer_name,
+                u.email as freelancer_email
+            FROM Bid b
+            JOIN Project p ON b.project_ID = p.project_ID
+            JOIN User u ON b.fID = u.ID
+            -- ❌ ĐÃ BỎ DÒNG: WHERE b.bid_status = 'Pending' 
+            ORDER BY b.bid_date DESC
+        `;
+
+        const [bids] = await pool.query(query);
+        res.json({ success: true, bids });
+
+    } catch (error) {
+        console.error('Error getting all bids:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+
 // ============================================================
 // 1. POST /api/projects/:id/bid - Freelancer gửi bid
 // ============================================================
@@ -235,52 +271,63 @@ router.get('/projects/:id/bids', async (req, res) => {
     }
 });
 
+// webserver/routes/api/bid.js
+
+// ... (các route khác)
+
 // ============================================================
-// 4. GET /freelancer/bids - Lấy bids của Freelancer
+// 4. GET /freelancer/bids - Lấy bids của Freelancer (Kèm thông tin Project & Client)
 // ============================================================
 router.get('/freelancer/bids', async (req, res) => {
     try {
         const { email } = req.query;
         if (!email) return res.status(400).json({ success: false, message: 'Email required.' });
 
-        // 1. Tìm ID của freelancer từ email
-        const [users] = await pool.query("SELECT ID FROM User WHERE email = ?", [email]);
-        if (users.length === 0) {
-            return res.json({ success: true, freelancerEmail: email, totalBids: 0, bids: [] });
+        const connection = await pool.getConnection();
+
+        try {
+            // 1. Tìm ID của freelancer
+            const [users] = await connection.query("SELECT ID FROM User WHERE email = ?", [email]);
+            if (users.length === 0) {
+                return res.json({ success: true, freelancerEmail: email, totalBids: 0, bids: [] });
+            }
+            const freelancerId = users[0].ID;
+
+            // 2. Query Bids + Project + Client Info
+            const query = `
+                SELECT 
+                    b.bid_id,
+                    b.bid_desc,
+                    b.price_offer,
+                    b.bid_status,
+                    b.bid_date,
+                    
+                    p.project_ID,
+                    p.project_name,
+                    p.project_desc,
+                    p.project_status,
+                    
+                    -- Lấy thông tin Client (Chủ dự án)
+                    u_client.full_name as clientName,
+                    u_client.email as clientEmail
+                FROM Bid b
+                JOIN Project p ON b.project_ID = p.project_ID
+                JOIN Client c ON p.cID = c.client_ID
+                JOIN User u_client ON c.client_ID = u_client.ID
+                WHERE b.fID = ?
+                ORDER BY b.bid_date DESC
+            `;
+
+            const [bids] = await connection.query(query, [freelancerId]);
+
+            res.json({
+                success: true,
+                freelancerEmail: email,
+                bids: bids
+            });
+        } finally {
+            connection.release();
         }
-        const freelancerId = users[0].ID;
-
-        // 2. Query Bids kèm thông tin Project
-        const query = `
-            SELECT 
-                b.bid_id as bid_ID,
-                b.bid_desc,
-                b.price_offer,
-                b.bid_status,
-                b.bid_date,
-                p.project_ID as projectId,
-                p.project_name as projectName,
-                p.project_status as projectStatus
-            FROM Bid b
-            JOIN Project p ON b.project_ID = p.project_ID
-            WHERE b.fID = ?
-            ORDER BY b.bid_date DESC
-        `;
-
-        const [bids] = await pool.query(query, [freelancerId]);
-
-        // Map thêm freelancer_email vào từng bid để khớp format cũ
-        const formattedBids = bids.map(bid => ({
-            ...bid,
-            freelancer_email: email
-        }));
-
-        res.json({
-            success: true,
-            freelancerEmail: email,
-            totalBids: formattedBids.length,
-            bids: formattedBids
-        });
 
     } catch (error) {
         console.error('Error getting freelancer bids:', error);
@@ -329,5 +376,7 @@ router.patch('/projects/:projectId/bids/:bidId', async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error', error: error.message });
     }
 });
+
+
 
 export default router;

@@ -16,6 +16,7 @@ const ProjectPosting = () => {
         paymentMethod: '',
         workForm: '',
         category: '',
+        bidEndDate: '', // ✅ Thêm trường ngày kết thúc thầu
         skills: []
     });
 
@@ -23,6 +24,10 @@ const ProjectPosting = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [skillInput, setSkillInput] = useState('');
     const [skillError, setSkillError] = useState('');
+
+    // ✅ CẬP NHẬT LOGIC CHECK QUYỀN (Hỗ trợ cả DB MySQL và JSON cũ)
+    const isVerifiedClient = user && user.role === 'client' && (user.email_verify === 'verified' || user.verify_status === 1 || user.verify_status === true);
+    const isModerator = user && user.role === 'moderator';
 
     useEffect(() => {
         if (hasChecked.current) return;
@@ -33,10 +38,8 @@ const ProjectPosting = () => {
                 navigate('/SignInPage');
                 return;
             }
-            if (
-                (user.role === 'client' && user.email_verify === 'verified') ||
-                user.role === 'moderator'
-            ) {
+            // Check quyền
+            if (isVerifiedClient || isModerator) {
                 setIsCheckingAccess(false);
             } else {
                 navigate('/AccessDeniedPage');
@@ -44,7 +47,7 @@ const ProjectPosting = () => {
         };
 
         checkAccess();
-    }, [user, navigate]);
+    }, [user, navigate, isVerifiedClient, isModerator]);
 
     if (isCheckingAccess) {
         return (
@@ -55,13 +58,8 @@ const ProjectPosting = () => {
         );
     }
 
-    if (
-        !user ||
-        !(
-            (user.role === 'client' && user.email_verify === 'verified') ||
-            user.role === 'moderator'
-        )
-    ) {
+    // Double check khi render
+    if (!user || (!isVerifiedClient && !isModerator)) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100 text-center">
                 <h1 className="text-red-500 text-3xl mb-5">Access Denied</h1>
@@ -96,47 +94,35 @@ const ProjectPosting = () => {
             [name]: value
         }));
 
-        // Live validation for title and description
+        // Live validation
         if (name === 'title') {
-            if (!value.trim()) {
-                setErrors(prev => ({ ...prev, title: 'Title is required' }));
-            } else if (value.trim().length < 5) {
-                setErrors(prev => ({ ...prev, title: 'Title must be at least 5 characters long' }));
-            } else if (value.trim().length > 250) {
-                setErrors(prev => ({ ...prev, title: 'Title cannot exceed 250 characters' }));
-            } else {
-                setErrors(prev => ({ ...prev, title: '' }));
-            }
+            if (!value.trim()) setErrors(prev => ({ ...prev, title: 'Title is required' }));
+            else if (value.trim().length < 5) setErrors(prev => ({ ...prev, title: 'Title must be at least 5 characters long' }));
+            else if (value.trim().length > 250) setErrors(prev => ({ ...prev, title: 'Title cannot exceed 250 characters' }));
+            else setErrors(prev => ({ ...prev, title: '' }));
         }
         if (name === 'description') {
-            if (!value.trim()) {
-                setErrors(prev => ({ ...prev, description: 'Description is required' }));
-            } else if (value.trim().length < 20) {
-                setErrors(prev => ({ ...prev, description: 'Description must be at least 20 characters long' }));
-            } else if (value.trim().length > 2500) {
-                setErrors(prev => ({ ...prev, description: 'Description cannot exceed 2500 characters' }));
-            } else {
-                setErrors(prev => ({ ...prev, description: '' }));
-            }
+            if (!value.trim()) setErrors(prev => ({ ...prev, description: 'Description is required' }));
+            else if (value.trim().length < 20) setErrors(prev => ({ ...prev, description: 'Description must be at least 20 characters long' }));
+            else if (value.trim().length > 2500) setErrors(prev => ({ ...prev, description: 'Description cannot exceed 2500 characters' }));
+            else setErrors(prev => ({ ...prev, description: '' }));
         }
         if (name === 'budget') {
             const num = Number(value);
-            if (!value || isNaN(num)) {
-                setErrors(prev => ({ ...prev, budget: 'Budget must be greater than 0' }));
-            } else if (num < 1000000) {
-                setErrors(prev => ({ ...prev, budget: 'Budget must be at least 1,000,000 VND' }));
-            } else if (num > 100000000000) {
-                setErrors(prev => ({ ...prev, budget: 'Budget cannot exceed 100 billion VND' }));
-            } else {
-                setErrors(prev => ({ ...prev, budget: '' }));
-            }
+            if (!value || isNaN(num)) setErrors(prev => ({ ...prev, budget: 'Budget must be greater than 0' }));
+            else if (num < 1000000) setErrors(prev => ({ ...prev, budget: 'Budget must be at least 1,000,000 VND' }));
+            else if (num > 100000000000) setErrors(prev => ({ ...prev, budget: 'Budget cannot exceed 100 billion VND' }));
+            else setErrors(prev => ({ ...prev, budget: '' }));
         }
-        // Clear error for other fields on change
-        if (errors[name] && name !== 'title' && name !== 'description' && name !== 'budget') {
-            setErrors(prev => ({
-                ...prev,
-                [name]: ''
-            }));
+        // ✅ Validate ngày kết thúc thầu
+        if (name === 'bidEndDate') {
+            if (!value) setErrors(prev => ({ ...prev, bidEndDate: 'Bid Deadline is required' }));
+            else if (new Date(value) < new Date().setHours(0, 0, 0, 0)) setErrors(prev => ({ ...prev, bidEndDate: 'Deadline cannot be in the past' }));
+            else setErrors(prev => ({ ...prev, bidEndDate: '' }));
+        }
+
+        if (errors[name] && !['title', 'description', 'budget', 'bidEndDate'].includes(name)) {
+            setErrors(prev => ({ ...prev, [name]: '' }));
         }
     };
 
@@ -173,7 +159,6 @@ const ProjectPosting = () => {
 
     const validateForm = () => {
         const newErrors = {};
-
         if (!projectData.title.trim()) newErrors.title = 'Title is required';
         else if (projectData.title.trim().length < 5) newErrors.title = 'Title must be at least 5 characters long';
         else if (projectData.title.trim().length > 250) newErrors.title = 'Title cannot exceed 250 characters';
@@ -186,10 +171,9 @@ const ProjectPosting = () => {
         else if (projectData.budget > 100000000000) newErrors.budget = 'Budget cannot exceed 100 billion VND';
 
         if (!projectData.category) newErrors.category = 'Category is required';
-
         if (!projectData.paymentMethod) newErrors.paymentMethod = 'Payment method is required';
-
         if (!projectData.workForm) newErrors.workForm = 'Work form is required';
+        if (!projectData.bidEndDate) newErrors.bidEndDate = 'Bid Deadline is required';
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -197,7 +181,6 @@ const ProjectPosting = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!validateForm()) {
             alert('Please check the entered information!');
             return;
@@ -205,7 +188,7 @@ const ProjectPosting = () => {
 
         const isBackendRunning = await checkBackendConnection();
         if (!isBackendRunning) {
-            alert('Backend server is not running!\n\nRun the following commands in the terminal:\ncd server\nnpm install\nnpm run dev');
+            alert('Backend server is not running!');
             return;
         }
 
@@ -214,31 +197,25 @@ const ProjectPosting = () => {
         try {
             const response = await fetch('http://localhost:3000/api/projects', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    ...projectData,
-                    clientId: user.id || 'user123',
-                    clientName: user.name || 'Client',
-                    clientEmail: user.email || 'client@example.com',
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
+                    title: projectData.title,
+                    description: projectData.description,
+                    budget: projectData.budget,
+                    category: projectData.category,
+                    skills: projectData.skills,
+                    paymentMethod: projectData.paymentMethod,
+                    workForm: projectData.workForm,
+                    bidEndDate: projectData.bidEndDate, // ✅ Gửi thêm ngày kết thúc
+                    clientEmail: user.email // Để Backend tìm ID Client
                 })
             });
 
             const result = await response.json();
 
             if (result.success) {
-                alert('Project posted successfully!\n\nIt is pending admin approval.');
                 setProjectData({
-                    title: '',
-                    description: '',
-                    budget: '',
-                    paymentMethod: '',
-                    workForm: '',
-                    category: '',
-                    skills: []
+                    title: '', description: '', budget: '', paymentMethod: '', workForm: '', category: '', bidEndDate: '', skills: []
                 });
                 setSkillInput('');
                 navigate('/HomePage');
@@ -252,22 +229,25 @@ const ProjectPosting = () => {
             setIsSubmitting(false);
         }
     };
+
+    // ✅ CẬP NHẬT GIÁ TRỊ KHỚP VỚI DB MYSQL (ENUM)
     const paymentMethods = [
-        { value: 'per_hour', label: 'Per hour' },
-        { value: 'per_day', label: 'Per day' },
-        { value: 'per_month', label: 'Per month' },
-        { value: 'per_project', label: 'Per project' },
+        { value: 'Hourly', label: 'Hourly Rate' },
+        { value: 'Fixed', label: 'Fixed Price (Per Project)' },
+        { value: 'Milestone', label: 'By Milestone' }
     ];
+
     const workForms = [
-        { value: 'Online', label: 'Online' },
-        { value: 'Offline', label: 'Offline' },
-        { value: 'Both', label: 'Both' },
-        { value: 'Other', label: 'Other' }
+        { value: 'Remote', label: 'Remote (Online)' },
+        { value: 'Onsite', label: 'Onsite (Offline)' },
+        { value: 'Hybrid', label: 'Hybrid (Both)' }
     ];
+
     const labelStyle = "block text-base font-semibold text-gray-800";
     const inputStyle = "p-3 border border-gray-300 rounded-lg w-full text-base focus:ring-2 focus:ring-black focus:border-black transition";
     const errorStyle = "text-red-500 text-sm mt-1";
     const helperStyle = "text-gray-500 italic text-sm mt-1 block";
+
     return (
         <div className="font-poppins min-h-screen text-gray-900">
             <div className="mx-auto bg-white p-10 sm:p-12 rounded-lg shadow-lg">
@@ -280,61 +260,63 @@ const ProjectPosting = () => {
                     <div>
                         <label htmlFor="title" className={labelStyle}>Project Title</label>
                         <input
-                            type="text"
-                            id="title"
-                            name="title"
-                            value={projectData.title}
-                            onChange={handleChange}
+                            type="text" id="title" name="title"
+                            value={projectData.title} onChange={handleChange}
                             placeholder="Enter project title"
-                            className={`mt-2 ${inputStyle} ${errors.paymentMethod ? 'border-red-500' : 'border-gray-300'} ${projectData.paymentMethod === '' ? 'text-gray-500' : 'text-gray-900'}`}
+                            className={`mt-2 ${inputStyle} ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
                         />
                         {errors.title && <span className={errorStyle}>{errors.title}</span>}
                     </div>
+
                     <div>
                         <label htmlFor="description" className={labelStyle}>Project Description</label>
                         <textarea
-                            id="description"
-                            name="description"
-                            value={projectData.description}
-                            onChange={handleChange}
+                            id="description" name="description"
+                            value={projectData.description} onChange={handleChange}
                             placeholder="Enter project details, goals, and specific requirements..."
                             rows="5"
-                            className={`mt-2 ${inputStyle} ${errors.workForm ? 'border-red-500' : 'border-gray-300'} ${projectData.workForm === '' ? 'text-gray-500' : 'text-gray-900'}`}
+                            className={`mt-2 ${inputStyle} ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
                         />
                         {errors.description && <span className={errorStyle}>{errors.description}</span>}
                         <small className={helperStyle}>At least 20 characters</small>
                     </div>
+
                     <div>
                         <label htmlFor="budget" className={labelStyle}>Budget (VND)</label>
                         <input
-                            type="number"
-                            id="budget"
-                            name="budget"
-                            value={projectData.budget}
-                            onChange={handleChange}
+                            type="number" id="budget" name="budget"
+                            value={projectData.budget} onChange={handleChange}
                             placeholder="Enter budget"
-                            min="1000000"
-                            max="1000000000"
-                            className={`mt-2 ${inputStyle} ${errors.category ? 'border-red-500' : 'border-gray-300'} ${projectData.category === '' ? 'text-gray-500' : 'text-gray-900'}`}
+                            min="1000000" max="1000000000"
+                            className={`mt-2 ${inputStyle} ${errors.budget ? 'border-red-500' : 'border-gray-300'}`}
                         />
                         {errors.budget && <span className={errorStyle}>{errors.budget}</span>}
                         <small className={helperStyle}>Minimum 1 million VND</small>
                     </div>
+
+                    {/* ✅ THÊM INPUT CHỌN NGÀY KẾT THÚC THẦU */}
+                    <div>
+                        <label htmlFor="bidEndDate" className={labelStyle}>Bid Deadline (End Date)</label>
+                        <input
+                            type="date" id="bidEndDate" name="bidEndDate"
+                            value={projectData.bidEndDate} onChange={handleChange}
+                            min={new Date().toISOString().split("T")[0]}
+                            className={`mt-2 ${inputStyle} ${errors.bidEndDate ? 'border-red-500' : 'border-gray-300'}`}
+                        />
+                        {errors.bidEndDate && <span className={errorStyle}>{errors.bidEndDate}</span>}
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <label htmlFor="paymentMethod" className={labelStyle}>Payment Method</label>
                             <select
-                                id="paymentMethod"
-                                name="paymentMethod"
-                                value={projectData.paymentMethod}
-                                onChange={handleChange}
-                                className={`mt-2 ${inputStyle} ${errors.paymentMethod ? 'border-red-500' : 'border-gray-300'} ${projectData.paymentMethod === '' ? 'text-gray-500' : 'text-gray-900'}`}
+                                id="paymentMethod" name="paymentMethod"
+                                value={projectData.paymentMethod} onChange={handleChange}
+                                className={`mt-2 ${inputStyle} ${errors.paymentMethod ? 'border-red-500' : 'border-gray-300'}`}
                             >
                                 <option value="" disabled>Select payment method</option>
                                 {paymentMethods.map(method => (
-                                    <option key={method.value} value={method.value}>
-                                        {method.label}
-                                    </option>
+                                    <option key={method.value} value={method.value}>{method.label}</option>
                                 ))}
                             </select>
                             {errors.paymentMethod && <span className={errorStyle}>{errors.paymentMethod}</span>}
@@ -343,30 +325,25 @@ const ProjectPosting = () => {
                         <div>
                             <label htmlFor="workForm" className={labelStyle}>Work Form</label>
                             <select
-                                id="workForm"
-                                name="workForm"
-                                value={projectData.workForm}
-                                onChange={handleChange}
-                                className={`mt-2 ${inputStyle} ${errors.workForm ? 'border-red-500' : 'border-gray-300'} ${projectData.paymentMethod === '' ? 'text-gray-500' : 'text-gray-900'}`}
+                                id="workForm" name="workForm"
+                                value={projectData.workForm} onChange={handleChange}
+                                className={`mt-2 ${inputStyle} ${errors.workForm ? 'border-red-500' : 'border-gray-300'}`}
                             >
                                 <option value="" disabled>Select work form</option>
                                 {workForms.map(format => (
-                                    <option key={format.value} value={format.value}>
-                                        {format.label}
-                                    </option>
+                                    <option key={format.value} value={format.value}>{format.label}</option>
                                 ))}
                             </select>
                             {errors.workForm && <span className={errorStyle}>{errors.workForm}</span>}
                         </div>
                     </div>
+
                     <div>
                         <label htmlFor="category" className={labelStyle}>Category</label>
                         <select
-                            id="category"
-                            name="category"
-                            value={projectData.category}
-                            onChange={handleChange}
-                            className={`mt-2 ${inputStyle} ${errors.category ? 'border-red-500' : 'border-gray-300'} ${projectData.paymentMethod === '' ? 'text-gray-500' : 'text-gray-900'}`}
+                            id="category" name="category"
+                            value={projectData.category} onChange={handleChange}
+                            className={`mt-2 ${inputStyle} ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
                         >
                             <option value="" disabled>Select category</option>
                             <option value="web development">Web development</option>
@@ -380,28 +357,24 @@ const ProjectPosting = () => {
                         </select>
                         {errors.category && <span className={errorStyle}>{errors.category}</span>}
                     </div>
+
                     <div>
                         <label htmlFor="skills" className={labelStyle}>Required Skills</label>
                         <div className="flex gap-3 mt-2">
                             <input
-                                type="text"
-                                id="skills"
+                                type="text" id="skills"
                                 value={skillInput}
                                 onChange={(e) => {
                                     setSkillInput(e.target.value);
-                                    if (e.target.value.trim().length > 250) {
-                                        setSkillError('Each skill cannot exceed 250 characters.');
-                                    } else {
-                                        setSkillError('');
-                                    }
+                                    if (e.target.value.trim().length > 250) setSkillError('Each skill cannot exceed 250 characters.');
+                                    else setSkillError('');
                                 }}
                                 onKeyDown={handleSkillInputKeyDown}
                                 placeholder="Enter skill and press Add"
                                 className={`${inputStyle} placeholder:text-gray-400`}
                             />
                             <button
-                                type="button"
-                                onClick={() => handleAddSkill(skillInput)}
+                                type="button" onClick={() => handleAddSkill(skillInput)}
                                 className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
                             >
                                 Add
@@ -413,30 +386,28 @@ const ProjectPosting = () => {
                                 <div key={index} className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-gray-700 font-medium">
                                     <span>{skill}</span>
                                     <button
-                                        type="button"
-                                        onClick={() => handleRemoveSkill(skill)}
+                                        type="button" onClick={() => handleRemoveSkill(skill)}
                                         className="text-gray-500 hover:text-red-500 font-bold text-lg"
                                         title={`Remove ${skill}`}
                                     >
+                                        &times;
                                     </button>
                                 </div>
                             ))}
                         </div>
                     </div>
+
                     <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 mt-10">
                         <button
-                            type="button"
-                            onClick={() => navigate('/HomePage')}
+                            type="button" onClick={() => navigate('/HomePage')}
                             className="px-6 py-3 bg-white text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                             disabled={isSubmitting}
                         >
                             Cancel
                         </button>
                         <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`px-6 py-3 rounded-lg font-semibold text-white transition-colors ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:bg-gray-800'
-                                }`}
+                            type="submit" disabled={isSubmitting}
+                            className={`px-6 py-3 rounded-lg font-semibold text-white transition-colors ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:bg-gray-800'}`}
                         >
                             {isSubmitting ? 'Processing...' : 'Post Project'}
                         </button>

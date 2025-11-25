@@ -72,7 +72,8 @@ router.post('/signup', async (req, res) => {
             id: newUserId,
             email: email,
             role: role,
-            name: name
+            name: name,
+            email_verify: 'unverified'
         };
 
         const secretKey = process.env.JWT_SECRET || 'secret_mac_dinh'; // Fallback nếu chưa config .env

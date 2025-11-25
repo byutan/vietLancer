@@ -17,8 +17,10 @@ const IT_CATEGORIES = [
     "Other",
 ];
 
-const WORK_FORM_OPTIONS = ["Offline", "Online", "Both", "Other"];
-const PAYMENT_METHOD_OPTIONS = ["Per Hour", "Per Month", "Per Project", "Other"];
+// ✅ CẬP NHẬT 1: Sửa Constants khớp với MySQL ENUM
+const WORK_FORM_OPTIONS = ["Onsite", "Remote", "Hybrid"];
+const PAYMENT_METHOD_OPTIONS = ["Hourly", "Fixed", "Milestone"];
+
 const SALARY_RANGE_OPTIONS = [
     "Under 1.000.000 VND",
     "1.000.000 - 10.000.000 VND",
@@ -27,7 +29,7 @@ const SALARY_RANGE_OPTIONS = [
 ];
 
 export default function JobPage() {
-    const { category } = useParams(); 
+    const { category } = useParams();
     const navigate = useNavigate();
 
     const [projects, setProjects] = useState([]);
@@ -37,15 +39,21 @@ export default function JobPage() {
     const [selectedWorkForm, setSelectedWorkForm] = useState(null);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
     const [selectedSalaryRange, setSelectedSalaryRange] = useState(null);
+
     const fetchProjects = useCallback(async () => {
         try {
             const res = await fetch("http://localhost:3000/api/projects");
             const data = await res.json();
-            if (data.success) setProjects(data.projects);
-        } catch {
-            // handle error
+            if (data.success) {
+                // Log để kiểm tra dữ liệu về
+                console.log("JobPage fetched:", data.projects);
+                setProjects(data.projects);
+            }
+        } catch (err) {
+            console.error("Fetch jobs error:", err);
         }
     }, []);
+
     useEffect(() => {
         fetchProjects();
     }, [fetchProjects]);
@@ -56,7 +64,7 @@ export default function JobPage() {
             const matched = IT_CATEGORIES.find(
                 (cat) => cat.toLowerCase() === decoded.toLowerCase()
             );
-            setSelectedCategory(matched || "__NOT_FOUND__"); 
+            setSelectedCategory(matched || "__NOT_FOUND__");
         } else {
             setSelectedCategory(null);
         }
@@ -72,15 +80,20 @@ export default function JobPage() {
             window.scrollTo(0, 0);
         }
     };
+
     const filteredProjects = useMemo(() => {
         return projects.filter((project) => {
-            if (project.status !== "approved") return false;
+            // ✅ CẬP NHẬT 2: Sửa logic lọc status
+            // Database mới dùng 'Open' cho bài đã duyệt. 'In Progress' là đang làm.
+            if (project.status !== "Open" && project.status !== "In Progress") return false;
+
             const lowerSearch = searchTerm.toLowerCase();
+            
+            // Thêm optional chaining (?.) để tránh lỗi crash nếu dữ liệu null
             const matchesSearch =
                 (project.title && project.title.toLowerCase().includes(lowerSearch)) ||
                 (project.description && project.description.toLowerCase().includes(lowerSearch)) ||
                 (typeof project.budget === "number" && project.budget.toString().includes(lowerSearch)) ||
-                (project.deadline && project.deadline.toLowerCase().includes(lowerSearch)) ||
                 (project.category && project.category.toLowerCase().includes(lowerSearch));
 
             const matchesCategory =
@@ -88,15 +101,13 @@ export default function JobPage() {
                 (project.category &&
                     project.category.toLowerCase() === selectedCategory.toLowerCase());
 
+            // ✅ CẬP NHẬT 3: So sánh trực tiếp Work Form (vì constants đã sửa đúng)
             const matchesWorkForm =
-                !selectedWorkForm || (project.workForm && project.workForm === selectedWorkForm);
+                !selectedWorkForm || (project.workForm === selectedWorkForm);
 
+            // ✅ CẬP NHẬT 4: So sánh trực tiếp Payment Method (bỏ logic replace cũ)
             const matchesPaymentMethod =
-                !selectedPaymentMethod ||
-                (project.paymentMethod &&
-                    (project.paymentMethod === selectedPaymentMethod ||
-                        project.paymentMethod.replace(/_/g, " ").toLowerCase() ===
-                        selectedPaymentMethod.toLowerCase()));
+                !selectedPaymentMethod || (project.paymentMethod === selectedPaymentMethod);
 
             let matchesSalaryRange = true;
             if (selectedSalaryRange) {
@@ -262,7 +273,6 @@ export default function JobPage() {
                     project={selectedProject}
                     onClose={() => {
                         setSelectedProject(null);
-                        // Refetch projects to update UI after modal closes (e.g. after mod duyệt bid)
                         fetchProjects();
                     }}
                 />

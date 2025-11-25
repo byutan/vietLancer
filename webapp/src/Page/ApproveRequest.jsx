@@ -18,17 +18,15 @@ const IT_CATEGORIES = [
 ];
 
 const WORK_FORM_OPTIONS = [
-    "Offline",
-    "Online",
+    "Onsite",  // DB lưu là Onsite (thay vì Offline)
+    "Remote",  // DB lưu là Remote (thay vì Online)
     "Hybrid",
-    "Other",
 ];
 
 const PAYMENT_METHOD_OPTIONS = [
-    "Per Hour",
-    "Per Month",
-    "Per Project",
-    "Other",
+    "Hourly",    // DB lưu là Hourly
+    "Fixed",     // DB lưu là Fixed
+    "Milestone", // DB lưu là Milestone
 ];
 
 const SALARY_RANGE_OPTIONS = [
@@ -39,9 +37,9 @@ const SALARY_RANGE_OPTIONS = [
 ];
 
 const STATUS_OPTIONS = [
-    { value: "pending", label: "Pending", icon: FileText, color: "bg-yellow-500" },
-    { value: "approved", label: "Approved", icon: CheckCircle2, color: "bg-green-500" },
-    { value: "rejected", label: "Rejected", icon: XCircle, color: "bg-red-500" },
+    { value: "Pending", label: "Pending", icon: FileText, color: "bg-yellow-500" },
+    { value: "Open", label: "Approved (Open)", icon: CheckCircle2, color: "bg-green-500" }, // DB dùng Open cho bài đã duyệt
+    { value: "Cancelled", label: "Rejected", icon: XCircle, color: "bg-red-500" }, // DB dùng Cancelled cho bài bị từ chối
 ];
 
 export default function ApproveRequest() {
@@ -73,36 +71,39 @@ export default function ApproveRequest() {
     const filteredProjects = useMemo(() => {
         return projects.filter((project) => {
             const lowerSearch = searchTerm.toLowerCase();
-            const matchesSearch =
-                (project.title && project.title.toLowerCase().includes(lowerSearch)) ||
-                (project.description && project.description.toLowerCase().includes(lowerSearch)) ||
-                (typeof project.budget === "number" && project.budget.toString().includes(lowerSearch)) ||
-                (project.deadline && project.deadline.toLowerCase().includes(lowerSearch)) ||
-                (project.category && project.category.toLowerCase().includes(lowerSearch)) ||
-                (project.status && project.status.toLowerCase().includes(lowerSearch));
+            
+            // Fix lỗi crash nếu field bị null trong DB
+            const titleMatch = project.title?.toLowerCase().includes(lowerSearch);
+            const descMatch = project.description?.toLowerCase().includes(lowerSearch);
+            // Lưu ý: Backend trả về 'budget' là số, cần convert string để search
+            const budgetMatch = project.budget?.toString().includes(lowerSearch);
+            
+            const matchesSearch = titleMatch || descMatch || budgetMatch;
+
+            // --- FIX LOGIC STATUS ---
+            // DB trả về: Pending, Open, Cancelled
+            // Filter UI: Pending, Open, Cancelled
             const matchesStatus = !selectedStatus || project.status === selectedStatus;
-            const matchesCategory = !selectedCategory || (project.category && project.category.toLowerCase() === selectedCategory.toLowerCase());
-            const matchesWorkForm = !selectedWorkForm || (project.workForm && project.workForm === selectedWorkForm);
-            const matchesPaymentMethod = !selectedPaymentMethod || (project.paymentMethod && (
-                project.paymentMethod === selectedPaymentMethod ||
-                (project.paymentMethod.replace(/_/g, ' ').toLowerCase() === selectedPaymentMethod.toLowerCase())
-            ));
+
+            // --- FIX LOGIC CATEGORY ---
+            const matchesCategory = !selectedCategory || 
+                (project.category && project.category.toLowerCase() === selectedCategory.toLowerCase());
+
+            // --- FIX LOGIC WORK FORM ---
+            // So sánh chính xác vì giờ constant đã khớp DB
+            const matchesWorkForm = !selectedWorkForm || project.workForm === selectedWorkForm;
+
+            // --- FIX LOGIC PAYMENT METHOD ---
+            const matchesPaymentMethod = !selectedPaymentMethod || project.paymentMethod === selectedPaymentMethod;
+
             let matchesSalaryRange = true;
             if (selectedSalaryRange) {
-                if (typeof project.budget === 'number') {
-                    if (selectedSalaryRange === 'Under 1.000.000 VND') {
-                        matchesSalaryRange = project.budget < 1000000;
-                    } else if (selectedSalaryRange === '1.000.000 - 10.000.000 VND') {
-                        matchesSalaryRange = project.budget >= 1000000 && project.budget <= 10000000;
-                    } else if (selectedSalaryRange === 'Above 10.000.000 VND') {
-                        matchesSalaryRange = project.budget > 10000000;
-                    } else {
-                        matchesSalaryRange = true;
-                    }
-                } else {
-                    matchesSalaryRange = true;
-                }
+                const budget = Number(project.budget);
+                if (selectedSalaryRange === 'Under 1.000.000 VND') matchesSalaryRange = budget < 1000000;
+                else if (selectedSalaryRange === '1.000.000 - 10.000.000 VND') matchesSalaryRange = budget >= 1000000 && budget <= 10000000;
+                else if (selectedSalaryRange === 'Above 10.000.000 VND') matchesSalaryRange = budget > 10000000;
             }
+
             return matchesSearch && matchesStatus && matchesCategory && matchesWorkForm && matchesPaymentMethod && matchesSalaryRange;
         });
     }, [projects, searchTerm, selectedStatus, selectedCategory, selectedWorkForm, selectedPaymentMethod, selectedSalaryRange]);
@@ -112,24 +113,37 @@ export default function ApproveRequest() {
             const res = await fetch("http://localhost:3000/api/approve", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: projectId }),
+                body: JSON.stringify({ 
+                    id: projectId,
+                    approvedBy: 1 // TODO: Thay bằng user.id thực tế của Admin đang đăng nhập
+                }),
             });
             const data = await res.json();
             if (data.success) {
                 await fetchProjects();
+            } else {
+                alert(data.message || "Approve failed"); // Hiển thị lỗi từ backend
             }
-        } catch {
+        } catch (err) {
+            console.error(err);
             alert("Approve failed!");
         }
         setSelectedProject(null);
     };
-
     const handleReject = async (projectId) => {
+        // Nên hỏi lý do từ chối (prompt hoặc modal input)
+        const reason = prompt("Enter rejection reason:", "Không phù hợp tiêu chuẩn");
+        if (!reason) return; // Nếu hủy thì thôi
+
         try {
             const res = await fetch("http://localhost:3000/api/reject", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: projectId }),
+                body: JSON.stringify({ 
+                    id: projectId, 
+                    reason: reason,
+                    rejectedBy: 1 // TODO: Thay bằng user.id
+                }),
             });
             const data = await res.json();
             if (data.success) {
@@ -141,17 +155,6 @@ export default function ApproveRequest() {
         setSelectedProject(null);
     };
 
-    // const getStatusBadge = (status) => {
-    //     const statusOption = STATUS_OPTIONS.find((s) => s.value === status);
-    //     if (!statusOption) return null;
-    //     const Icon = statusOption.icon;
-    //     return (
-    //         <Badge className={`${statusOption.color} text-white gap-1`}>
-    //             <Icon className="w-3 h-3" />
-    //             {statusOption.label}
-    //         </Badge>
-    //     );
-    // };
 
     const FilterCheckbox = ({ name, checked, onChange }) => (
         <label className="flex items-center text-sm text-gray-700 mb-2 hover:bg-gray-200 rounded px-2 py-1 transition-colors duration-150">

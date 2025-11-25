@@ -103,23 +103,34 @@ router.post('/', async (req, res) => {
 // ============================================================
 // 2. GET /api/approve/projects - Lấy tất cả project (thường dùng cho Admin dashboard)
 // ============================================================
+// GET /projects
 router.get('/projects', async (req, res) => {
     try {
-        // Lấy danh sách dự án kèm tên Client và trạng thái
         const query = `
             SELECT 
                 p.project_ID as id,
                 p.project_name as title,
                 p.project_desc as description,
-                p.project_status as status,
                 p.salary as budget,
-                p.approved_date as approvedAt,
+                p.project_status as status,
+                p.pay_method as paymentMethod,
+                p.work_form as workForm,
+                p.category,
+                
+                p.created_at as createdAt,
+                p.updated_at as updatedAt,
+                p.approved_date,
+                
                 u.full_name as clientName,
-                u.email as clientEmail
+                u.email as clientEmail,
+                GROUP_CONCAT(s.skill_name) as skills
             FROM Project p
-            LEFT JOIN Client c ON p.cID = c.client_ID
-            LEFT JOIN User u ON c.client_ID = u.ID
-            ORDER BY p.project_ID DESC
+            JOIN Client c ON p.cID = c.client_ID
+            JOIN User u ON c.client_ID = u.ID
+            LEFT JOIN Requires r ON p.project_ID = r.project_id
+            LEFT JOIN Skill s ON r.skill_id = s.skill_ID
+            GROUP BY p.project_ID
+            ORDER BY p.created_at DESC
         `;
 
         const [projects] = await pool.query(query);

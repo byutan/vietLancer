@@ -15,14 +15,15 @@ router.post('/projects', async (req, res) => {
             title,
             description,
             budget,
-            category, // Lưu ý: Trong DB cũ không có cột category, mình sẽ tạm bỏ qua hoặc bạn cần thêm cột này vào DB
+            category,
             skills,
             paymentMethod,
             workForm,
-            clientEmail 
+            clientEmail,
+            bidEndDate // Nhận thêm ngày kết thúc thầu
         } = req.body;
 
-        // --- VALIDATION (Giữ nguyên logic cũ) ---
+        // --- VALIDATION ---
         if (!title || !description || !budget || !paymentMethod || !workForm || !clientEmail) {
             return res.status(400).json({ success: false, message: 'Please fill in all required fields.' });
         }
@@ -50,18 +51,16 @@ router.post('/projects', async (req, res) => {
         const clientName = users[0].full_name;
 
         // 2. Insert vào bảng Project
-        // Lưu ý: Mapping các trường JSON sang cột Database
         const [projectResult] = await connection.query(
             `INSERT INTO Project 
-            (project_name, project_desc, salary, pay_method, work_form, cID, project_status, approved_date) 
-            VALUES (?, ?, ?, ?, ?, ?, 'Pending', NULL)`,
-            [title, description, budget, paymentMethod, workForm, clientID]
+            (project_name, project_desc, salary, pay_method, work_form, cID, project_status, approved_date, bid_end_date, category) 
+            VALUES (?, ?, ?, ?, ?, ?, 'Pending', NULL, ?, ?)`,
+            [title, description, budget, paymentMethod, workForm, clientID, bidEndDate || null, category || null]
         );
 
         const newProjectId = projectResult.insertId;
 
         // 3. Xử lý Skills (Bảng Requires)
-        // Logic: Nếu skill gửi lên là mảng ['Java', 'Nodejs']
         if (Array.isArray(skills) && skills.length > 0) {
             for (const skillName of skills) {
                 // Kiểm tra skill có trong bảng Skill chưa
@@ -95,24 +94,19 @@ router.post('/projects', async (req, res) => {
             console.error('⚠️ Failed to send notification:', notifError);
         }
 
-        // Trả về kết quả chuẩn
         res.status(201).json({
             success: true,
             message: 'Your project has been sent for approval.',
             project: {
                 id: newProjectId,
                 title,
-                description,
-                budget,
                 status: 'Pending',
-                clientName,
-                clientEmail,
-                createdAt: new Date()
+                clientName
             }
         });
 
     } catch (error) {
-        await connection.rollback(); // Hoàn tác nếu lỗi
+        await connection.rollback();
         console.error('Error posting project:', error);
         res.status(500).json({ success: false, message: 'Server error: ' + error.message });
     } finally {
@@ -121,12 +115,13 @@ router.post('/projects', async (req, res) => {
 });
 
 // -----------------------------------------------------------------
-// 2. GET /projects - Lấy danh sách dự án
+// 2. GET /projects - Lấy danh sách dự án (Public & Filter)
 // -----------------------------------------------------------------
 router.get('/projects', async (req, res) => {
     try {
-        // Query phức tạp để lấy cả skills (GROUP_CONCAT)
-        const query = `
+        const { status } = req.query;
+
+        let query = `
             SELECT 
                 p.project_ID as id,
                 p.project_name as title,
@@ -135,23 +130,30 @@ router.get('/projects', async (req, res) => {
                 p.project_status as status,
                 p.pay_method as paymentMethod,
                 p.work_form as workForm,
-                p.approved_date as createdAt, -- hoặc cột created_at nếu bạn thêm sau này
+                p.category,
+                p.bid_end_date as deadline,
+                p.created_at as createdAt,
+                p.updated_at as updatedAt,
                 u.full_name as clientName,
                 u.email as clientEmail,
-                -- Gom nhóm skill thành chuỗi "Java,PHP,Python"
                 GROUP_CONCAT(s.skill_name) as skills
             FROM Project p
             JOIN Client c ON p.cID = c.client_ID
             JOIN User u ON c.client_ID = u.ID
             LEFT JOIN Requires r ON p.project_ID = r.project_id
             LEFT JOIN Skill s ON r.skill_id = s.skill_ID
-            GROUP BY p.project_ID
-            ORDER BY p.project_ID DESC
         `;
 
-        const [rows] = await pool.query(query);
+        const params = [];
+        if (status) {
+            query += " WHERE p.project_status = ?";
+            params.push(status);
+        }
 
-        // Map dữ liệu để skill trở thành Array thay vì String
+        query += " GROUP BY p.project_ID ORDER BY p.created_at DESC";
+
+        const [rows] = await pool.query(query, params);
+
         const projects = rows.map(row => ({
             ...row,
             skills: row.skills ? row.skills.split(',') : []
@@ -181,6 +183,9 @@ router.get('/projects/:id', async (req, res) => {
                 p.project_status as status,
                 p.pay_method as paymentMethod,
                 p.work_form as workForm,
+                p.category,
+                p.bid_end_date as deadline,
+                p.created_at as createdAt,
                 u.full_name as clientName,
                 u.email as clientEmail,
                 GROUP_CONCAT(s.skill_name) as skills
@@ -211,7 +216,67 @@ router.get('/projects/:id', async (req, res) => {
 });
 
 // -----------------------------------------------------------------
-// 4. PATCH /projects/:projectId/hire - Thuê Freelancer (Accept Bid)
+// 4. GET /projects/client/:email - Lấy dự án CỦA MỘT CLIENT (Kèm Bids)
+// 👉 Dùng cho trang MyProjectPage.js
+// -----------------------------------------------------------------
+router.get('/projects/client/:email', async (req, res) => {
+    try {
+        const { email } = req.params;
+
+        // 1. Tìm thông tin dự án của Client này
+        const projectQuery = `
+            SELECT 
+                p.project_ID as id,
+                p.project_name as title,
+                p.project_desc as description,
+                p.salary as budget,
+                p.project_status as status,
+                p.created_at
+            FROM Project p
+            JOIN Client c ON p.cID = c.client_ID
+            JOIN User u ON c.client_ID = u.ID
+            WHERE u.email = ?
+            ORDER BY p.created_at DESC
+        `;
+        const [projects] = await pool.query(projectQuery, [email]);
+
+        // 2. Lấy danh sách Bid cho từng dự án
+        // (Để Frontend MyProjectPage hiển thị danh sách người thầu)
+        for (let project of projects) {
+            const bidQuery = `
+                SELECT 
+                    b.bid_id as bid_ID,
+                    b.bid_desc,
+                    b.price_offer,
+                    b.bid_status,
+                    b.bid_date,
+                    u.full_name as freelancer_name,
+                    u.email as freelancer_email
+                FROM Bid b
+                JOIN User u ON b.fID = u.ID
+                WHERE b.project_ID = ?
+            `;
+            const [bids] = await pool.query(bidQuery, [project.id]);
+            
+            project.list_of_bid = bids; 
+            
+            // Tìm xem dự án đã thuê ai chưa (Accepted)
+            const hiredBid = bids.find(b => b.bid_status === 'Accepted');
+            if (hiredBid) {
+                project.hired_bid_ID = hiredBid.bid_ID;
+            }
+        }
+
+        res.json({ success: true, projects });
+
+    } catch (error) {
+        console.error('Error fetching client projects:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// -----------------------------------------------------------------
+// 5. PATCH /projects/:projectId/hire - Thuê Freelancer (Accept Bid)
 // -----------------------------------------------------------------
 router.patch('/projects/:projectId/hire', async (req, res) => {
     const { projectId } = req.params;
@@ -225,43 +290,30 @@ router.patch('/projects/:projectId/hire', async (req, res) => {
     try {
         await connection.beginTransaction();
 
-        // 1. Kiểm tra Project có tồn tại và đang Open không
-        const [projects] = await connection.query("SELECT * FROM Project WHERE project_ID = ?", [projectId]);
-        if (projects.length === 0) {
-            await connection.rollback();
-            return res.status(404).json({ success: false, message: 'Project not found' });
-        }
-
-        // 2. Cập nhật trạng thái Bid được chọn thành 'Accepted'
+        // 1. Update Bid được chọn -> Accepted
         await connection.query(
             "UPDATE Bid SET bid_status = 'Accepted' WHERE bid_id = ?", 
             [hired_bid_ID]
         );
 
-        // 3. (Optional) Từ chối tất cả các Bid khác của dự án này
-        await connection.query(
-            "UPDATE Bid SET bid_status = 'Rejected' WHERE project_ID = ? AND bid_id != ?", 
-            [projectId, hired_bid_ID]
-        );
-
-        // 4. Cập nhật trạng thái Project thành 'In Progress' (đúng logic DB ENUM)
-        // project_status ENUM('Open', 'In Progress', 'Completed', 'Cancelled')
+        // 2. Update Project -> In Progress
         await connection.query(
             "UPDATE Project SET project_status = 'In Progress' WHERE project_ID = ?", 
             [projectId]
         );
 
+        // 3. (Optional) Update các Bid còn lại -> Rejected
+        // await connection.query(
+        //    "UPDATE Bid SET bid_status = 'Rejected' WHERE project_ID = ? AND bid_id != ?", 
+        //    [projectId, hired_bid_ID]
+        // );
+
         await connection.commit();
 
-        // Trả về thông tin cập nhật
         res.status(200).json({
             success: true,
             message: 'Freelancer hired successfully',
-            project: {
-                id: projectId,
-                status: 'In Progress',
-                hired_bid_ID: hired_bid_ID
-            }
+            project: { id: projectId, status: 'In Progress', hired_bid_ID }
         });
 
     } catch (error) {
