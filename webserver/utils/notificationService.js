@@ -23,6 +23,14 @@ const NOTIFICATION_TEMPLATES = {
     icon: 'x-circle',
     color: 'red'
   }),
+
+  // 🔥 MỚI: Thông báo cho Client khi có Bid mới được Admin duyệt
+  new_bid_received: (data) => ({
+    title: 'New Proposal Received',
+    message: `A new proposal from "${data.freelancerName}" has been approved for your project "${data.projectName}". Check it out now!`,
+    icon: 'file-text',
+    color: 'blue'
+  }),
   
   // Freelancer notifications
   bid_submitted: (data) => ({
@@ -32,7 +40,7 @@ const NOTIFICATION_TEMPLATES = {
     color: 'blue'
   }),
   
-  bid_approved: (data) => ({
+  bid_accepted: (data) => ({
     title: 'Proposal Accepted',
     message: `Great news! Your proposal for "${data.projectName}" has been accepted. Please contact the client to begin work.`,
     icon: 'check-circle',
@@ -48,8 +56,8 @@ const NOTIFICATION_TEMPLATES = {
 };
 
 class NotificationService {
-  // Send notification to client when project is submitted
-  // userEmail: email của user (dùng làm unique key)
+  // ... (Các hàm cũ giữ nguyên) ...
+
   static async notifyProjectSubmitted(userEmail, projectData) {
     try {
       const template = NOTIFICATION_TEMPLATES.project_submitted(projectData);
@@ -64,7 +72,6 @@ class NotificationService {
     }
   }
 
-  // Send notification to client when project is approved
   static async notifyProjectApproved(userEmail, projectData) {
     try {
       const template = NOTIFICATION_TEMPLATES.project_approved(projectData);
@@ -80,7 +87,6 @@ class NotificationService {
     }
   }
 
-  // Send notification to client when project is rejected
   static async notifyProjectRejected(userEmail, projectData) {
     try {
       const template = NOTIFICATION_TEMPLATES.project_rejected(projectData);
@@ -97,7 +103,24 @@ class NotificationService {
     }
   }
 
-  // Send notification to freelancer when bid is submitted
+  // 🔥 MỚI: Hàm gửi thông báo cho Client khi có Bid mới
+  static async notifyNewBidReceived(userEmail, bidData) {
+    try {
+      const template = NOTIFICATION_TEMPLATES.new_bid_received(bidData);
+      await createNotification(userEmail, 'new_bid_received', {
+        ...template,
+        bidId: bidData.bidId,
+        projectId: bidData.projectId,
+        projectName: bidData.projectName,
+        freelancerName: bidData.freelancerName,
+        bidAmount: bidData.bidAmount,
+        receivedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error sending new bid received notification:', error);
+    }
+  }
+
   static async notifyBidSubmitted(userEmail, bidData) {
     try {
       const template = NOTIFICATION_TEMPLATES.bid_submitted(bidData);
@@ -114,11 +137,10 @@ class NotificationService {
     }
   }
 
-  // Send notification to freelancer when bid is approved
   static async notifyBidApproved(userEmail, bidData) {
     try {
-      const template = NOTIFICATION_TEMPLATES.bid_approved(bidData);
-      await createNotification(userEmail, 'bid_approved', {
+      const template = NOTIFICATION_TEMPLATES.bid_accepted(bidData);
+      await createNotification(userEmail, 'bid_accepted', {
         ...template,
         bidId: bidData.bidId,
         projectId: bidData.projectId,
@@ -132,7 +154,6 @@ class NotificationService {
     }
   }
 
-  // Send notification to freelancer when bid is rejected
   static async notifyBidRejected(userEmail, bidData) {
     try {
       const template = NOTIFICATION_TEMPLATES.bid_rejected(bidData);

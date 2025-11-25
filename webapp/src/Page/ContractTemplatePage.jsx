@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
 import Footer from "../Components/Footer";
-import DocxViewer from "../Components/DocxViewer"; // Giả sử component này bạn đã có
+import DocxViewer from "../Components/DocxViewer"; 
+import { ArrowLeft } from "lucide-react"; // 2. Import Icon
 
 export default function ContractTemplatePage() {
   const [templates, setTemplates] = useState([]);
   const [selected, setSelected] = useState(null);
+  const navigate = useNavigate(); // 3. Khởi tạo hook navigate
 
   // 1. Fetch danh sách từ DB
   useEffect(() => {
@@ -13,7 +16,6 @@ export default function ContractTemplatePage() {
         const res = await fetch("http://localhost:3000/api/contract/list-templates");
         const data = await res.json();
         
-        // Kiểm tra nếu data là mảng thì set, không thì log lỗi
         if (Array.isArray(data)) {
             setTemplates(data);
         } else {
@@ -29,17 +31,15 @@ export default function ContractTemplatePage() {
   // 2. Tải file về (Dùng ID)
   const handleExport = async (template) => {
     try {
-      // Gọi API export theo ID
       const res = await fetch(`http://localhost:3000/api/contract/export/${template.id}`);
       if (!res.ok) throw new Error("Export failed");
       
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       
-      // Tạo link ảo để tải
       const a = document.createElement("a");
       a.href = url;
-      a.download = template.name; // Đặt tên file khi tải về
+      a.download = template.name; 
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -56,6 +56,16 @@ export default function ContractTemplatePage() {
   return (
     <div className="min-h-screen flex flex-col font-poppins">
       <main className="flex-grow p-6 max-w-7xl mx-auto w-full">
+        
+        {/* ✅ 4. Nút quay lại My Projects - Đã làm nổi bật */}
+        <button 
+          onClick={() => navigate("/MyProjectPage")}
+          className="inline-flex items-center px-4 py-2 mb-8 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-black hover:border-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-200"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to My Projects
+        </button>
+
         <h2 className="text-2xl font-bold mb-8 font-lora text-gray-800 border-b pb-4">
           Contract Templates Library
         </h2>
@@ -74,7 +84,6 @@ export default function ContractTemplatePage() {
                 }`}
                 onClick={() => handlePreview(template)}
                 >
-                {/* Icon Word */}
                 <div className="flex items-center justify-between mb-4">
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 text-xl">
                         📄
@@ -93,7 +102,7 @@ export default function ContractTemplatePage() {
 
                 <button 
                     onClick={(e) => {
-                        e.stopPropagation(); // Tránh kích hoạt preview khi bấm nút download
+                        e.stopPropagation(); 
                         handleExport(template);
                     }}
                     className="w-full py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
@@ -110,7 +119,6 @@ export default function ContractTemplatePage() {
           <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
             <div className="bg-white rounded-xl shadow-2xl max-w-5xl w-full h-[85vh] flex flex-col overflow-hidden">
               
-              {/* Header Modal */}
               <div className="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
                 <h3 className="text-lg font-bold text-gray-800 truncate max-w-md">
                   {selected.style || selected.name}
@@ -123,13 +131,10 @@ export default function ContractTemplatePage() {
                 </button>
               </div>
 
-              {/* Viewer Content */}
               <div className="flex-grow bg-gray-100 p-4 overflow-hidden">
-                 {/* DocxViewer hiển thị file từ đường dẫn tĩnh */}
                  <DocxViewer fileUrl={`http://localhost:3000${selected.url}`} />
               </div>
 
-              {/* Footer Modal */}
               <div className="px-6 py-4 border-t bg-white flex justify-end gap-3">
                 <button
                   onClick={() => setSelected(null)}

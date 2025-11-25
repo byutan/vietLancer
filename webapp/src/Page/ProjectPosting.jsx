@@ -2,6 +2,7 @@ import { useState, useContext, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../ContextAPI/AuthContext';
 import Footer from "../Components/Footer";
+import { X, Plus } from 'lucide-react';
 
 const ProjectPosting = () => {
     const navigate = useNavigate();
@@ -16,18 +17,23 @@ const ProjectPosting = () => {
         paymentMethod: '',
         workForm: '',
         category: '',
-        bidEndDate: '', // ✅ Thêm trường ngày kết thúc thầu
         skills: []
     });
 
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    // State cho phần nhập Skill
     const [skillInput, setSkillInput] = useState('');
     const [skillError, setSkillError] = useState('');
+    const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    
+    // ✅ THAY ĐỔI: State chứa danh sách skill từ Database
+    const [suggestedSkills, setSuggestedSkills] = useState([]);
 
-    // ✅ CẬP NHẬT LOGIC CHECK QUYỀN (Hỗ trợ cả DB MySQL và JSON cũ)
     const isVerifiedClient = user && user.role === 'client' && (user.email_verify === 'verified' || user.verify_status === 1 || user.verify_status === true);
-    const isModerator = user && user.role === 'moderator';
+    const isModerator = user && user.role === 'admin';
 
     useEffect(() => {
         if (hasChecked.current) return;
@@ -38,7 +44,6 @@ const ProjectPosting = () => {
                 navigate('/SignInPage');
                 return;
             }
-            // Check quyền
             if (isVerifiedClient || isModerator) {
                 setIsCheckingAccess(false);
             } else {
@@ -49,27 +54,52 @@ const ProjectPosting = () => {
         checkAccess();
     }, [user, navigate, isVerifiedClient, isModerator]);
 
+    // ✅ THAY ĐỔI: Fetch danh sách Skill từ Database khi component mount
+    useEffect(() => {
+        const fetchSkills = async () => {
+            try {
+                const res = await fetch('http://localhost:3000/api/skills');
+                const data = await res.json();
+                if (data.success && Array.isArray(data.skills)) {
+                    setSuggestedSkills(data.skills);
+                }
+            } catch (error) {
+                console.error("Failed to fetch suggested skills:", error);
+                // Fallback nếu API lỗi thì dùng danh sách rỗng hoặc mặc định
+            }
+        };
+        fetchSkills();
+    }, []);
+
+    // Logic gợi ý Skill khi gõ (Sử dụng suggestedSkills từ DB)
+    useEffect(() => {
+        if (skillInput.trim()) {
+            const suggestions = suggestedSkills.filter(skill => 
+                skill.toLowerCase().includes(skillInput.toLowerCase()) && 
+                !projectData.skills.includes(skill) // Loại bỏ skill đã chọn
+            );
+            setFilteredSuggestions(suggestions);
+            setShowSuggestions(true);
+        } else {
+            setShowSuggestions(false);
+        }
+    }, [skillInput, projectData.skills, suggestedSkills]);
+
     if (isCheckingAccess) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100 text-center">
-                <div className="text-3xl mb-5">⏳</div>
+                <div className="text-3xl mb-5 animate-spin">⏳</div>
                 <p className="text-gray-600 text-lg">Checking access...</p>
             </div>
         );
     }
 
-    // Double check khi render
     if (!user || (!isVerifiedClient && !isModerator)) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100 text-center">
                 <h1 className="text-red-500 text-3xl mb-5">Access Denied</h1>
-                <p className="text-gray-600 text-lg">
-                    Only verified clients or moderators can post projects
-                </p>
-                <button
-                    onClick={() => navigate('/HomePage')}
-                    className="mt-5 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-400"
-                >
+                <p className="text-gray-600 text-lg">Only verified clients or moderators can post projects</p>
+                <button onClick={() => navigate('/HomePage')} className="mt-5 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-400">
                     Go back to homepage
                 </button>
             </div>
@@ -89,12 +119,8 @@ const ProjectPosting = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setProjectData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setProjectData(prev => ({ ...prev, [name]: value }));
 
-        // Live validation
         if (name === 'title') {
             if (!value.trim()) setErrors(prev => ({ ...prev, title: 'Title is required' }));
             else if (value.trim().length < 5) setErrors(prev => ({ ...prev, title: 'Title must be at least 5 characters long' }));
@@ -114,14 +140,8 @@ const ProjectPosting = () => {
             else if (num > 100000000000) setErrors(prev => ({ ...prev, budget: 'Budget cannot exceed 100 billion VND' }));
             else setErrors(prev => ({ ...prev, budget: '' }));
         }
-        // ✅ Validate ngày kết thúc thầu
-        if (name === 'bidEndDate') {
-            if (!value) setErrors(prev => ({ ...prev, bidEndDate: 'Bid Deadline is required' }));
-            else if (new Date(value) < new Date().setHours(0, 0, 0, 0)) setErrors(prev => ({ ...prev, bidEndDate: 'Deadline cannot be in the past' }));
-            else setErrors(prev => ({ ...prev, bidEndDate: '' }));
-        }
 
-        if (errors[name] && !['title', 'description', 'budget', 'bidEndDate'].includes(name)) {
+        if (errors[name] && !['title', 'description', 'budget'].includes(name)) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
     };
@@ -134,27 +154,23 @@ const ProjectPosting = () => {
             return;
         }
         setSkillError('');
-        if (trimmedSkill && !projectData.skills.includes(trimmedSkill)) {
-            setProjectData(prev => ({
-                ...prev,
-                skills: [...prev.skills, trimmedSkill]
-            }));
+        // Check duplicates case-insensitive
+        if (trimmedSkill && !projectData.skills.some(s => s.toLowerCase() === trimmedSkill.toLowerCase())) {
+            setProjectData(prev => ({ ...prev, skills: [...prev.skills, trimmedSkill] }));
         }
         setSkillInput('');
+        setShowSuggestions(false);
     };
 
     const handleSkillInputKeyDown = (e) => {
-        if (e.key === 'Enter' || e.key === ',') {
+        if (e.key === 'Enter') {
             e.preventDefault();
             handleAddSkill(skillInput);
         }
     };
 
     const handleRemoveSkill = (skillToRemove) => {
-        setProjectData(prev => ({
-            ...prev,
-            skills: prev.skills.filter(skill => skill !== skillToRemove)
-        }));
+        setProjectData(prev => ({ ...prev, skills: prev.skills.filter(skill => skill !== skillToRemove) }));
     };
 
     const validateForm = () => {
@@ -173,7 +189,8 @@ const ProjectPosting = () => {
         if (!projectData.category) newErrors.category = 'Category is required';
         if (!projectData.paymentMethod) newErrors.paymentMethod = 'Payment method is required';
         if (!projectData.workForm) newErrors.workForm = 'Work form is required';
-        if (!projectData.bidEndDate) newErrors.bidEndDate = 'Bid Deadline is required';
+        
+        if (projectData.skills.length === 0) newErrors.skills = 'At least one skill is required';
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -206,16 +223,16 @@ const ProjectPosting = () => {
                     skills: projectData.skills,
                     paymentMethod: projectData.paymentMethod,
                     workForm: projectData.workForm,
-                    bidEndDate: projectData.bidEndDate, // ✅ Gửi thêm ngày kết thúc
-                    clientEmail: user.email // Để Backend tìm ID Client
+                    clientEmail: user.email 
                 })
             });
 
             const result = await response.json();
 
             if (result.success) {
+                alert('Project posted successfully!\n\nIt is pending admin approval. Bidding deadline will be set 7 days from approval.');
                 setProjectData({
-                    title: '', description: '', budget: '', paymentMethod: '', workForm: '', category: '', bidEndDate: '', skills: []
+                    title: '', description: '', budget: '', paymentMethod: '', workForm: '', category: '', skills: []
                 });
                 setSkillInput('');
                 navigate('/HomePage');
@@ -230,7 +247,6 @@ const ProjectPosting = () => {
         }
     };
 
-    // ✅ CẬP NHẬT GIÁ TRỊ KHỚP VỚI DB MYSQL (ENUM)
     const paymentMethods = [
         { value: 'Hourly', label: 'Hourly Rate' },
         { value: 'Fixed', label: 'Fixed Price (Per Project)' },
@@ -259,80 +275,39 @@ const ProjectPosting = () => {
                 <form onSubmit={handleSubmit} className="space-y-8">
                     <div>
                         <label htmlFor="title" className={labelStyle}>Project Title</label>
-                        <input
-                            type="text" id="title" name="title"
-                            value={projectData.title} onChange={handleChange}
-                            placeholder="Enter project title"
-                            className={`mt-2 ${inputStyle} ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
-                        />
+                        <input type="text" id="title" name="title" value={projectData.title} onChange={handleChange} placeholder="Enter project title" className={`mt-2 ${inputStyle} ${errors.title ? 'border-red-500' : 'border-gray-300'}`} />
                         {errors.title && <span className={errorStyle}>{errors.title}</span>}
                     </div>
 
                     <div>
                         <label htmlFor="description" className={labelStyle}>Project Description</label>
-                        <textarea
-                            id="description" name="description"
-                            value={projectData.description} onChange={handleChange}
-                            placeholder="Enter project details, goals, and specific requirements..."
-                            rows="5"
-                            className={`mt-2 ${inputStyle} ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
-                        />
+                        <textarea id="description" name="description" value={projectData.description} onChange={handleChange} placeholder="Enter project details..." rows="5" className={`mt-2 ${inputStyle} ${errors.description ? 'border-red-500' : 'border-gray-300'}`} />
                         {errors.description && <span className={errorStyle}>{errors.description}</span>}
                         <small className={helperStyle}>At least 20 characters</small>
                     </div>
 
                     <div>
                         <label htmlFor="budget" className={labelStyle}>Budget (VND)</label>
-                        <input
-                            type="number" id="budget" name="budget"
-                            value={projectData.budget} onChange={handleChange}
-                            placeholder="Enter budget"
-                            min="1000000" max="1000000000"
-                            className={`mt-2 ${inputStyle} ${errors.budget ? 'border-red-500' : 'border-gray-300'}`}
-                        />
+                        <input type="number" id="budget" name="budget" value={projectData.budget} onChange={handleChange} placeholder="Enter budget" min="1000000" className={`mt-2 ${inputStyle} ${errors.budget ? 'border-red-500' : 'border-gray-300'}`} />
                         {errors.budget && <span className={errorStyle}>{errors.budget}</span>}
                         <small className={helperStyle}>Minimum 1 million VND</small>
-                    </div>
-
-                    {/* ✅ THÊM INPUT CHỌN NGÀY KẾT THÚC THẦU */}
-                    <div>
-                        <label htmlFor="bidEndDate" className={labelStyle}>Bid Deadline (End Date)</label>
-                        <input
-                            type="date" id="bidEndDate" name="bidEndDate"
-                            value={projectData.bidEndDate} onChange={handleChange}
-                            min={new Date().toISOString().split("T")[0]}
-                            className={`mt-2 ${inputStyle} ${errors.bidEndDate ? 'border-red-500' : 'border-gray-300'}`}
-                        />
-                        {errors.bidEndDate && <span className={errorStyle}>{errors.bidEndDate}</span>}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <label htmlFor="paymentMethod" className={labelStyle}>Payment Method</label>
-                            <select
-                                id="paymentMethod" name="paymentMethod"
-                                value={projectData.paymentMethod} onChange={handleChange}
-                                className={`mt-2 ${inputStyle} ${errors.paymentMethod ? 'border-red-500' : 'border-gray-300'}`}
-                            >
+                            <select id="paymentMethod" name="paymentMethod" value={projectData.paymentMethod} onChange={handleChange} className={`mt-2 ${inputStyle} ${errors.paymentMethod ? 'border-red-500' : 'border-gray-300'}`}>
                                 <option value="" disabled>Select payment method</option>
-                                {paymentMethods.map(method => (
-                                    <option key={method.value} value={method.value}>{method.label}</option>
-                                ))}
+                                {paymentMethods.map(method => (<option key={method.value} value={method.value}>{method.label}</option>))}
                             </select>
                             {errors.paymentMethod && <span className={errorStyle}>{errors.paymentMethod}</span>}
                         </div>
 
                         <div>
                             <label htmlFor="workForm" className={labelStyle}>Work Form</label>
-                            <select
-                                id="workForm" name="workForm"
-                                value={projectData.workForm} onChange={handleChange}
-                                className={`mt-2 ${inputStyle} ${errors.workForm ? 'border-red-500' : 'border-gray-300'}`}
-                            >
+                            <select id="workForm" name="workForm" value={projectData.workForm} onChange={handleChange} className={`mt-2 ${inputStyle} ${errors.workForm ? 'border-red-500' : 'border-gray-300'}`}>
                                 <option value="" disabled>Select work form</option>
-                                {workForms.map(format => (
-                                    <option key={format.value} value={format.value}>{format.label}</option>
-                                ))}
+                                {workForms.map(format => (<option key={format.value} value={format.value}>{format.label}</option>))}
                             </select>
                             {errors.workForm && <span className={errorStyle}>{errors.workForm}</span>}
                         </div>
@@ -340,11 +315,7 @@ const ProjectPosting = () => {
 
                     <div>
                         <label htmlFor="category" className={labelStyle}>Category</label>
-                        <select
-                            id="category" name="category"
-                            value={projectData.category} onChange={handleChange}
-                            className={`mt-2 ${inputStyle} ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
-                        >
+                        <select id="category" name="category" value={projectData.category} onChange={handleChange} className={`mt-2 ${inputStyle} ${errors.category ? 'border-red-500' : 'border-gray-300'}`}>
                             <option value="" disabled>Select category</option>
                             <option value="web development">Web development</option>
                             <option value="mobile development">Mobile development</option>
@@ -358,39 +329,49 @@ const ProjectPosting = () => {
                         {errors.category && <span className={errorStyle}>{errors.category}</span>}
                     </div>
 
-                    <div>
+                    {/* PHẦN SKILL ĐÃ ĐƯỢC CẬP NHẬT */}
+                    <div className="relative">
                         <label htmlFor="skills" className={labelStyle}>Required Skills</label>
                         <div className="flex gap-3 mt-2">
-                            <input
-                                type="text" id="skills"
-                                value={skillInput}
-                                onChange={(e) => {
-                                    setSkillInput(e.target.value);
-                                    if (e.target.value.trim().length > 250) setSkillError('Each skill cannot exceed 250 characters.');
-                                    else setSkillError('');
-                                }}
-                                onKeyDown={handleSkillInputKeyDown}
-                                placeholder="Enter skill and press Add"
-                                className={`${inputStyle} placeholder:text-gray-400`}
-                            />
-                            <button
-                                type="button" onClick={() => handleAddSkill(skillInput)}
-                                className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
-                            >
-                                Add
+                            <div className="relative w-full">
+                                <input 
+                                    type="text" id="skills" 
+                                    value={skillInput} 
+                                    onChange={(e) => setSkillInput(e.target.value)} 
+                                    onKeyDown={handleSkillInputKeyDown} 
+                                    placeholder="Type to search or add custom skill..." 
+                                    className={`${inputStyle} placeholder:text-gray-400`} 
+                                    autoComplete="off"
+                                />
+                                {/* Dropdown gợi ý */}
+                                {showSuggestions && filteredSuggestions.length > 0 && (
+                                    <div className="absolute z-10 w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-auto">
+                                        {filteredSuggestions.map((skill, index) => (
+                                            <div 
+                                                key={index}
+                                                onClick={() => handleAddSkill(skill)}
+                                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                                            >
+                                                {skill}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            <button type="button" onClick={() => handleAddSkill(skillInput)} className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
+                                <Plus className="w-4 h-4" /> Add
                             </button>
                         </div>
+                        
                         {skillError && <span className={errorStyle}>{skillError}</span>}
-                        <div className="flex flex-wrap gap-3 mt-4">
+                        {errors.skills && <span className={errorStyle}>{errors.skills}</span>}
+                        
+                        <div className="flex flex-wrap gap-2 mt-4">
                             {projectData.skills.map((skill, index) => (
-                                <div key={index} className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-gray-700 font-medium">
+                                <div key={index} className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full text-gray-800 text-sm font-medium border border-gray-200">
                                     <span>{skill}</span>
-                                    <button
-                                        type="button" onClick={() => handleRemoveSkill(skill)}
-                                        className="text-gray-500 hover:text-red-500 font-bold text-lg"
-                                        title={`Remove ${skill}`}
-                                    >
-                                        &times;
+                                    <button type="button" onClick={() => handleRemoveSkill(skill)} className="text-gray-500 hover:text-red-500 transition-colors" title={`Remove ${skill}`}>
+                                        <X className="w-4 h-4" />
                                     </button>
                                 </div>
                             ))}
@@ -398,17 +379,8 @@ const ProjectPosting = () => {
                     </div>
 
                     <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 mt-10">
-                        <button
-                            type="button" onClick={() => navigate('/HomePage')}
-                            className="px-6 py-3 bg-white text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                            disabled={isSubmitting}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit" disabled={isSubmitting}
-                            className={`px-6 py-3 rounded-lg font-semibold text-white transition-colors ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:bg-gray-800'}`}
-                        >
+                        <button type="button" onClick={() => navigate('/HomePage')} className="px-6 py-3 bg-white text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" disabled={isSubmitting}>Cancel</button>
+                        <button type="submit" disabled={isSubmitting} className={`px-6 py-3 rounded-lg font-semibold text-white transition-colors ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:bg-gray-800'}`}>
                             {isSubmitting ? 'Processing...' : 'Post Project'}
                         </button>
                     </div>

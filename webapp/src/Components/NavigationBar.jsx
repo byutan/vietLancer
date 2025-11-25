@@ -58,7 +58,7 @@ export default function NavBar() {
   }, []);
 
   useEffect(() => { }, [user]);
-  console.log("User Info:", user);
+
   const handleSignOut = () => {
     signOut();
     setOpenMenu(false);
