@@ -4,6 +4,10 @@ dotenv.config(); // Load environment variables first
 import app from './routes/app.js';
 import pool from "./config/db.js"; // This imports the live pool object directly
 
+app.get('/', (req, res) => {
+    res.status(200).send("Server Backend VietLancer đang chạy!");
+});
+
 const startServer = async () => {
   try {
     // Step 1: Test the connection (Optional but recommended)
