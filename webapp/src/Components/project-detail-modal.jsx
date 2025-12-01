@@ -4,6 +4,15 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { User, CheckCircle2, XCircle } from 'lucide-react';
 import { Separator } from './ui/separator';
+const formatCurrency = (amount) => {
+
+    const num = Number(amount);
+
+    if (isNaN(num)) return amount;
+
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(num);
+
+  };
 
 function ProjectDetailModal({ project, onClose, onApprove, onReject }) {
   // ✅ FIX: So sánh không phân biệt hoa thường để bắt được trạng thái từ MySQL
@@ -30,7 +39,7 @@ function ProjectDetailModal({ project, onClose, onApprove, onReject }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex flex-col items-start gap-1 p-3 rounded-lg bg-gray-100">
               <span className="text-xs text-muted-foreground">Budget</span>
-              <span className="font-semibold text-lg">{typeof project.budget === 'number' ? project.budget.toLocaleString('vi-VN') : project.budget} VND</span>
+              <span className="font-semibold text-lg">{formatCurrency(project.budget)}</span>
             </div>
             <div className="flex flex-col items-start gap-1 p-3 rounded-lg bg-gray-100">
               <span className="text-xs text-muted-foreground">Created Date</span>

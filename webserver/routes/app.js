@@ -14,7 +14,7 @@ import uploadRoute from "./api/uploadRoute.js";
 import approveRouter from './api/approve_request.js';
 import rejectRouter from './api/reject_request.js';
 import bidRouter from './api/bid.js';
-
+import skillRouter from './api/skill.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,4 +37,5 @@ app.use('/api/reject', rejectRouter);
 // app.use('/api/accept', acceptRouter);
 app.use('/api', bidRouter);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api', skillRouter);
 export default app;

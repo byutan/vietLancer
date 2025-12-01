@@ -17,7 +17,6 @@ const IT_CATEGORIES = [
     "Other",
 ];
 
-// ✅ CẬP NHẬT 1: Sửa Constants khớp với MySQL ENUM
 const WORK_FORM_OPTIONS = ["Onsite", "Remote", "Hybrid"];
 const PAYMENT_METHOD_OPTIONS = ["Hourly", "Fixed", "Milestone"];
 
@@ -42,11 +41,11 @@ export default function JobPage() {
 
     const fetchProjects = useCallback(async () => {
         try {
+            // Gọi API lấy danh sách dự án
+            // Lưu ý: Backend trả về cả 'In Progress', ta sẽ lọc ở client bên dưới
             const res = await fetch("http://localhost:3000/api/projects");
             const data = await res.json();
             if (data.success) {
-                // Log để kiểm tra dữ liệu về
-                console.log("JobPage fetched:", data.projects);
                 setProjects(data.projects);
             }
         } catch (err) {
@@ -83,13 +82,14 @@ export default function JobPage() {
 
     const filteredProjects = useMemo(() => {
         return projects.filter((project) => {
-            // ✅ CẬP NHẬT 2: Sửa logic lọc status
-            // Database mới dùng 'Open' cho bài đã duyệt. 'In Progress' là đang làm.
-            if (project.status !== "Open" && project.status !== "In Progress") return false;
+            
+            // ✅ SỬA LOGIC TẠI ĐÂY: Chỉ hiển thị dự án có status là "Open"
+            // "Open" = Đã được Admin duyệt và Chưa thuê ai
+            // Bỏ "In Progress" đi để freelancer không thấy việc đã có người làm
+            if (!project.status || project.status.toLowerCase() !== "open") return false;
 
             const lowerSearch = searchTerm.toLowerCase();
             
-            // Thêm optional chaining (?.) để tránh lỗi crash nếu dữ liệu null
             const matchesSearch =
                 (project.title && project.title.toLowerCase().includes(lowerSearch)) ||
                 (project.description && project.description.toLowerCase().includes(lowerSearch)) ||
@@ -101,11 +101,9 @@ export default function JobPage() {
                 (project.category &&
                     project.category.toLowerCase() === selectedCategory.toLowerCase());
 
-            // ✅ CẬP NHẬT 3: So sánh trực tiếp Work Form (vì constants đã sửa đúng)
             const matchesWorkForm =
                 !selectedWorkForm || (project.workForm === selectedWorkForm);
 
-            // ✅ CẬP NHẬT 4: So sánh trực tiếp Payment Method (bỏ logic replace cũ)
             const matchesPaymentMethod =
                 !selectedPaymentMethod || (project.paymentMethod === selectedPaymentMethod);
 
@@ -262,7 +260,7 @@ export default function JobPage() {
                             </div>
                         ) : (
                             <div className="text-center py-12">
-                                <p className="text-muted-foreground">No jobs found</p>
+                                <p className="text-muted-foreground">No open jobs found</p>
                             </div>
                         )}
                     </div>
@@ -273,7 +271,7 @@ export default function JobPage() {
                     project={selectedProject}
                     onClose={() => {
                         setSelectedProject(null);
-                        fetchProjects();
+                        fetchProjects(); // Tải lại dữ liệu sau khi đóng modal để cập nhật số bid nếu vừa bid xong
                     }}
                 />
             )}

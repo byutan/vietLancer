@@ -11,7 +11,15 @@ function ProjectCard({ project, onClick }) {
   //   rejected: { label: "Rejected", variant: "default", className: "bg-red-600 text-white" },
   // };
   // const status = statusConfig[project.status] || statusConfig.pending;
+  const formatCurrency = (amount) => {
 
+    const num = Number(amount);
+
+    if (isNaN(num)) return amount;
+
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(num);
+
+  };
   return (
     <div
       className="bg-white border border-gray-200 rounded-xl px-4 sm:px-6 py-4 shadow-sm hover:border-black transition-all cursor-pointer flex flex-row items-center min-h-[120px] w-full max-w-full 2xl:max-w-[1600px] xl:max-w-[1200px] lg:max-w-[1000px] md:max-w-[900px] mx-auto my-2"
@@ -44,8 +52,7 @@ function ProjectCard({ project, onClick }) {
           <div className="flex items-center gap-1 text-sm text-gray-500 font-semibold">
             <DollarSign className="w-4 h-4 text-green-500" />
             <span>Budget:</span>
-            <span className="text-base font-bold text-gray-900 ml-1">{typeof project.budget === 'number' ? project.budget.toLocaleString('vi-VN') : project.budget}</span>
-            <span className="text-base font-bold text-gray-900 ml-1">VND</span>
+            <span className="text-base font-bold text-gray-900 ml-1">{formatCurrency(project.budget)}</span>
           </div>
           {/* Bidding count (center, only approved) */}
           <div className="flex-1 flex justify-center">
