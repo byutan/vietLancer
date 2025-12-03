@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell } from 'lucide-react';
 import AuthContext from '../ContextAPI/AuthContext';
-
+import { API_URL } from '../utils/apiConfig'; 
 const NotificationBell = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ const NotificationBell = () => {
     const fetchUnreadCount = async () => {
         if (!user || !user.email) return;
         try {
-            const res = await fetch(`http://localhost:3000/api/notifications/unread-count?userEmail=${encodeURIComponent(user.email)}`);
+            const res = await fetch(`${API_URL}/api/notifications/unread-count?userEmail=${encodeURIComponent(user.email)}`);
             const data = await res.json();
             if (data.success) {
                 setUnreadCount(data.unreadCount);
@@ -29,7 +29,7 @@ const NotificationBell = () => {
     const fetchNotifications = async () => {
         if (!user || !user.email) return;
         try {
-            const res = await fetch(`http://localhost:3000/api/notifications?userEmail=${encodeURIComponent(user.email)}`);
+            const res = await fetch(`${API_URL}/api/notifications?userEmail=${encodeURIComponent(user.email)}`);
             const data = await res.json();
             if (data.success) {
                 setNotifications(data.notifications);
@@ -71,7 +71,7 @@ const NotificationBell = () => {
     const handleNotificationClick = async (notif) => {
         try {
             // 1. Gọi API đánh dấu đã đọc
-            await fetch(`http://localhost:3000/api/notifications/${notif.id}/read`, {
+            await fetch(`${API_URL}/api/notifications/${notif.id}/read`, {
                 method: 'PUT'
             });
             
@@ -102,7 +102,7 @@ const NotificationBell = () => {
     const markAllAsRead = async () => {
         if (!user?.email) return;
         try {
-            await fetch('http://localhost:3000/api/notifications/read-all', {
+            await fetch(`${API_URL}/api/notifications/read-all`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userEmail: user.email })

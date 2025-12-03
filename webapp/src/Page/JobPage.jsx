@@ -4,7 +4,7 @@ import ProjectCard from "../Components/project-card-jobpage";
 import ProjectCardModalJobPage from "../Components/project-card-modal-jobpage";
 import Footer from "../Components/Footer";
 import { Search } from "lucide-react";
-
+import { API_URL } from '../utils/apiConfig'; 
 const IT_CATEGORIES = [
     "Web development",
     "Mobile development",
@@ -43,7 +43,7 @@ export default function JobPage() {
         try {
             // Gọi API lấy danh sách dự án
             // Lưu ý: Backend trả về cả 'In Progress', ta sẽ lọc ở client bên dưới
-            const res = await fetch("http://localhost:3000/api/projects");
+            const res = await fetch(`${API_URL}/api/projects`);
             const data = await res.json();
             if (data.success) {
                 setProjects(data.projects);

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from '../ContextAPI/AuthContext';
 import Footer from '../Components/Footer';
 import { Search, Filter, ArrowUpDown, CheckCircle } from 'lucide-react';
-
+import { API_URL } from '../utils/apiConfig'; 
 export default function MyProjectPage() {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -21,7 +21,7 @@ export default function MyProjectPage() {
     const fetchProjects = useCallback(async () => {
         if (!clientEmail) return;
         try {
-            const res = await fetch(`http://localhost:3000/api/projects/client/${clientEmail}`, {
+            const res = await fetch(`${API_URL}/api/projects/client/${clientEmail}`, {
                 headers: { 
                     'Cache-Control': 'no-cache',
                     'Pragma': 'no-cache'
@@ -72,14 +72,14 @@ export default function MyProjectPage() {
     const handleClientAction = async (projectId, bidId, action) => {
         try {
             if (action === 'accept') {
-                await fetch(`http://localhost:3000/api/projects/${projectId}/hire`, {
+                await fetch(`${API_URL}/api/projects/${projectId}/hire`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ hired_bid_ID: bidId })
                 });
                 navigate('/ContractTemplatePage', { state: { projectId, bidId } });
             } else {
-                await fetch(`http://localhost:3000/api/projects/${projectId}/bids/${bidId}`, {
+                await fetch(`${API_URL}/api/projects/${projectId}/bids/${bidId}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ client_status: 'client_rejected' })
@@ -97,7 +97,7 @@ export default function MyProjectPage() {
         if (!window.confirm("Are you sure you want to mark this project as Completed? This action cannot be undone.")) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/projects/${projectId}/complete`, {
+            const res = await fetch(`${API_URL}/api/projects/${projectId}/complete`, {
                 method: 'PATCH'
             });
 

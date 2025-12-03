@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
 import Footer from "../Components/Footer";
 import DocxViewer from "../Components/DocxViewer"; 
 import { ArrowLeft } from "lucide-react"; // 2. Import Icon
-
+import { API_URL } from '../utils/apiConfig'; 
 export default function ContractTemplatePage() {
   const [templates, setTemplates] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -13,7 +13,7 @@ export default function ContractTemplatePage() {
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/contract/list-templates");
+        const res = await fetch(`${API_URL}/api/contract/list-templates`);
         const data = await res.json();
         
         if (Array.isArray(data)) {
@@ -31,7 +31,7 @@ export default function ContractTemplatePage() {
   // 2. Tải file về (Dùng ID)
   const handleExport = async (template) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/contract/export/${template.id}`);
+      const res = await fetch(`${API_URL}/api/contract/export/${template.id}`);
       if (!res.ok) throw new Error("Export failed");
       
       const blob = await res.blob();
@@ -132,7 +132,7 @@ export default function ContractTemplatePage() {
               </div>
 
               <div className="flex-grow bg-gray-100 p-4 overflow-hidden">
-                 <DocxViewer fileUrl={`http://localhost:3000${selected.url}`} />
+                 <DocxViewer fileUrl={`${API_URL}${selected.url}`} />
               </div>
 
               <div className="px-6 py-4 border-t bg-white flex justify-end gap-3">

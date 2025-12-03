@@ -10,7 +10,7 @@ import ChevronDownIcon from '../Public/chevron_down.svg';
 import AuthContext from '../ContextAPI/AuthContext';
 import EmailVerification from '../Components/EmailVerification';
 import axios from 'axios';
-
+import { API_URL } from '../utils/apiConfig'; 
 export default function ProfilePage() {
     const { user, setUser } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -82,7 +82,7 @@ export default function ProfilePage() {
         if (showEmailVerification || user?.email_verify === 'verified') return;
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post('http://localhost:3000/api/send-verification-code',
+            const response = await axios.post(`${API_URL}/api/send-verification-code`,
                 { target: user.email },
                 {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -224,7 +224,7 @@ export default function ProfilePage() {
         };
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/api/profile/`, {
+            const res = await fetch(`${API_URL}/api/profile/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

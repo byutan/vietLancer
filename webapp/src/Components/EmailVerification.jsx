@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../utils/apiConfig'; 
 
 export default function EmailVerification({ email, onSuccess, onCancel }) {
     const [code, setCode] = useState('');
@@ -21,7 +22,7 @@ export default function EmailVerification({ email, onSuccess, onCancel }) {
         setResendLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post('http://localhost:3000/api/send-verification-code',
+            const response = await axios.post(`${API_URL}/api/send-verification-code`,
                 { target: email },
                 {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -49,7 +50,7 @@ export default function EmailVerification({ email, onSuccess, onCancel }) {
             const token = localStorage.getItem('token');
             const userEmail = email;  
 
-            const response = await axios.post('http://localhost:3000/api/confirm-verification-code',
+            const response = await axios.post(`${API_URL}/api/confirm-verification-code`,
                 { email: userEmail, code }, 
                 {
                     headers: { 'Authorization': `Bearer ${token}` }

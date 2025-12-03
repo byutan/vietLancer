@@ -7,7 +7,7 @@ import * as z from 'zod';
 import FreelancerIconSVG from '../Public/freelancer.svg';
 import ClientIconSVG from '../Public/customer.svg';
 import useAuth from '../ContextAPI/UseAuth';
-
+import { API_URL } from '../utils/apiConfig'; 
 const signupSchema = z.object({
     fullName: z.string().min(1, "Please fill in this field."),
     email: z.email("Invalid email address. Please try again")
@@ -43,7 +43,7 @@ export default function SignUp() {
     const { signIn } = useAuth();
     const onSubmit = async (data) => {
         try {
-            const res = await fetch('http://localhost:3000/api/signup', {
+            const res = await fetch(`${API_URL}/api/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

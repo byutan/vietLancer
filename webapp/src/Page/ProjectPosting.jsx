@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthContext from '../ContextAPI/AuthContext';
 import Footer from "../Components/Footer";
 import { X, Plus } from 'lucide-react';
-
+import { API_URL } from '../utils/apiConfig'; 
 const ProjectPosting = () => {
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
@@ -58,7 +58,7 @@ const ProjectPosting = () => {
     useEffect(() => {
         const fetchSkills = async () => {
             try {
-                const res = await fetch('http://localhost:3000/api/skills');
+                const res = await fetch(`${API_URL}/api/skills`);
                 const data = await res.json();
                 if (data.success && Array.isArray(data.skills)) {
                     setSuggestedSkills(data.skills);
@@ -108,7 +108,7 @@ const ProjectPosting = () => {
 
     const checkBackendConnection = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/projects');
+            const response = await fetch(`${API_URL}/api/projects`);
             const data = await response.json();
             return data.success === true;
         } catch (error) {
@@ -212,7 +212,7 @@ const ProjectPosting = () => {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch('http://localhost:3000/api/projects', {
+            const response = await fetch(`${API_URL}/api/projects`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

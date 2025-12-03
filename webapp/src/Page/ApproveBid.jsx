@@ -5,7 +5,7 @@ import BidCard from "../Components/bid-card";
 import { useNavigate } from "react-router-dom";
 import { FileText, CheckCircle2, XCircle, Search } from "lucide-react";
 import Footer from "../Components/Footer";
-
+import { API_URL } from '../utils/apiConfig'; 
 const STATUS_OPTIONS = [
     { value: "Pending", label: "Pending", icon: FileText, color: "bg-yellow-500" },
     { value: "Accepted", label: "Approved", icon: CheckCircle2, color: "bg-green-500" },
@@ -27,7 +27,7 @@ export default function ApproveBid() {
     const fetchBids = useCallback(async () => {
         if (!user || user.role !== 'admin') return;
         try {
-            const res = await fetch("http://localhost:3000/api/projects/bids/all");
+            const res = await fetch(`${API_URL}/api/projects/bids/all`);
             const data = await res.json();
             
             if (data.success) {
@@ -81,7 +81,7 @@ export default function ApproveBid() {
     const handleApprove = async (bidId) => {
         if (!selectedBid) return;
         try {
-            await fetch(`http://localhost:3000/api/projects/${selectedBid.project_ID}/bid/${bidId}/approve`, {
+            await fetch(`${API_URL}/api/projects/${selectedBid.project_ID}/bid/${bidId}/approve`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: 'accepted' })
@@ -97,7 +97,7 @@ export default function ApproveBid() {
     const handleReject = async (bidId) => {
         if (!selectedBid) return;
         try {
-            await fetch(`http://localhost:3000/api/projects/${selectedBid.project_ID}/bid/${bidId}/approve`, {
+            await fetch(`${API_URL}/api/projects/${selectedBid.project_ID}/bid/${bidId}/approve`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: 'rejected' })

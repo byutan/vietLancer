@@ -23,7 +23,15 @@ const app = express();
 app.use(serveFavicon(path.join(__dirname, '../public', 'favicon.ico')));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-app.use(cors());
+app.use(cors({
+    origin: '*', // Tạm thời để '*' cho dễ, sau khi có link frontend thì dán link vào đây để bảo mật hơn
+    credentials: true
+}));
+
+// 2. Phục vụ thư mục uploads (để xem file templates)
+// Dòng này rất quan trọng để link kiểu domain.com/uploads/template_1.docx hoạt động
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use('/api', uploadRoute);
 app.use('/api', signUpRouter);
 app.use('/api', signInRouter);

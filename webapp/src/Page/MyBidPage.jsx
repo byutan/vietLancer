@@ -3,7 +3,7 @@ import { Mail, Phone, CheckCircle2, Clock, XCircle, Contact, User, MessageSquare
 
 import AuthContext from "../ContextAPI/AuthContext";
 import Footer from "../Components/Footer";
-
+import { API_URL } from '../utils/apiConfig'; 
 
 export default function MyBidPage() {
   const { user } = useContext(AuthContext);
@@ -29,7 +29,7 @@ export default function MyBidPage() {
       
       try {
         const encodedEmail = encodeURIComponent(freelancerEmail);
-        const res = await fetch(`http://localhost:3000/api/projects/freelancer/bids?email=${encodedEmail}`);
+        const res = await fetch(`${API_URL}/api/projects/freelancer/bids?email=${encodedEmail}`);
         
         if (!res.ok) {
             console.warn("API Error, using fallback data for UI testing");

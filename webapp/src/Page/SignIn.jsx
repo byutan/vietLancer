@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom'
 import * as z from 'zod';
 import useAuth from '../ContextAPI/UseAuth';
-
+import { API_URL } from '../utils/apiConfig'; 
 const signinSchema = z.object({
     email: z.email("Invalid email address. Please try again")
         .min(1, "Please fill in the field.")
@@ -29,7 +29,7 @@ export default function SignIn() {
     const { signIn } = useAuth();
     const onSubmit = async (data) => {
         try {
-            const res = await fetch('http://localhost:3000/api/signin', {
+            const res = await fetch(`${API_URL}/api/signin`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
